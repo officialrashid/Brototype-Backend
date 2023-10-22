@@ -1,5 +1,5 @@
 export default {
-    port: 3001,
+    port: 3000,
     mongo: {
       uri: 'mongodb+srv://muhammedrashi59:SUxzxasGOgEgKKPb@micro.1nbiei8.mongodb.net/Brototype-Students?retryWrites=true&w=majority'
     },
