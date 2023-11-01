@@ -8,9 +8,9 @@ export default (dependencies: any) => {
         useCase: { studentsMark_Usecase }
     } = dependencies
     const studentsMarkController = async (req: Request, res: Response) => {
-        const {type,startTime,endTime} = req.body
+        const {studentId,batchId,type,startTime,endTime} = req.body
         
-        const response = await  studentsMark_Usecase(dependencies).excutefunction(type,startTime,endTime)
+        const response = await  studentsMark_Usecase(dependencies).excutefunction(studentId,batchId,type,startTime,endTime)
         res.status(201).json(response)
  
     }

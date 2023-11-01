@@ -13,6 +13,6 @@ export default (dependencies:any)=>{
   router.post('/createBatch',createBatch)
   router.patch('/addStudents',addStudents)
   router.get('/getBatchwiseStudents',getBatchwiseStudentsController)
-  router.post('/addStudentsMark',studentsMarkController)
+  router.patch('/addStudentsMark',studentsMarkController)
   return router
 }

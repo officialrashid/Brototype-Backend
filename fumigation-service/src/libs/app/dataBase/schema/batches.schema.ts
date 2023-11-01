@@ -5,10 +5,10 @@ const batchesSchema= new mongoose.Schema({
     hubLocation : String,
     fumigationStudents: [{
         userId: String,
-        pattern: String,
-        array: String,
-        oops: String,
-        communication: String
+        Pattern: Number,
+        Array: Number,
+        Oops: Number,
+        Communication: Number
     }]
 
 })
