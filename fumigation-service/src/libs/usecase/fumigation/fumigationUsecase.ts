@@ -1,9 +1,7 @@
 import { Enquiry } from "../../entities/ enqueries";
 
-
+// This is Enquerie Students usecase .
 export const fumigation_Usecase = (dependencies: any) => {
-   console.log("old fumigationbuecaseeee");
-   
    const {
       repository: { fumigationRepository }
    } = dependencies;
@@ -20,12 +18,11 @@ export const fumigation_Usecase = (dependencies: any) => {
          qualification,
          preferredLocation
       };
-      const enquery = new Enquiry(data)
-      const response = await fumigationRepository.Enqueries(enquery);
+      const enquery = new Enquiry(data) //pass all data in enities
+      const response = await fumigationRepository.Enqueries(enquery); // call function define the repository
 
       if (response) {
-         console.log(response, "response coming in the usecase");
-         return { status: true, response };
+         return { status: true, response }; // handle response .
       }
    };
 
