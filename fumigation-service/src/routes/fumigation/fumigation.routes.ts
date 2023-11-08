@@ -16,5 +16,6 @@ export default (dependencies:any)=>{
   router.patch('/addStudentsMark',studentsMarkController)
   router.post('/invigilatorLogin',invigilatorLoginController)
   router.post('/createInvigilator',createInvigilatorController)
+
   return router
 }

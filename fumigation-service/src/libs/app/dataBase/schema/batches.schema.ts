@@ -1,19 +1,56 @@
 import mongoose from "mongoose";
 
-const batchesSchema= new mongoose.Schema({
-    batchName: String,
-    hubLocation : String,
-    fumigationStudents: [{
-        userId: String,
-        Pattern: Number,
-        Array: Number,
-        Oops: Number,
-        Communication: Number
-    }]
+const batchesSchema = new mongoose.Schema({
+  batchName: String,
+  hubLocation: String,
+  fumigationStudents: [{
+    studentId: String,
+    mock:[
+      { examType:String,
+        mark : Number,
+        invigilatorId: String
+    },
+    { examType:String,
+      mark: Number,
+      invigilatorId: String
+    },
+    {   examType:String,
+        mark :Number,
+        invigilatorId : String
+    },
+  {      examType:String,
+        mark : Number,
+        invigilatorId: String
+    }
+    ],
+    final:[
+      {
+      examType:String,
+        mark : Number,
+        invigilatorId: String
+    },
+    {
+      examType:String,
+      mark: Number,
+      invigilatorId: String
+    },
+     {
+       examType:String,
+        mark :Number,
+        invigilatorId : String
+    },
+    {
+        examType:String,
+        mark : Number,
+        invigilatorId: String
+    }
+    ]
+    
+  }]
+});
 
-})
-const Batches = mongoose.model("Batches",batchesSchema)
+const Batches = mongoose.model("Batches", batchesSchema);
 
-export{
-    Batches,
-}
+export {
+  Batches,
+};

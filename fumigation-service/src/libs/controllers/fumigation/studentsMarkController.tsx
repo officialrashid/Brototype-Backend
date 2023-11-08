@@ -1,5 +1,6 @@
 
 import { Request, Response } from "express";
+import fumigation from ".";
 
 
 export default (dependencies: any) => {
@@ -8,9 +9,12 @@ export default (dependencies: any) => {
         useCase: { studentsMark_Usecase }
     } = dependencies
     const studentsMarkController = async (req: Request, res: Response) => {
-        const {studentId,batchId,type,startTime,endTime} = req.body
+        const {studentId,batchId,invigilatorId,type,startTime,endTime,mark,fumigationType} = req.body
+          console.log(req.body);
+          
+        const response = await  studentsMark_Usecase(dependencies).excutefunction(studentId,batchId,invigilatorId,type,startTime,endTime,mark,fumigationType)
+        console.log(response,"xbvxfd");
         
-        const response = await  studentsMark_Usecase(dependencies).excutefunction(studentId,batchId,type,startTime,endTime)
         res.status(201).json(response)
  
     }
