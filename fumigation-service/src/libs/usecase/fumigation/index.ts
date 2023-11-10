@@ -9,6 +9,9 @@ import {createInvigilator_Usecase} from "./createInvigilatorUsecase"
 import {getAllBatch_Usecase} from "./getAllBatchesUsecase"
 import {getStudentsMark_Usecase} from "./getStudnetsMarkUsecase"
 import { removeBatchwiseStudents_Usecase } from "./removeBatchwiseStudnetsController";
+import { removeBatch_Usecase } from "./removeBatchUsecase";
+import { editBatch_Usecase } from "./editBatchUsecase";
+import { editBatchSubmit_Usecase } from "./editBatchSubmitUsecase";
 export{
     fumigation_Usecase,
     getAllPendingStudents_Usecase,
@@ -20,7 +23,10 @@ export{
     createInvigilator_Usecase,
     getAllBatch_Usecase,
     getStudentsMark_Usecase,
-    removeBatchwiseStudents_Usecase
+    removeBatchwiseStudents_Usecase,
+    removeBatch_Usecase,
+    editBatch_Usecase,
+    editBatchSubmit_Usecase
 }
 
 //import all usecase files

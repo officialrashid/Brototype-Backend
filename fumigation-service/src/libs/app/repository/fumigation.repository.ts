@@ -5,6 +5,7 @@ import config from "../../../config/config";
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../nextjs-project-6651b-firebase-adminsdk-rc9m6-9e6adae01b.json'
 import fumigation from "../../controllers/fumigation";
+import { response } from "express";
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -465,7 +466,7 @@ export default {
   
       // Create a new document in the Batches collection with the student details
       const studentBackToPending = await schema.Enqueries.create(data);
-       
+  
       // Remove the student from the fumigationStudents array in the original batch
       studentDetails.fumigationStudents.splice(foundStudentIndex, 1);
       await studentDetails.save();
@@ -474,6 +475,51 @@ export default {
     } catch (error) {
       console.error(error, "error in the remove Batchwise students");
       return { status: false, message: "An error occurred while removing the student" };
+    }
+  },
+  removeBatch : async (batchId:string)=>{
+     
+    try{
+         const response = await schema.Batches.deleteOne({_id:batchId})
+         return {status:true,message:"Batch remove successfully"}
+    } catch(error){
+      console.log(error,"error in the remove batch repository function");
+      
+    }
+  },
+  editBatch : async (batchId:string)=>{
+    try{
+      const response = await schema.Batches.find({_id:batchId})
+       console.log(response,"response edite batch");
+       if(response.length>0){
+        return {status:true,response}
+       }else{
+        return {status:false,message:"batch not found"}
+       }
+      
+    } catch(error){
+      console.log(error,"error in the edit batch repository function");
+      
+    }
+  },
+  editBatchSubmit: async (batchId:string,batchName:string)=>{
+      try{
+          const response = await schema.Batches.updateOne({_id:batchId},{$set:{batchName:batchName}})
+          return response;
+      }catch(error){
+        console.log(error,"error in the editBatchSubmit repository function");
+        
+      }
+  },
+  batchNameExist: async (batchName:string)=>{
+    try{
+       const response= await schema.Batches.find({batchName:batchName})
+       console.log(response);
+       
+       return response
+    }catch(error){
+      console.log(error,"error in the batchName Exist check function");
+      
     }
   }
   

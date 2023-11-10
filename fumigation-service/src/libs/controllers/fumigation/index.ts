@@ -10,6 +10,9 @@ import createInvigilator_Controller from "./createInvigilatorController"
 import getAll_Batches from "./getAllBatches"
 import getStudentsMark_Controller from "./getStudentsMarkController"
 import removeBatchwiseStudents_Controller from "./removeBatchwiseStudentsController"
+import removeBatch_Controller from "./removeBatchController"
+import editBatch_Controller from "./editBatchController"
+import editBatchSubmit_Controller from "./editBatchSubmitController"
 export default (dependencies:any)=>{
 
     return{
@@ -23,7 +26,10 @@ export default (dependencies:any)=>{
         createInvigilatorController: createInvigilator_Controller(dependencies),
         getAllBatches : getAll_Batches(dependencies),
         getStudentsMarkController: getStudentsMark_Controller(dependencies),
-        removeBatchwiseStudentsController: removeBatchwiseStudents_Controller(dependencies)
+        removeBatchwiseStudentsController: removeBatchwiseStudents_Controller(dependencies),
+        removeBatchController: removeBatch_Controller(dependencies),
+        editBatchController: editBatch_Controller(dependencies),
+        editBatchSubmitController: editBatchSubmit_Controller(dependencies)
     }  
 }
 // import all controller files.()
