@@ -12,6 +12,10 @@ import { removeBatchwiseStudents_Usecase } from "./removeBatchwiseStudnetsContro
 import { removeBatch_Usecase } from "./removeBatchUsecase";
 import { editBatch_Usecase } from "./editBatchUsecase";
 import { editBatchSubmit_Usecase } from "./editBatchSubmitUsecase";
+import {getInvigilators_Usecase} from "./getInvigilatorsUsecase"
+import {editInvigilator_Usecase} from "./editInvigilatorUsecase";
+import { editInvigilatorSubmit_Usecase } from "./editInvigilatorSubmitUsecase";
+import {removeInvigilator_Usecase} from "./removeInvigilatorUsecase"
 export{
     fumigation_Usecase,
     getAllPendingStudents_Usecase,
@@ -26,7 +30,11 @@ export{
     removeBatchwiseStudents_Usecase,
     removeBatch_Usecase,
     editBatch_Usecase,
-    editBatchSubmit_Usecase
+    editBatchSubmit_Usecase,
+    getInvigilators_Usecase,
+    editInvigilator_Usecase,
+    editInvigilatorSubmit_Usecase,
+    removeInvigilator_Usecase
 }
 
 //import all usecase files

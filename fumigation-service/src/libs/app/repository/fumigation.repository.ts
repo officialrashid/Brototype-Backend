@@ -5,7 +5,7 @@ import config from "../../../config/config";
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../nextjs-project-6651b-firebase-adminsdk-rc9m6-9e6adae01b.json'
 import fumigation from "../../controllers/fumigation";
-import { response } from "express";
+
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -519,6 +519,56 @@ export default {
        return response
     }catch(error){
       console.log(error,"error in the batchName Exist check function");
+      
+    }
+  },
+  getInvigilators : async ()=>{
+    try{
+
+      const response= await schema.Invigilators.find({})
+       return response
+    } catch(error){
+      console.log(error,"error in the get Invigilators repository function");
+      
+    }
+  },
+  editInvigilator : async (invigilatorId:string)=>{
+     try{
+        const response = await schema.Invigilators.find({_id:invigilatorId})
+        return response
+     } catch(error){
+      console.log(error,"error in the editInvigilator repository function");
+      
+     }
+  },
+  updateInvigilatorData: async (invigilatorId:string, name:string, email:string, phone:string, batch:string) => {
+    try {
+      const response = await schema.Invigilators.updateOne(
+        { _id: invigilatorId }, // Match invigilatorId
+        {
+          $set: {
+            name: name,
+            email: email,
+            phone: phone,
+            batch: batch
+            // Add other fields you want to update
+          }
+        }
+      );
+  console.log(response,"sdfhsfjgsjh78789");
+  
+     return response;
+    } catch (error) {
+      console.error(error, 'Error updating invigilator data');
+      return { status: false, message: 'An error occurred while updating invigilator data' };
+    }
+  },
+  removeInvigilator : async (invigilatorId:string)=>{
+    try{
+       const response = await schema.Invigilators.deleteOne({_id:invigilatorId})
+       return response
+    } catch(error){
+      console.log(error,"error in teh remove invigilator Repository function");
       
     }
   }
