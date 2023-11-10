@@ -10,13 +10,13 @@ export const fumigation_Usecase = (dependencies: any) => {
       return console.log("Error: Fumigation Repository not found");
    }
 
-   const excutefunction = async (name: string, email: string, phone: string, qualification: string, preferredLocation: string) => {
+   const excutefunction = async (name: string, email: string, phone: Number, qualification: string, prefferredLocation: string) => {
       const data = {
          name,
          email,
          phone,
          qualification,
-         preferredLocation
+         prefferredLocation
       };
       const enquery = new Enquiry(data) //pass all data in enities
       const response = await fumigationRepository.Enqueries(enquery); // call function define the repository

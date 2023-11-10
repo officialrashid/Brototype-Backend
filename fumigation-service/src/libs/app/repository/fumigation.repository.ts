@@ -3,7 +3,7 @@ import schema from "../dataBase/schema"
 import jwt from 'jsonwebtoken'
 import config from "../../../config/config";
 import admin from 'firebase-admin';
-import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json';
+import firebaseAccountCredentials from '../../../../nextjs-project-6651b-firebase-adminsdk-rc9m6-9e6adae01b.json'
 import fumigation from "../../controllers/fumigation";
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
@@ -24,7 +24,7 @@ export default {
         email: data.email,
         phone: data.phone,
         qualification: data.qualification,
-        prefferedLocation: data.preferredLocation
+        prefferredLocation: data.prefferredLocation
       }
       const response = await schema.Enqueries.create(EnqueriesData) //create the Enquerie Studnets
       return response;
@@ -83,32 +83,43 @@ export default {
     try {
       // Find the batch with the given batchId
       const batch = await schema.Batches.findById(batchId);
-
+    
       if (!batch) {
-        throw new Error("Batch not found");
+        return {status:false, message: "batch not found"}
       }
-
+    
       // Check if the student is not already in the batch
       const isStudentAlreadyAdded = batch.fumigationStudents.some(
         (fumigationStudent) => fumigationStudent.studentId === studentId
       );
-
+    
       if (isStudentAlreadyAdded) {
         return { status: false, message: "Student is already in the batch" };
       }
-
+    
+      const studentDetails = await schema.Enqueries.findById(studentId);
+    
+      if (!studentDetails) {
+        throw new Error("Student details not found");
+      }
+    
       const newFumigationStudents: any = {
         studentId: studentId,
+        name: studentDetails.name,
+        email: studentDetails.email,
+        phone: studentDetails.phone,
+        qualification: studentDetails.qualification,
+        prefferredLocation: studentDetails.prefferredLocation
       };
-
+    
       batch.fumigationStudents.push(newFumigationStudents);
       await batch.save();
-
+      await schema.Enqueries.deleteOne({ _id: studentId });
       return { status: true, message: "Student batch-wise added successfully" };
     } catch (err) {
-      console.log(err, "error in the add students in specific batches function");
-
+      console.error(err, "error in the add students in specific batches function");
     }
+    
 
 
   },
@@ -197,9 +208,9 @@ export default {
 
   },
 
-  invigilatorLogin: async (name: string, email: string) => {
-    console.log(name, email);
-    const verifyInvigilator = await schema.Enqueries.findOne({ email: email }); // Use findOne to get a single document
+  invigilatorLogin: async (uniqueId: string) => {
+    console.log(uniqueId);
+    const verifyInvigilator = await schema.Invigilators.findOne({uniqueId : uniqueId }); // Use findOne to get a single document
 
     if (verifyInvigilator) {
       console.log(verifyInvigilator);
@@ -218,7 +229,7 @@ export default {
         const customToken = await admin.auth().createCustomToken(uid);
         if (customToken) {
           console.log(customToken, "custom token vannindakdaa");
-          return { accessToken, customToken }
+          return { verifyInvigilator,accessToken, customToken }
         }
       }
     }
@@ -390,5 +401,81 @@ export default {
       throw error;
     }
 
+  },
+  getAllBatches : async ()=>{
+     const response = await schema.Batches.find({},'batchName')
+     const modifiedResponse = await response.map(({_id,batchName})=>({batchName}))
+     return modifiedResponse
+     
+  },
+  getStudentsMark : async (studentId:string,batchId:string,fumigationType:string) =>{
+    const batch = await schema.Batches.findOne({
+      _id: batchId,
+      "fumigationStudents.studentId": studentId,
+    });
+
+    if(!batch){
+      return{status:false,message: " betc not found"}
+    }
+    const fumigationStudent = batch.fumigationStudents.find(
+      (student) => student?.studentId?.toString() === studentId
+    );
+
+    if (!fumigationStudent) {
+      return { status: false, message: "students not found in the batch" }
+    }
+   if(fumigationType==='mock'){
+    console.log(fumigationStudent.mock,"sngdfdjhbfjg");
+    
+       return fumigationStudent.mock
+   }else{
+    console.log(fumigationStudent.mock,"sngdfdjhbfjg");
+    
+    return fumigationStudent.final
+   }
+  },
+  removeBatchwiseStudents: async (studentId: string, batchId: string) => {
+    try {
+      const studentDetails = await schema.Batches.findOne({
+        _id: batchId,
+        "fumigationStudents.studentId": studentId,
+      });
+  
+      if (!studentDetails) {
+        return { status: false, message: "Batch or student not found" };
+      }
+  
+      // Assuming fumigationStudents is an array, find the student in the array
+      const foundStudentIndex = studentDetails.fumigationStudents.findIndex(
+        (student) => student.studentId === studentId
+      );
+  
+      if (foundStudentIndex === -1) {
+        return { status: false, message: "Student not found in the batch" };
+      }
+  
+      // Access properties on the found student
+      const data: any = {
+        name: studentDetails.fumigationStudents[foundStudentIndex].name,
+        email: studentDetails.fumigationStudents[foundStudentIndex].email,
+        phone: studentDetails.fumigationStudents[foundStudentIndex].phone,
+        qualification: studentDetails.fumigationStudents[foundStudentIndex].qualification,
+        prefferredLocation: studentDetails.fumigationStudents[foundStudentIndex].prefferredLocation,
+      };
+  
+      // Create a new document in the Batches collection with the student details
+      const studentBackToPending = await schema.Enqueries.create(data);
+       
+      // Remove the student from the fumigationStudents array in the original batch
+      studentDetails.fumigationStudents.splice(foundStudentIndex, 1);
+      await studentDetails.save();
+  
+      return { status: true, message: "Student removed from the batch and moved back to pending" };
+    } catch (error) {
+      console.error(error, "error in the remove Batchwise students");
+      return { status: false, message: "An error occurred while removing the student" };
+    }
   }
+  
+  
 }

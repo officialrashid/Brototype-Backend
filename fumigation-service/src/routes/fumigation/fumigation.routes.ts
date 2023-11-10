@@ -6,7 +6,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   //  import all controll //
-  const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController} = fumigation_Controller(dependencies) 
+  const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController,getAllBatches,getStudentsMarkController,removeBatchwiseStudentsController} = fumigation_Controller(dependencies) 
 // define the all api ..
   router.post('/enquery',fumigationController)
   router.get('/getEnquery',getAllPendingStudent)
@@ -16,6 +16,8 @@ export default (dependencies:any)=>{
   router.patch('/addStudentsMark',studentsMarkController)
   router.post('/invigilatorLogin',invigilatorLoginController)
   router.post('/createInvigilator',createInvigilatorController)
-
+  router.get('/getAllBatches',getAllBatches)
+  router.get('/getStudentsMark',getStudentsMarkController)
+  router.delete('/removeBatchwiseStudents',removeBatchwiseStudentsController)
   return router
 }

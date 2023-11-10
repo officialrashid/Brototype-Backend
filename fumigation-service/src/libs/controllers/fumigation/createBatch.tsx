@@ -11,7 +11,8 @@ export default (dependencies: any) => {
         const {batchName,hubLocation} = req.body
         const response = await createBatch_Usecase(dependencies).excutefunction(batchName,hubLocation)
         res.status(201).json(response)
-
     }
-    return createBatch;
+ 
+    return createBatch
+    
 }

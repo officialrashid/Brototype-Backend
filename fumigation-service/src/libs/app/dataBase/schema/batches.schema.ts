@@ -5,6 +5,11 @@ const batchesSchema = new mongoose.Schema({
   hubLocation: String,
   fumigationStudents: [{
     studentId: String,
+    name: String,
+    email: String,
+    phone:  Number,
+    qualification: String,
+    prefferredLocation: String,
     mock:[
       { examType:String,
         mark : Number,

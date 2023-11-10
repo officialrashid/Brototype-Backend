@@ -8,9 +8,9 @@ export const invigilatorLogin_Usecase = (dependencies: any) => {
     if (!fumigationRepository) {
        return console.log("Error: Fumigation Repository not found");
     }
-    const excutefunction = async (name:String,email:String) => {
+    const excutefunction = async (uniqueId:String) => {
     
-       const response = await fumigationRepository.invigilatorLogin(name,email);
+       const response = await fumigationRepository.invigilatorLogin(uniqueId);
        if (response) {
           return {response};
        }

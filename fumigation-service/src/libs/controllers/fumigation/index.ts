@@ -7,7 +7,9 @@ import getBatchwiseStudents_Controller from "./getBatchwiseStudentsController"
 import studentsMark_Controller from "./studentsMarkController"
 import invigilatorLogin_Controller from "./invigilatorLoginController"
 import createInvigilator_Controller from "./createInvigilatorController"
-
+import getAll_Batches from "./getAllBatches"
+import getStudentsMark_Controller from "./getStudentsMarkController"
+import removeBatchwiseStudents_Controller from "./removeBatchwiseStudentsController"
 export default (dependencies:any)=>{
 
     return{
@@ -18,8 +20,10 @@ export default (dependencies:any)=>{
         getBatchwiseStudentsController: getBatchwiseStudents_Controller(dependencies),
         studentsMarkController: studentsMark_Controller(dependencies),
         invigilatorLoginController: invigilatorLogin_Controller(dependencies),
-        createInvigilatorController: createInvigilator_Controller(dependencies)
-        
-    }
+        createInvigilatorController: createInvigilator_Controller(dependencies),
+        getAllBatches : getAll_Batches(dependencies),
+        getStudentsMarkController: getStudentsMark_Controller(dependencies),
+        removeBatchwiseStudentsController: removeBatchwiseStudents_Controller(dependencies)
+    }  
 }
 // import all controller files.()

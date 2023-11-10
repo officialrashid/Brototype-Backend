@@ -8,8 +8,8 @@ export default (dependencies:any)=>{
         useCase: {fumigation_Usecase}
     } = dependencies
  const fumigationController = async (req:Request,res:Response)=>{
-    const {name,email,phone,qualification,preferredLocation} = req.body //handle destructure 
-    const response = await fumigation_Usecase(dependencies).excutefunction(name,email,phone,qualification,preferredLocation) //pass to body
+    const {name,email,phone,qualification,prefferredLocation} = req.body //handle destructure 
+    const response = await fumigation_Usecase(dependencies).excutefunction(name,email,phone,qualification,prefferredLocation) //pass to body
     res.status(201).json(response)
     
  }

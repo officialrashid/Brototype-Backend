@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 const fumigationSchema= new mongoose.Schema({
     name: String,
     email: String,
-    phone: String,
+    phone: Number,
     qualification : String,
-    prefferedLocation : String
+    prefferredLocation : String
 
 })
 const Enqueries = mongoose.model("Enqueries",fumigationSchema)
