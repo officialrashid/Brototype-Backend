@@ -3,7 +3,7 @@ import schema from "../dataBase/schema"
 import jwt from 'jsonwebtoken'
 import config from "../../../config/config";
 import admin from 'firebase-admin';
-import firebaseAccountCredentials from '../../../../nextjs-project-6651b-firebase-adminsdk-rc9m6-9e6adae01b.json'
+import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
 import fumigation from "../../controllers/fumigation";
 
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
@@ -405,7 +405,7 @@ export default {
   },
   getAllBatches : async ()=>{
      const response = await schema.Batches.find({},'batchName')
-     const modifiedResponse = await response.map(({_id,batchName})=>({batchName}))
+     const modifiedResponse = await response.map(({_id,batchName})=>({_id,batchName}))
      return modifiedResponse
      
   },
