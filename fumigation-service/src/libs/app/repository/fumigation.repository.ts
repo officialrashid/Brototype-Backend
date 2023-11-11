@@ -135,6 +135,7 @@ export default {
       batches.forEach((batch: { fumigationStudents: any[]; }) => {
         batch.fumigationStudents.forEach(student => {
           allFumigationStudents.push({
+            studentId : student.studentId,
             name: student.name,
             email: student.email,
             phone: student.phone,
