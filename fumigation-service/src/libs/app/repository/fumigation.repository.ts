@@ -3,7 +3,7 @@ import schema from "../dataBase/schema"
 import jwt from 'jsonwebtoken'
 import config from "../../../config/config";
 import admin from 'firebase-admin';
-import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
+import firebaseAccountCredentials from '../../../../micro-service-project-8947b-firebase-adminsdk-eynvq-0bc088d933.json'
 import fumigation from "../../controllers/fumigation";
 
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
@@ -128,21 +128,26 @@ export default {
   // End the add Students function.
   getBatchwiseStudents: async (batchId: string) => {
     try {
-      const batch = await schema.Batches.findById(batchId);
-      if (!batch) {
-        throw new Error("Batch not found");
-      }
-
-      // Extract all student IDs from the fumigationStudents array
-      const studentIds = batch.fumigationStudents.map((student) => student.studentId);
-
-      // Use the student IDs to fetch student details from another collection (schema.Enqueries)
-      const studentDetails = await schema.Enqueries.find({ _id: { $in: studentIds } });
-
-      return studentDetails;
+      const batches = await schema.Batches.find();
+      const allFumigationStudents:any= [];
+  
+      // Loop through batches and fumigation students
+      batches.forEach((batch: { fumigationStudents: any[]; }) => {
+        batch.fumigationStudents.forEach(student => {
+          allFumigationStudents.push({
+            name: student.name,
+            email: student.email,
+            phone: student.phone,
+            qualification: student.qualification
+            // Add other details as needed
+          });
+        });
+      });
+  
+      return allFumigationStudents;
     } catch (error) {
-      console.error("Error retrieving batch-wise students:", error);
-      throw error; // Re-throw the error to handle it at a higher level if needed.
+      console.error("Error retrieving fumigation students:", error);
+      throw error;
     }
   },
 

@@ -52,13 +52,15 @@ export const createInvigilator_Usecase = (dependencies: any) => {
           
             const response = await fumigationRepository.createInvigilator(invigilator);
             console.log(response, "response in usecase after creating invigilator");
+            return {status:true,message:"invigilator create successfully"}
         }else{
             console.log("uniqueId already in the database");
-            
+            return {status:false,message:"uniqueId already Exist"}
         }
        
       } else {
         console.log("Email or phone already exists in the database");
+        return {status:false,message:"Email or phone already exists"}
       }
     // Now, create an Invigilators instance using the provided data
 
