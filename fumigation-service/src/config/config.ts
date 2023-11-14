@@ -1,3 +1,4 @@
+import dotenv from "dotenv"
 export default {
     port: 3002,
     mongo: {

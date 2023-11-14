@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import config from "../../../config/config";
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../nextjs-project-6651b-firebase-adminsdk-rc9m6-9e6adae01b.json'
-
+import dotenv from "dotenv"
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
