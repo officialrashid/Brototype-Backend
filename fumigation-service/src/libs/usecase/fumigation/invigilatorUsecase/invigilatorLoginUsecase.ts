@@ -1,0 +1,23 @@
+
+
+export const invigilatorLogin_Usecase = (dependencies: any) => {
+    const {
+       repository: { invigilatorRepository }
+    } = dependencies;
+ 
+    if (!invigilatorRepository) {
+       return console.log("Error: Fumigation Repository not found");
+    }
+    const excutefunction = async (uniqueId:String) => {
+    
+       const response = await invigilatorRepository.invigilatorLogin(uniqueId);
+       if (response) {
+          return {response};
+       }
+    };
+ 
+    return {
+       excutefunction
+    };
+ };
+ 
