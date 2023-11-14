@@ -1,143 +1,144 @@
 import fumigation from "../../../controllers/fumigation";
 
-
+// Exporting a function that returns an object containing the execute function
 export const studentsMark_Usecase = (dependencies: any) => {
    const {
       repository: { studentRepository }
    } = dependencies;
 
-   if (!studentRepository) {
-      return console.log("Error: Fumigation Repository not found");
-   }
-   const excutefunction = async (studentId: String, batchId: String, invigilatorId: string, type: String, startTime: String, endTime: String, theoryMark: Number, fumigationType: String) => {
-      let isStatus:Boolean =false;
-      var patternMark=0;
-      var arrayMark=0;
-      let oopsMark=0;
-      let communicationMark=0;
-      try {
+   try {
+      // Check if studentRepository is available
+      if (!studentRepository) {
+         throw new Error("Fumigation Repository not found");
+      }
 
-         let mark;
-         let durationInMinutes: number;
-         if (type === 'Pattern' || type == 'Array') {
-            console.log("keriiii");
+      // Define the execute function with parameters
+      const excutefunction = async (studentId: String, batchId: String, invigilatorId: string, type: String, startTime: String, endTime: String, theoryMark: Number, fumigationType: String) => {
+         // Initialize variables for marks and status
+         let isStatus: Boolean = false;
+         var patternMark = 0;
+         var arrayMark = 0;
+         let oopsMark = 0;
+         let communicationMark = 0;
 
-            if (startTime && endTime) {
-               const currentDate = new Date();      // Get the current date and time.
+         try {
+            let mark;
+            let durationInMinutes: number;
 
-               const startComponents = startTime.match(/(\d+):(\d+)\s*(am|pm)/i); // Parse the provided start time (e.g., "10:00 am").
-               if (startComponents) {
+            // Check the exam type (Pattern or Array)
+            if (type === 'Pattern' || type == 'Array') {
+               // Check if start and end time are provided
+               if (startTime && endTime) {
+                  const currentDate = new Date();
 
-                  let startHour = parseInt(startComponents[1]);
-                  const startMinute = parseInt(startComponents[2]);     // Extract hour, minute, and meridian (am/pm) for the start time.
-                  const startMeridian = startComponents[3].toLowerCase()
+                  // Parse start time
+                  const startComponents = startTime.match(/(\d+):(\d+)\s*(am|pm)/i);
+                  if (startComponents) {
+                     let startHour = parseInt(startComponents[1]);
+                     const startMinute = parseInt(startComponents[2]);
+                     const startMeridian = startComponents[3].toLowerCase();
 
-                  if (startMeridian === 'pm' && startHour < 12) {
-                     startHour += 12;        // Convert the start time to 24-hour format.
+                     // Convert start time to 24-hour format
+                     if (startMeridian === 'pm' && startHour < 12) {
+                        startHour += 12;
+                     }
+
+                     currentDate.setHours(startHour, startMinute, 0, 0);
+
+                     // Parse end time
+                     const endComponents = endTime.match(/(\d+):(\d+)\s*(am|pm)/i);
+
+                     if (endComponents) {
+                        let endHour = parseInt(endComponents[1]);
+                        const endMinute = parseInt(endComponents[2]);
+                        const endMeridian = endComponents[3].toLowerCase();
+
+                        // Convert end time to 24-hour format
+                        if (endMeridian === 'pm' && endHour < 12) {
+                           endHour += 12;
+                        }
+
+                        const endTimeDate = new Date(currentDate);
+                        endTimeDate.setHours(endHour, endMinute, 0, 0);
+
+                        // Calculate the duration in minutes
+                        durationInMinutes = Math.floor((endTimeDate.getTime() - currentDate.getTime()) / (1000 * 60));
+
+                        if (durationInMinutes) {
+                           console.log(durationInMinutes, "duration minutes");
+                        }
+
+                        // Assign marks based on the duration
+                        if (durationInMinutes <= 10) {
+                           mark = 10;
+                        } else if (durationInMinutes <= 15 && durationInMinutes >= 11) {
+                           mark = 9;
+                        } else if (durationInMinutes <= 20 && durationInMinutes >= 16) {
+                           mark = 7;
+                        } else if (durationInMinutes >= 21) {
+                           mark = 5;
+                        } else {
+                           mark = 0;
+                        }
+                     }
                   }
+               } else {
+                  mark = 0;
+               }
+            } else if (type === 'Oops' || type === 'Communication') {
+               // For Oops and Communication, use the theory mark
+               mark = theoryMark;
+            }
 
-                  currentDate.setHours(startHour, startMinute, 0, 0);  // Set the start time components on the current date.
+            // Update student marks in the repository
+            const markList = await studentRepository.updateStudentMark(studentId, batchId, invigilatorId, type, mark, fumigationType);
+            if (markList.length > 0) {
+               // Extract marks for different exam types
+               markList.forEach((item: any) => {
+                  if (item?.examType === "Pattern") {
+                     patternMark = item?.mark;
+                  } else if (item?.examType === 'Array') {
+                     arrayMark = item?.mark;
+                  } else if (item.examType === 'Oops') {
+                     oopsMark = item?.mark;
+                  } else if (item?.examType === 'Communication') {
+                     communicationMark = item?.mark;
+                  }
+               });
+            }
 
-
-                  const endComponents = endTime.match(/(\d+):(\d+)\s*(am|pm)/i);  // Parse the provided end time.
-
-                  if (endComponents) {
-
-                     let endHour = parseInt(endComponents[1]);
-                     const endMinute = parseInt(endComponents[2]);   // Extract hour, minute, and meridian (am/pm) for the end time.
-                     const endMeridian = endComponents[3].toLowerCase();
-
-                     if (endMeridian === 'pm' && endHour < 12) {
-                        endHour += 12;                 // Convert the end time to 24-hour format.
-                     }
-
-                     const endTimeDate = new Date(currentDate);
-                     endTimeDate.setHours(endHour, endMinute, 0, 0);   // Create a Date object for the end time.
-
-                     // Calculate the duration in minutes between the current time and the end time.
-
-                     durationInMinutes = Math.floor((endTimeDate.getTime() - currentDate.getTime()) / (1000 * 60));
-
-                     if (durationInMinutes) {
-                        console.log(durationInMinutes, "duration minutes");
-                     }
-                     // First calculate the duration time and update the specified mark.
-                     if (durationInMinutes <= 10) {
-                        mark = 10;
-                     }
-                     else if (durationInMinutes <= 15 && durationInMinutes >= 11) {
-                        mark = 9;
-                     } else if (durationInMinutes <= 20 && durationInMinutes >= 16) {
-                        mark = 7;
-                     } else if (durationInMinutes >= 21) {
-                        mark = 5;
-                     } else {
-                        mark = 0;
-                     }
-                     // end the update mark section.
+            // Check conditions for passing or failing
+            if (patternMark >= 5 || arrayMark >= 5) {
+               if (oopsMark >= 3 && communicationMark >= 5) {
+                  isStatus = true;
+                  studentRepository.updateStudentsPassedOrFailed(studentId, batchId, isStatus, fumigationType);
+               } else {
+                  if (patternMark > 0 && arrayMark > 0 && oopsMark > 0 && communicationMark > 0) {
+                     studentRepository.updateStudentsPassedOrFailed(studentId, batchId, isStatus, fumigationType);
                   }
                }
             } else {
-               mark = 0
+               if (patternMark > 0 && arrayMark > 0 && oopsMark > 0 && communicationMark > 0) {
+                  studentRepository.updateStudentsPassedOrFailed(studentId, batchId, isStatus, fumigationType);
+               }
             }
 
-         } else if (type === 'Oops' || type === 'Communication') {
-            mark = theoryMark;
+            // Return success message
+            return { status: true, message: "mark update successfully" };
+         } catch (error) {
+            // Handle errors during mark update
+            console.log(error, "error in the student Mark update usecase");
+            throw new Error("Error updating student mark");
          }
-         const markList = await studentRepository.updateStudentMark(studentId, batchId, invigilatorId, type, mark, fumigationType);
-         // Check if any response item has Array or Pattern mark >= 5, or Oops mark >= 3, or Communication mark >= 5
-         console.log(markList,"hghghvhvhhgvhgh");
-         
-        if(markList.length>0){
-         console.log("markkkkkkkkkkk");
-         
-         markList.forEach((item:any) => {
-           
-          
-            if (item?.examType === "Pattern") {
-                patternMark = item?.mark
-            }else if(item?.examType === 'Array'){
-               arrayMark = item?.mark;
-            }else if(item.examType === 'Oops'){
-               oopsMark = item?.mark
-            }else if(item?.examType === 'Communication'){
-               communicationMark = item?.mark
-            }
-   
-          });
+      };
 
-        }
-        if (patternMark >= 5 || arrayMark >= 5 ) {
-         if(oopsMark >= 3 && communicationMark >= 5){
-            console.log(patternMark,arrayMark,oopsMark,communicationMark,"||||||");
-         
-            console.log("eppozhum kerunnund");
-            
-            isStatus  = true;
-            studentRepository.updateStudentsPassedOrFailed(studentId,batchId,isStatus,fumigationType) 
-         }else{
-            if(patternMark>0&&arrayMark>0&&oopsMark>0&&communicationMark>0){
-               studentRepository.updateStudentsPassedOrFailed(studentId,batchId,isStatus,fumigationType) 
-            }
-           
-         }
-       }else{
-         if(patternMark>0&&arrayMark>0&&oopsMark>0&&communicationMark>0){
-            studentRepository.updateStudentsPassedOrFailed(studentId,batchId,isStatus,fumigationType) 
-         }
-        
-      }
-       
-          
-      return {status:true,message:"mark update successfully"}
-
-      } catch (error) {
-         console.log(error, "error in the student Mark update usecase");
-   
-      }
-    
-}
-return {
-   excutefunction
-}
-}
+      // Return the execute function
+      return {
+         excutefunction
+      };
+   } catch (error) {
+      // Handle errors in initializing the use case
+      return {status:false,err:"An Error occured while student Mark Usecase"}
+      // Handle the error or rethrow it if needed
+   }
+};

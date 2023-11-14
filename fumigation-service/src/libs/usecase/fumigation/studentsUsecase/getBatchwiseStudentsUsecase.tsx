@@ -1,4 +1,4 @@
-
+// get Batchwise Students USecase
 export const getBatchwiseStudents_Usecase = (dependencies: any) => {
    const {
       repository: { studentRepository }
@@ -8,14 +8,17 @@ export const getBatchwiseStudents_Usecase = (dependencies: any) => {
       return console.log("Error: Fumigation Repository not found");
    }
 
-   const excutefunction = async (batchId:String) => {
-   
-      const response = await studentRepository.getBatchwiseStudents(batchId);
+   const excutefunction = async (batchId:String) => { 
+    try{
+      const response = await studentRepository.getBatchwiseStudents(batchId); // get batchwise Students
 
       if (response) {
-         console.log(response, "response coming in the ");
          return { response };
       }
+    } catch(err){
+      return {status:false,message:"An Error occured while getBatch wise Studnets Usecase"} // handle exception
+    }
+     
    };
 
    return {

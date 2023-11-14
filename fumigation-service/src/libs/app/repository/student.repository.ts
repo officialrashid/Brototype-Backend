@@ -60,7 +60,7 @@ export default {
       );
     
       if (isStudentAlreadyAdded) {
-        return { status: false, message: "Student is already in the batch" };
+        return { status: false, message: "Student is already in the batch" }; // return not success reponse
       }
     
       const studentDetails = await schema.Enqueries.findById(studentId);
@@ -93,7 +93,7 @@ export default {
   // End the add Students function.
   getBatchwiseStudents: async (batchId: string) => {
     try {
-      const batches = await schema.Batches.find();
+      const batches = await schema.Batches.find({_id:batchId});
       const allFumigationStudents:any= [];
   
       // Loop through batches and fumigation students
@@ -201,8 +201,6 @@ export default {
         if (status === true) {
           // Find the object with 'mock' fumigationType
           const fumigationObject = (batch as any).mock;
-          console.log(fumigationObject, "llll00000=--");
-
           if (!fumigationObject) {
             throw new Error('Fumigation type not found');
           }
@@ -307,30 +305,32 @@ export default {
   },
  
   getStudentsMark : async (studentId:string,batchId:string,fumigationType:string) =>{
-    const batch = await schema.Batches.findOne({
-      _id: batchId,
-      "fumigationStudents.studentId": studentId,
-    });
-
-    if(!batch){
-      return{status:false,message: " betc not found"}
-    }
-    const fumigationStudent = batch.fumigationStudents.find(
-      (student) => student?.studentId?.toString() === studentId
-    );
-
-    if (!fumigationStudent) {
-      return { status: false, message: "students not found in the batch" }
-    }
-   if(fumigationType==='mock'){
-    console.log(fumigationStudent.mock,"sngdfdjhbfjg");
+    try{
+      const batch = await schema.Batches.findOne({
+        _id: batchId,
+        "fumigationStudents.studentId": studentId,
+      });
+  
+      if(!batch){
+        return{status:false,message: " betc not found"}
+      }
+      const fumigationStudent = batch.fumigationStudents.find(
+        (student) => student?.studentId?.toString() === studentId
+      );
+  
+      if (!fumigationStudent) {
+        return { status: false, message: "students not found in the batch" }
+      }
+     if(fumigationType==='mock'){
     
-       return fumigationStudent.mock
-   }else{
-    console.log(fumigationStudent.mock,"sngdfdjhbfjg");
-    
-    return fumigationStudent.final
-   }
+         return fumigationStudent.mock
+     }else{
+      return fumigationStudent.final
+     }
+    } catch(err){
+      return {status:false,message:"Error in the get Students Mark"}
+    }
+   
   },
   removeBatchwiseStudents: async (studentId: string, batchId: string) => {
     try {

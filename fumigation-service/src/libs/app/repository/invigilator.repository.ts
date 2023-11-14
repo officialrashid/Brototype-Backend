@@ -73,11 +73,8 @@ export default{
               }
             }
           );
-      console.log(response,"sdfhsfjgsjh78789");
-      
          return response;
         } catch (error) {
-          console.error(error, 'Error updating invigilator data');
           return { status: false, message: 'An error occurred while updating invigilator data' };
         }
       },
@@ -115,14 +112,10 @@ export default{
             };
       
             const accessToken = await jwt.sign(user, config.secretKey, { expiresIn: '1d' });
-            console.log(accessToken, "access token vannu makkalee");
-      
             if (accessToken) {
               const uid = user._id.toString();
               const customToken = await admin.auth().createCustomToken(uid);
-      
               if (customToken) {
-                console.log(customToken, "custom token vannindakdaa");
                 return { verifyInvigilator, accessToken, customToken };
               }
             }
@@ -131,7 +124,6 @@ export default{
           // Handle case where invigilator is not found
           return { error: 'Invigilator not found' };
         } catch (error) {
-          console.error('Error during invigilator login:', error);
           return { error: 'Internal server error' };
         }
       },

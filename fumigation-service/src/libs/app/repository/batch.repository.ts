@@ -70,9 +70,14 @@ export default{
         }
     },
     getAllBatches : async ()=>{
+      try{
         const response = await schema.Batches.find({},'batchName')
         const modifiedResponse = await response.map(({_id,batchName})=>({_id,batchName}))
         return modifiedResponse
+      } catch(err){
+        return err;
+      }
+       
         
      },
      removeBatch : async (batchId:string)=>{

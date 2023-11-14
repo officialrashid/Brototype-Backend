@@ -1,4 +1,4 @@
-
+// get StudentsMArk Usecase fustion
 export const getStudentsMark_Usecase = (dependencies: any) => {
     const {
        repository: { studentRepository }
@@ -9,13 +9,16 @@ export const getStudentsMark_Usecase = (dependencies: any) => {
     }
  
     const excutefunction = async (studentId:string,batchId:String,fumigationType:string) => {
-    
-       const response = await studentRepository.getStudentsMark(studentId,batchId,fumigationType);
+        try{
+         const response = await studentRepository.getStudentsMark(studentId,batchId,fumigationType); //call the get studentsMark functon define studentRepository
  
-       if (response) {
-          console.log(response, "response coming in the ");
-          return { response };
-       }
+         if (response) {
+            return { response }; // return success reponse
+         }
+        } catch(err){
+         return {status:false,err:"An Error Occured while get Students Mark Usecase"} // handle exception
+        }
+      
     };
  
     return {

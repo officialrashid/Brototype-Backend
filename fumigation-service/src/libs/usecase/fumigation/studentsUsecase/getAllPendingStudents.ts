@@ -9,14 +9,17 @@ export const getAllPendingStudents_Usecase = (dependencies: any) => {
    }
 
    const excutefunction = async () => {
-     console.log("use case ethiiiii makkaleeeeeee");
-     
-      const response = await studentRepository.getAllPendingStudents();
+      try {
+         const response = await studentRepository.getAllPendingStudents(); 
 
-      if (response) {
-         console.log(response, "response coming in the ");
-         return { response };
+         if (response) { // check response coming or not
+            console.log(response, "response coming in the "); // return response
+            return { response };
+         }
+      } catch(err){
+         return {status:false,message:"An Error occured get All pending students"} // handle exception
       }
+      
    };
 
    return {
