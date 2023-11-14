@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
-
+require('dotenv').config();
 const expressConfig = (app: Express): void => {
     app.use(morgan('dev'));
     app.use(express.json());
