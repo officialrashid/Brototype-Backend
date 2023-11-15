@@ -91,8 +91,6 @@ export default{
         }
       },
       getAllPassedStudents : async (batchId:string,fumigationType:string)=>{
-        console.log(batchId,fumigationType,"fbfhjbfhbfbf");
-        
          try {
           const allFumigationStudents: any[] = [];
           const response = (await schema.markRecords.find({ batchId: batchId })) as any;
@@ -103,11 +101,7 @@ export default{
         
           if (fumigationType === "mock") {
             const mockPassedStudentsId = response[0]?.mock[0]?.passed || [];
-             console.log(mockPassedStudentsId,"bdbfhdzdvfsdfvghs");
-             
             const batches = await schema.Batches.find({ _id: batchId });
-              console.log("fbsbhfsbjh",batches.length);
-              
             if (mockPassedStudentsId.length > 0 && batches.length > 0) {
               // Loop through the passed students in mock
               mockPassedStudentsId.forEach((studentId: string | undefined) => {
@@ -125,19 +119,13 @@ export default{
                   }
                 });
               });
-              console.log(allFumigationStudents,"dfshbshj");
-              
               return { status: true, mockPassedStudents: allFumigationStudents };
             } else {
               return { status: false, message: "No passed students in mock or batch not found" };
             }
           } else {
             const finalPassedStudentsId = response[0]?.final[0]?.passed || [];
-            console.log(finalPassedStudentsId,"bdbfhdzdvfsdfvghs");
-            
            const batches = await schema.Batches.find({ _id: batchId });
-             console.log("fbsbhfsbjh",batches.length);
-             
            if (finalPassedStudentsId.length > 0 && batches.length > 0) {
              // Loop through the passed students in mock
              finalPassedStudentsId.forEach((studentId: string | undefined) => {
@@ -167,5 +155,69 @@ export default{
           return { status: false, message: "Internal Server Error" };
         }
         
+      },
+      getAllfailedStudents : async (batchId:string,fumigationType:string)=>{
+         try {
+          const allFumigationStudents: any[] = [];
+          const response = (await schema.markRecords.find({ batchId: batchId })) as any;
+        
+          if (!response || response.length === 0) {
+            return { status: false, message: "Batch not found" };
+          }
+        
+          if (fumigationType === "mock") {
+            const mockPassedStudentsId = response[0]?.mock[0]?.failed || [];
+            const batches = await schema.Batches.find({ _id: batchId });
+            if (mockPassedStudentsId.length > 0 && batches.length > 0) {
+              // Loop through the passed students in mock
+              mockPassedStudentsId.forEach((studentId: string | undefined) => {
+                // Loop through batches and fumigation students
+                batches[0].fumigationStudents.forEach((student) => {
+                  if (student.studentId === studentId) {
+                    allFumigationStudents.push({
+                      studentId: student.studentId,
+                      name: student.name,
+                      email: student.email,
+                      phone: student.phone,
+                      qualification: student.qualification,
+                      // Add other details as needed
+                    });
+                  }
+                });
+              });
+              return { status: true, mockFailedStudents: allFumigationStudents };
+            } else {
+              return { status: false, message: "No failed students in mock or batch not found" };
+            }
+          } else {
+            const finalPassedStudentsId = response[0]?.final[0]?.failed || [];
+           const batches = await schema.Batches.find({ _id: batchId });
+           if (finalPassedStudentsId.length > 0 && batches.length > 0) {
+             // Loop through the passed students in mock
+             finalPassedStudentsId.forEach((studentId: string | undefined) => {
+               // Loop through batches and fumigation students
+               batches[0].fumigationStudents.forEach((student) => {
+                 if (student.studentId === studentId) {
+                   allFumigationStudents.push({
+                     studentId: student.studentId,
+                     name: student.name,
+                     email: student.email,
+                     phone: student.phone,
+                     qualification: student.qualification,
+                     // Add other details as needed
+                   });
+                 }
+               });
+             });
+
+             return { status: true, finalFailedStudents: allFumigationStudents };
+           } else {
+             return { status: false, message: "No failed students in final or batch not found" };
+           }
+   
+          }
+         } catch(err){
+          return{status:false,message:"Error in the get All failed Students"}
+         }
       }
 }

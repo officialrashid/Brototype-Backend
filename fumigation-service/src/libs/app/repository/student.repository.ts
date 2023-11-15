@@ -378,4 +378,31 @@ export default {
       return { status: false, message: "An error occurred while removing the student" };
     }
   }, 
+  editStudentMark : async (studentId:string,batchId:string,fumigationType:string)=>{
+    try {
+      const batch = await schema.Batches.findOne({
+        _id: batchId,
+        "fumigationStudents.studentId": studentId,
+      });
+  
+      if(!batch){
+        return{status:false,message: " batch not found"}
+      }
+      const fumigationStudent = batch.fumigationStudents.find(
+        (student) => student?.studentId?.toString() === studentId
+      );
+  
+      if (!fumigationStudent) {
+        return { status: false, message: "students not found in the batch" }
+      }
+      if(fumigationType==='mock'){
+    
+        return fumigationStudent.mock
+    }else{
+     return fumigationStudent.final
+    }
+    } catch(err){
+      return {status:false,message:"Error in the edit student Mark"}
+    }
+  }
 }

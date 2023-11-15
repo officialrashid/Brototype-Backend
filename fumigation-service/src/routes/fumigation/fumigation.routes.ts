@@ -6,7 +6,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   //  import all controll //
-  const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController,getAllBatches,getStudentsMarkController,removeBatchwiseStudentsController,removeBatchController,editBatchController,editBatchSubmitController,getInvigilatorsController,editInvigilatorController,editInvigilatorSubmitController,removeInvigilatorsController,passedStudentsController} = fumigation_Controller(dependencies) 
+  const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController,getAllBatches,getStudentsMarkController,removeBatchwiseStudentsController,removeBatchController,editBatchController,editBatchSubmitController,getInvigilatorsController,editInvigilatorController,editInvigilatorSubmitController,removeInvigilatorsController,passedStudentsController,failedStudentsController,editStudentMarkController} = fumigation_Controller(dependencies) 
 // define the all api ..
   router.post('/enquery',fumigationController)
   router.get('/get-enquery',getAllPendingStudent)
@@ -27,6 +27,7 @@ export default (dependencies:any)=>{
   router.patch('/edit-invigilator-submit',jwtVerify,editInvigilatorSubmitController)
   router.delete("/remove-invigilators",jwtVerify,removeInvigilatorsController)
   router.get("/get-passed-students",passedStudentsController)
-  router.get("/get-failed-students",passedStudentsController)
+  router.get("/get-failed-students",failedStudentsController)
+  router.get('/edit-student-mark',editStudentMarkController)
   return router
 }
