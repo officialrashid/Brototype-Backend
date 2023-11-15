@@ -91,7 +91,7 @@ export const studentsMark_Usecase = (dependencies: any) => {
             }
 
             // Update student marks in the repository
-            const markList = await studentRepository.updateStudentMark(studentId, batchId, invigilatorId, type, mark, fumigationType);
+            const markList = await studentRepository.updateStudentMark(studentId,batchId,invigilatorId,type,startTime,endTime,mark,fumigationType);
             if (markList.length > 0) {
                // Extract marks for different exam types
                markList.forEach((item: any) => {

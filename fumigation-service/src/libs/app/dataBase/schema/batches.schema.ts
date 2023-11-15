@@ -13,41 +13,57 @@ const batchesSchema = new mongoose.Schema({
     mock:[
       { examType:String,
         mark : Number,
-        invigilatorId: String
+        invigilatorId: String,
+        startTime:String,
+        endTime: String
     },
     { examType:String,
       mark: Number,
-      invigilatorId: String
+      invigilatorId: String,
+      startTime:String,
+      endTime: String
     },
     {   examType:String,
         mark :Number,
-        invigilatorId : String
+        invigilatorId : String,
+        startTime:String,
+        endTime: String
     },
   {      examType:String,
         mark : Number,
-        invigilatorId: String
+        invigilatorId: String,
+        startTime:String,
+        endTime: String
     }
     ],
     final:[
       {
       examType:String,
         mark : Number,
-        invigilatorId: String
+        invigilatorId: String,
+        startTime:String,
+        endTime: String
     },
     {
       examType:String,
       mark: Number,
-      invigilatorId: String
+      invigilatorId: String,
+      startTime:String,
+      endTime: String
     },
      {
        examType:String,
         mark :Number,
-        invigilatorId : String
+        invigilatorId : String,
+        startTime:String,
+        endTime: String
     },
     {
         examType:String,
         mark : Number,
-        invigilatorId: String
+        invigilatorId: String,
+        startTime:String,
+        endTime: String
     }
     ]
     

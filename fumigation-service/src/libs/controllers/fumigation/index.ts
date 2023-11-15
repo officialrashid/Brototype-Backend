@@ -17,6 +17,7 @@ import getInvigilators_Controller from "./invigilatorController/getInvigilatorsC
 import editInvigilator_Controller from "./invigilatorController/editInvigilatorController"
 import editInvigilatorSubmit_Controller from "./invigilatorController/editInvigilatorSubmitController"
 import removeInvigilators_Controller from "./invigilatorController/removeInvigilatorsController"
+import passedStudents_Controller from "./batchController/passedStudentsController"
 export default (dependencies:any)=>{
 
     return{
@@ -37,7 +38,8 @@ export default (dependencies:any)=>{
         getInvigilatorsController: getInvigilators_Controller(dependencies),
         editInvigilatorController: editInvigilator_Controller(dependencies),
         editInvigilatorSubmitController: editInvigilatorSubmit_Controller(dependencies),
-        removeInvigilatorsController:removeInvigilators_Controller(dependencies)
+        removeInvigilatorsController:removeInvigilators_Controller(dependencies),
+        passedStudentsController: passedStudents_Controller(dependencies)
     }  
 }
 // import all controller files.()

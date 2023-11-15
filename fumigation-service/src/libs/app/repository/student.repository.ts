@@ -123,6 +123,8 @@ export default {
     batchId: string,
     invigilatorId: string,
     type: string,
+    startTime:string,
+    endTime:string,
     mark: number,
     fumigationType: string
   ) => {
@@ -165,9 +167,11 @@ export default {
         // If the object already exists, update its properties
         targetArray[existingObjectIndex].mark = mark;
         targetArray[existingObjectIndex].invigilatorId = invigilatorId;
+        targetArray[existingObjectIndex].startTime = startTime;
+        targetArray[existingObjectIndex].endTime = endTime;
       } else {
         // If the object doesn't exist, create a new one
-        targetArray.push({ examType: type, mark: mark, invigilatorId: invigilatorId });
+        targetArray.push({ examType: type, mark: mark, invigilatorId: invigilatorId,startTime:startTime,endTime:endTime });
       }
       // Save the updated batch
       await batch.save();
