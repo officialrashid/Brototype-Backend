@@ -21,7 +21,7 @@ export default{
         }
     
       },
-      invigilatorEmailExist: async (email: string, phone: string) => {
+      invigilatorEmailExist: async (email: string, phone: Number) => {
         try {
           const response = await schema.Invigilators.find({ $or: [{ email }, { phone }] });
           console.log(response);
@@ -59,7 +59,7 @@ export default{
         }
     
       },
-      updateInvigilatorData: async (invigilatorId:string, name:string, email:string, phone:string, batch:string) => {
+      updateInvigilatorData: async (invigilatorId:string, name:string, email:string, phone:Number, batch:string) => {
         try {
           const response = await schema.Invigilators.updateOne(
             { _id: invigilatorId }, // Match invigilatorId
@@ -134,6 +134,14 @@ export default{
         } catch(error){
           console.log(error,"error in teh remove invigilator Repository function");
           
+        }
+      },
+      invigilatorGoogleLogin : async (email:string)=>{
+        try{
+            const response = await schema.Invigilators.find({email:email})
+            return response
+        } catch(err){
+          return {status:false,err:"Internal Server Error"}
         }
       }
 }

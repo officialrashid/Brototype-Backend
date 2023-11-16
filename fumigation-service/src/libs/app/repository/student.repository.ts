@@ -31,6 +31,17 @@ export default {
     }
 
   },
+  enqueryStudentsEmailExist : async (email: string, phone: string) => {
+    try {
+      const response = await schema.Enqueries.find({ $or: [{ email }, { phone }] });
+      console.log(response);
+
+      return response;
+    } catch (err) {
+      console.log(err, "error in the invigilatorEmailExist check function");
+    }
+
+  },
   getAllPendingStudents: async () => {
     try {
       //get All join pending students //

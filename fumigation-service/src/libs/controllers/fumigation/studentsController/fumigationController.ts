@@ -9,7 +9,10 @@ export default (dependencies:any)=>{
     } = dependencies
  const fumigationController = async (req:Request,res:Response)=>{
     try{
+        
         const {name,email,phone,qualification,prefferredLocation} = req.body //handle destructure 
+        console.log(prefferredLocation,"jnsbfgjbdshjgbdsjfhbgdfhgdhfgbdjhbgd");
+        
         const response = await fumigation_Usecase(dependencies).excutefunction(name,email,phone,qualification,prefferredLocation) //pass to body
         res.status(201).json(response) // return response
     } catch(err){

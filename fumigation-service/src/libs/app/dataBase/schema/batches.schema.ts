@@ -67,7 +67,11 @@ const batchesSchema = new mongoose.Schema({
     }
     ]
     
-  }]
+  }],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Batches = mongoose.model("Batches", batchesSchema);

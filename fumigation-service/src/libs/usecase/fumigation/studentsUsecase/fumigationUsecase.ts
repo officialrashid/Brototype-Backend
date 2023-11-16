@@ -19,12 +19,18 @@ export const fumigation_Usecase = (dependencies: any) => {
             qualification,
             prefferredLocation
          };
-         const enquery = new Enquiry(data) //pass all data in enities
-         const response = await studentRepository.Enqueries(enquery); // call function define the repository
-
-         if (response) {
-            return { status: true, response }; // handle response .
+         const res = await studentRepository.enqueryStudentsEmailExist(email,phone);
+         if(!res || (res && res.length === 0)){
+            const enquery = new Enquiry(data) //pass all data in enities
+            const response = await studentRepository.Enqueries(enquery); // call function define the repository
+   
+            if (response) {
+               return { status: true, response }; // handle response .
+            }
+         }else{
+            return {status:false ,message:"Email or PhoneNumber already Exist"}
          }
+      
       } catch(err){
          return{status:false,err:"An Error Occurred while fumigaton usecase function"} // handle exception
       }

@@ -4,7 +4,7 @@ export class Invigilators {
     
     name: String;
     email: String;
-    phone: String;
+    phone: Number;
     batch: String;
     uniqueId : String;
   
@@ -22,7 +22,7 @@ export class Invigilators {
   interface InvigilatorsData {
     name: String;
     email: String;
-    phone: String;
+    phone: Number;
     batch: String;
     uniqueId: String;
 

@@ -20,6 +20,7 @@ import removeInvigilators_Controller from "./invigilatorController/removeInvigil
 import passedStudents_Controller from "./batchController/passedStudentsController"
 import failedStudents_Controller from "./batchController/failedStudentsController"
 import editStudentMark_Controller from "./studentsController/editStudentMarkController"
+import invigilatorGoogleLogin_Controller from "./invigilatorController/invigilatorGoogleLoginController"
 export default (dependencies:any)=>{
 
     return{
@@ -43,7 +44,8 @@ export default (dependencies:any)=>{
         removeInvigilatorsController:removeInvigilators_Controller(dependencies),
         passedStudentsController: passedStudents_Controller(dependencies),
         failedStudentsController: failedStudents_Controller(dependencies),
-        editStudentMarkController: editStudentMark_Controller(dependencies)
+        editStudentMarkController: editStudentMark_Controller(dependencies),
+        invigilatorGoogleLoginController: invigilatorGoogleLogin_Controller(dependencies)
 
     }  
 }

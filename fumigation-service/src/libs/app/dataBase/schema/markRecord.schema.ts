@@ -18,9 +18,12 @@ const markRecordSchema= new mongoose.Schema({
             failed:[
 
             ]
-        }] 
+        }] ,
            
-  
+        createdAt: {
+            type: Date,
+            default: Date.now,
+          },
 })
 const markRecords = mongoose.model("markRecord",markRecordSchema)
 

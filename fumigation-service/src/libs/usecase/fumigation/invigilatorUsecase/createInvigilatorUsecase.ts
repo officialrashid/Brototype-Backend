@@ -5,7 +5,7 @@ import { sendEmail } from "../../../../nodemailer/nodemailer";
 interface InvigilatorsData {
   name: string;
   email: string;
-  phone: string;
+  phone: Number;
   batch: string;
   uniqueId: string;
 }

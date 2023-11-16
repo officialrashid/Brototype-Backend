@@ -5,8 +5,11 @@ const fumigationSchema= new mongoose.Schema({
     email: String,
     phone: Number,
     qualification : String,
-    prefferredLocation : String
-
+    prefferredLocation : String,
+    createdAt: {
+        type: Date,
+        default: Date.now,
+      },
 })
 const Enqueries = mongoose.model("Enqueries",fumigationSchema)
 console.log(Enqueries,"students schemaaaaa");
