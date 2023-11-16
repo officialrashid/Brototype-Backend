@@ -1,10 +1,13 @@
 import mongoose from "mongoose";
-
+const { Schema, Types } = mongoose;
 const batchesSchema = new mongoose.Schema({
   batchName: String,
   hubLocation: String,
   fumigationStudents: [{
-    studentId: String,
+    studentId: {
+      type: Types.ObjectId,  // Use ObjectId type for reference
+      ref: 'Enqueries',  // Reference to the 'Student' model
+    },
     name: String,
     email: String,
     phone:  Number,

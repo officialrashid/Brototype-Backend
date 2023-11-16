@@ -1,16 +1,16 @@
 import express from "express"
 import {fumigation_Controller} from "../../libs/controllers";
 import jwt from "jsonwebtoken"
-// const jwtVerify = require('jwt-verify-token')
-const jwtVerify = require('../../jwtVerify/jwtVerifyMiddleware.js')
+const jwtVerify = require('jwt-verify-token')
+// const jwtVerify = require('../../jwtVerify/jwtVerifyMiddleware.js')
 export default (dependencies:any)=>{
 
   const router = express.Router();
   //  import all controll //
   const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController,getAllBatches,getStudentsMarkController,removeBatchwiseStudentsController,removeBatchController,editBatchController,editBatchSubmitController,getInvigilatorsController,editInvigilatorController,editInvigilatorSubmitController,removeInvigilatorsController,passedStudentsController,failedStudentsController,editStudentMarkController,invigilatorGoogleLoginController} = fumigation_Controller(dependencies) 
 // define the all api ..
-  router.post('/enquery',jwtVerify,fumigationController)
-  router.get('/get-enquery',getAllPendingStudent)
+  router.post('/enquery',fumigationController)
+  router.get('/get-enquery',jwtVerify,getAllPendingStudent)
   router.post('/create-batch',jwtVerify,createBatch)
   router.patch('/add-students',jwtVerify,addStudents)
   router.get('/get-batchwise-students',jwtVerify,getBatchwiseStudentsController)
