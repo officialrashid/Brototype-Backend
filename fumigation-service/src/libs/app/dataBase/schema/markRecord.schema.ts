@@ -1,7 +1,10 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const markRecordSchema= new mongoose.Schema({
-    batchId: String,
+    batchId: {
+        type: Types.ObjectId,  // Use ObjectId type for reference
+        ref: 'Batches',  // Reference to the 'Student' model
+      },
     
         mock:[{
             passed:[

@@ -10,6 +10,7 @@ export default (dependencies: any) => {
     const createBatch = async (req: Request, res: Response) => {
         try{
             const {batchName,hubLocation} = req.body
+            
             const response = await createBatch_Usecase(dependencies).excutefunction(batchName,hubLocation) //send the data in usecase excutefunction
             res.status(201).json(response) // return response
         } catch(err){

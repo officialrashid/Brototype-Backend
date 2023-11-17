@@ -16,6 +16,10 @@ export default{
       createBatch: async (data: any) => {
         try {
           //create a Batch function
+          const res = await schema.Batches.find({batchName:data.batchName})
+          if(!res){
+            
+          }
           const batchesData = {
             batchName: data.batchName,
             hubLocation: data.hubLocation,

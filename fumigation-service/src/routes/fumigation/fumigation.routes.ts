@@ -9,14 +9,14 @@ export default (dependencies:any)=>{
   //  import all controll //
   const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController,getAllBatches,getStudentsMarkController,removeBatchwiseStudentsController,removeBatchController,editBatchController,editBatchSubmitController,getInvigilatorsController,editInvigilatorController,editInvigilatorSubmitController,removeInvigilatorsController,passedStudentsController,failedStudentsController,editStudentMarkController,invigilatorGoogleLoginController} = fumigation_Controller(dependencies) 
 // define the all api ..
-  router.post('/enquery',fumigationController)
-  router.get('/get-enquery',jwtVerify,getAllPendingStudent)
-  router.post('/create-batch',jwtVerify,createBatch)
+  router.post('/enquery',fumigationController) //
+  router.get('/get-enquery',jwtVerify,getAllPendingStudent) //
+  router.post('/create-batch',jwtVerify,createBatch) //
   router.patch('/add-students',jwtVerify,addStudents)
-  router.get('/get-batchwise-students',jwtVerify,getBatchwiseStudentsController)
+  router.get('/get-batchwise-students',jwtVerify,getBatchwiseStudentsController)//
   router.patch('/add-students-mark',jwtVerify,studentsMarkController)
-  router.post('/invigilator-login',invigilatorLoginController)
-  router.post('/create-invigilator',jwtVerify,createInvigilatorController)
+  router.post('/invigilator-login',invigilatorLoginController) //
+  router.post('/create-invigilator',jwtVerify,createInvigilatorController) //
   router.get('/get-all-batches',jwtVerify,getAllBatches)
   router.get('/get-students-mark',jwtVerify,getStudentsMarkController)
   router.delete('/remove-batchwise-students',jwtVerify,removeBatchwiseStudentsController)
@@ -30,6 +30,6 @@ export default (dependencies:any)=>{
   router.get("/get-passed-students",passedStudentsController)
   router.get("/get-failed-students",failedStudentsController)
   router.get('/edit-student-mark',editStudentMarkController)
-  router.post('/invigilator-google-login',invigilatorGoogleLoginController)
+  router.post('/invigilator-google-login',invigilatorGoogleLoginController) //
   return router
 }
