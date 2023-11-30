@@ -1,5 +1,5 @@
 import { Invigilators } from "../../../entities/invigilatorEntity";
-import { sendEmail } from "../../../../nodemailer/nodemailer";
+import { sendEmail }from '../../../../nodemailer/nodemailer';
 
 // Define the interface for InvigilatorsData
 interface InvigilatorsData {

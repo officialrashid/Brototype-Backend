@@ -6,7 +6,7 @@ const serverConfig = (server: any, config: any) => {
     
     server.listen(config.port, () => {
 
-      console.log(`Server listening on port ${config.port} - userService`);
+      console.log(`Server listening on port ${config.port} - fumigation-service`);
     });
   };
 

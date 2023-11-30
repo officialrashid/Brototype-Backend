@@ -1,0 +1,37 @@
+# user-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fumigation-deployment
+  labels:
+    app: fumigation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fumigation
+  template:
+    metadata:
+      labels:
+        app: fumigation
+    spec:
+      containers:
+        - name: fumigation-service
+          image: officialrashid/fumigation-service:latest
+        
+
+---
+# user-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fumigation-service
+spec:
+  selector:
+    app: fumigation
+  ports:
+    - name: fumigation
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+
