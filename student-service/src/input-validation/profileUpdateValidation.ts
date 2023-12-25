@@ -1,15 +1,15 @@
 import { body } from 'express-validator/';
 
 export const profileUpdateValidationRules = [
-  body('selectedFile')
-    .notEmpty().withMessage('Please select an image')
-    .custom((value, { req }) => {
-      if (!req.file) {
-        throw new Error('File is required');
-      }
-      // You can add more specific file validation here if needed
-      return true;
-    }),
+  // body('selectedFile')
+  //   .notEmpty().withMessage('Please select an image')
+  //   .custom((value, { req }) => {
+  //     if (!req.file) {
+  //       throw new Error('File is required');
+  //     }
+  //     // You can add more specific file validation here if needed
+  //     return true;
+  //   }),
   body('firstName')
     .notEmpty().withMessage('First Name is required')
     .isString().withMessage('First Name must be a string')

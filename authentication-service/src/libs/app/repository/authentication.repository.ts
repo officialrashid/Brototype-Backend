@@ -1,3 +1,4 @@
+import { callbackPromise } from "nodemailer/lib/shared";
 import schema from "../dataBase/schema"
 
 
@@ -5,16 +6,16 @@ export default {
 
     createUniqueId: async () => {
         try {
-          const response = await schema.Invigilators.find().sort({ _id: -1 }).limit(1).exec()
+          const response = await schema.Students.find().sort({ _id: -1 }).limit(1).exec()
           return response;
         } catch (err) {
           console.log(err);
         }
     
       },
-      invigilatorEmailExist: async (email: string, phone: string) => {
+      studentEmailExist: async (email: string, phone: string) => {
         try {
-          const response = await schema.Invigilators.find({ $or: [{ email }, { phone }] });
+          const response = await schema.Students.find({ $or: [{ email }, { phone }] });
           console.log(response);
     
           return response;
@@ -25,29 +26,37 @@ export default {
       },
       uniqueIdExist: async (uniqueId: String) => {
         try {
-          const response = await schema.Invigilators.find({ uniqueId: uniqueId })
+          const response = await schema.Students.find({ uniqueId: uniqueId })
           return response;
         } catch (err) {
           console.log(err, "error in the unueIdExist check function");
         }
     
       },
-      createInvigilator: async (data: any) => {
+      createStudents: async (data: any,uniqueId:string) => {
+     
+        console.log(data, "++++++6666666"); 
         try {
-          const invigilatorData = {
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            batch: data.batch,
-            uniqueId: data.uniqueId
-    
-          }
-          const response = await schema.Invigilators.create(invigilatorData) //create the Enquerie Studnets
-          return response;
+            const studentData = {
+              studentId: data.studentId,
+              name: data.name,
+              email: data.email,
+              phone: data.phone,
+              batch: data.batch,
+              uniqueId: uniqueId,
+            };
+     
+        console.log(studentData,"The funcing Data");
+        
+            const response = await schema.Students.create(studentData);
+            console.log(response, "Student created successfully");
+          
+      
+          return { status: true, message: "Students created successfully" };
         } catch (err) {
-          console.log(err, "error in the createInvigilator fumigationRepository");
-    
+          console.error(err, "Error in creating students");
+          throw err;
         }
-    
-      },
+      }
+      
 }

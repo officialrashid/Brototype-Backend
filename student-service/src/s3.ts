@@ -31,6 +31,7 @@ export const uploadToS3 = async ({ file, studentId }: ProfileUpdate): Promise<{ 
     Key: key,
     Body: file.buffer,
     ContentType: file.mimetype,
+    ACL: 'public-read',
   });
 
   try {
@@ -55,7 +56,7 @@ export const getUserPresignedUrls = async (studentId: any): Promise<UserPresigne
   try {
     const imageKeys = await getImageKeysByUser(studentId);
     const command = new GetObjectCommand({ Bucket: BUCKET, Key: imageKeys[0] }); // Assuming you want to use the first image key
-    const signedUrls = await getSignedUrl(s3, command, { expiresIn: 900 });
+    const signedUrls = await getSignedUrl(s3,command);
     return { signedUrls };
   } catch (err) {
     console.log(err);

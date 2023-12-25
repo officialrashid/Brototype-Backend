@@ -6,6 +6,7 @@ import {getStudentsMark_Usecase} from "./getStudnetsMarkUsecase";
 import {getBatchwiseStudents_Usecase} from "./getBatchwiseStudentsUsecase";
 import {removeBatchwiseStudents_Usecase} from "./removeBatchwiseStudnetsController";
 import { editStudentMark_Usecase } from "./editStudentMarkUsecase";
+import {confirmPassedStudents_Usecase} from "./confirmPassedStudentsUsecase"
 export{
     fumigation_Usecase,
     getAllPendingStudents_Usecase,
@@ -14,5 +15,6 @@ export{
     getStudentsMark_Usecase,
     getBatchwiseStudents_Usecase,
     removeBatchwiseStudents_Usecase,
-    editStudentMark_Usecase
+    editStudentMark_Usecase,
+    confirmPassedStudents_Usecase
 }

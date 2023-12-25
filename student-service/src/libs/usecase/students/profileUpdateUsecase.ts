@@ -33,7 +33,7 @@ export const profileUpdate_Usecase = (dependencies: any) => {
 
     let imageUrl;
 
-    const studentId = "6554ebfd54c3fe96a75c7752";
+    const studentId = "657aaa012a15acfff364bb5a";
     if (!file || !studentId) return { message: "Bad Request" };
 
     const { err, key } = await uploadToS3({ file,studentId });

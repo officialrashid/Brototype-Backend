@@ -8,11 +8,19 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {profileUpdateController,getProfileController} = students_controller(dependencies) 
+  const {profileUpdateController,getProfileController,updatePersonalDetailsController,updateAddressDetailsController,updateEducationDetailsController,getBacthwiseBestStdController,getWeeklyPerformanceController,getCourseCompletionController,getAllPerformanceController,getExtendDetailsController} = students_controller(dependencies) 
 
   router.post('/profile-update',upload.single("image"),profileUpdateValidationRules,profileUpdateController)
 
   router.get('/get-profile/:studentId',getProfileController)
+  router.post('/update-personal-details',updatePersonalDetailsController)
+  router.post('/update-address-details',updateAddressDetailsController)
+  router.post('/update-education-details',updateEducationDetailsController)
+  router.get('/get-best-students/:batchId',getBacthwiseBestStdController)
+  router.get('/get-weekly-performance',getWeeklyPerformanceController)
+  router.get('/get-course-completion',getCourseCompletionController)
+  router.get('/get-all-performance',getAllPerformanceController)
+  router.get('/get-extend-details',getExtendDetailsController)
   return router
 }
 

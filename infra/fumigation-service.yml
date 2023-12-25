@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: fumigation-service
-          image: officialrashid/fumigation-service:latest
+          image: officialrashid/fumigation-service:v1
         
 
 ---

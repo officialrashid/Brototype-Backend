@@ -1,14 +1,7 @@
-import { Batch } from "mongodb";
+
 import schema from "../dataBase/schema"
-import jwt from 'jsonwebtoken'
-import config from "../../../config/config";
-import admin from 'firebase-admin';
-import firebaseAccountCredentials from '../../../../nextjs-project-6651b-firebase-adminsdk-rc9m6-9e6adae01b.json'
-import fumigation from "../../controllers/fumigation";
-
-
-
-
+import { fumigationProducer } from "../../../events/fumigationProducer";
+import eventEmitter from '../../../events/eventEmitter';
 export default {
 
   Enqueries: async (data: any) => {
@@ -31,7 +24,7 @@ export default {
     }
 
   },
-  enqueryStudentsEmailExist : async (email: string, phone: string) => {
+  enqueryStudentsEmailExist: async (email: string, phone: string) => {
     try {
       const response = await schema.Enqueries.find({ $or: [{ email }, { phone }] });
       console.log(response);
@@ -55,31 +48,31 @@ export default {
   },
   // End get all pending Studenst function
 
- 
+
   addStudents: async (studentId: String, batchId: String) => {
     try {
       // Find the batch with the given batchId
       const batch = await schema.Batches.findById(batchId);
-    
+
       if (!batch) {
-        return {status:false, message: "batch not found"}
+        return { status: false, message: "batch not found" }
       }
-    
+
       // Check if the student is not already in the batch
       const isStudentAlreadyAdded = batch.fumigationStudents.some(
         (fumigationStudent) => fumigationStudent.studentId === studentId
       );
-    
+
       if (isStudentAlreadyAdded) {
         return { status: false, message: "Student is already in the batch" }; // return not success reponse
       }
-    
+
       const studentDetails = await schema.Enqueries.findById(studentId);
-    
+
       if (!studentDetails) {
         throw new Error("Student details not found");
       }
-    
+
       const newFumigationStudents: any = {
         studentId: studentId,
         name: studentDetails.name,
@@ -88,7 +81,7 @@ export default {
         qualification: studentDetails.qualification,
         prefferredLocation: studentDetails.prefferredLocation
       };
-    
+
       batch.fumigationStudents.push(newFumigationStudents);
       await batch.save();
       await schema.Enqueries.deleteOne({ _id: studentId });
@@ -96,7 +89,7 @@ export default {
     } catch (err) {
       console.error(err, "error in the add students in specific batches function");
     }
-    
+
 
 
   },
@@ -104,14 +97,14 @@ export default {
   // End the add Students function.
   getBatchwiseStudents: async (batchId: string) => {
     try {
-      const batches = await schema.Batches.find({_id:batchId});
-      const allFumigationStudents:any= [];
-  
+      const batches = await schema.Batches.find({ _id: batchId });
+      const allFumigationStudents: any = [];
+
       // Loop through batches and fumigation students
       batches.forEach((batch: { fumigationStudents: any[]; }) => {
         batch.fumigationStudents.forEach(student => {
           allFumigationStudents.push({
-            studentId : student.studentId,
+            studentId: student.studentId,
             name: student.name,
             email: student.email,
             phone: student.phone,
@@ -120,7 +113,7 @@ export default {
           });
         });
       });
-  
+
       return allFumigationStudents;
     } catch (error) {
       console.error("Error retrieving fumigation students:", error);
@@ -134,8 +127,8 @@ export default {
     batchId: string,
     invigilatorId: string,
     type: string,
-    startTime:string,
-    endTime:string,
+    startTime: string,
+    endTime: string,
     mark: number,
     fumigationType: string
   ) => {
@@ -182,7 +175,7 @@ export default {
         targetArray[existingObjectIndex].endTime = endTime;
       } else {
         // If the object doesn't exist, create a new one
-        targetArray.push({ examType: type, mark: mark, invigilatorId: invigilatorId,startTime:startTime,endTime:endTime });
+        targetArray.push({ examType: type, mark: mark, invigilatorId: invigilatorId, startTime: startTime, endTime: endTime });
       }
       // Save the updated batch
       await batch.save();
@@ -195,11 +188,6 @@ export default {
 
   },
 
-  
-  
-
-  
- 
   updateStudentsPassedOrFailed: async (studentId: string, batchId: string, status: boolean, fumigationType: string) => {
 
     try {
@@ -318,34 +306,34 @@ export default {
     }
 
   },
- 
-  getStudentsMark : async (studentId:string,batchId:string,fumigationType:string) =>{
-    try{
+
+  getStudentsMark: async (studentId: string, batchId: string, fumigationType: string) => {
+    try {
       const batch = await schema.Batches.findOne({
         _id: batchId,
         "fumigationStudents.studentId": studentId,
       });
-  
-      if(!batch){
-        return{status:false,message: " betc not found"}
+
+      if (!batch) {
+        return { status: false, message: " betc not found" }
       }
       const fumigationStudent = batch.fumigationStudents.find(
         (student) => student?.studentId?.toString() === studentId
       );
-  
+
       if (!fumigationStudent) {
         return { status: false, message: "students not found in the batch" }
       }
-     if(fumigationType==='mock'){
-    
-         return fumigationStudent.mock
-     }else{
-      return fumigationStudent.final
-     }
-    } catch(err){
-      return {status:false,message:"Error in the get Students Mark"}
+      if (fumigationType === 'mock') {
+
+        return fumigationStudent.mock
+      } else {
+        return fumigationStudent.final
+      }
+    } catch (err) {
+      return { status: false, message: "Error in the get Students Mark" }
     }
-   
+
   },
   removeBatchwiseStudents: async (studentId: string, batchId: string) => {
     try {
@@ -353,20 +341,20 @@ export default {
         _id: batchId,
         "fumigationStudents.studentId": studentId,
       });
-  
+
       if (!studentDetails) {
         return { status: false, message: "Batch or student not found" };
       }
-  
+
       // Assuming fumigationStudents is an array, find the student in the array
       const foundStudentIndex = studentDetails.fumigationStudents.findIndex(
         (student) => student.studentId === studentId
       );
-  
+
       if (foundStudentIndex === -1) {
         return { status: false, message: "Student not found in the batch" };
       }
-  
+
       // Access properties on the found student
       const data: any = {
         name: studentDetails.fumigationStudents[foundStudentIndex].name,
@@ -375,45 +363,164 @@ export default {
         qualification: studentDetails.fumigationStudents[foundStudentIndex].qualification,
         prefferredLocation: studentDetails.fumigationStudents[foundStudentIndex].prefferredLocation,
       };
-  
+
       // Create a new document in the Batches collection with the student details
       const studentBackToPending = await schema.Enqueries.create(data);
-  
+
       // Remove the student from the fumigationStudents array in the original batch
       studentDetails.fumigationStudents.splice(foundStudentIndex, 1);
       await studentDetails.save();
-  
+
       return { status: true, message: "Student removed from the batch and moved back to pending" };
     } catch (error) {
       console.error(error, "error in the remove Batchwise students");
       return { status: false, message: "An error occurred while removing the student" };
     }
-  }, 
-  editStudentMark : async (studentId:string,batchId:string,fumigationType:string)=>{
+  },
+  editStudentMark: async (studentId: string, batchId: string, fumigationType: string) => {
     try {
       const batch = await schema.Batches.findOne({
         _id: batchId,
         "fumigationStudents.studentId": studentId,
       });
-  
-      if(!batch){
-        return{status:false,message: " batch not found"}
+
+      if (!batch) {
+        return { status: false, message: " batch not found" }
       }
       const fumigationStudent = batch.fumigationStudents.find(
         (student) => student?.studentId?.toString() === studentId
       );
-  
+
       if (!fumigationStudent) {
         return { status: false, message: "students not found in the batch" }
       }
-      if(fumigationType==='mock'){
-    
+      if (fumigationType === 'mock') {
+
         return fumigationStudent.mock
-    }else{
-     return fumigationStudent.final
+      } else {
+        return fumigationStudent.final
+      }
+    } catch (err) {
+      return { status: false, message: "Error in the edit student Mark" }
     }
-    } catch(err){
-      return {status:false,message:"Error in the edit student Mark"}
+  },
+  passedStudentsDetails: async (studentId: any, batchId: any) => {
+    try {
+      // Find the batch with the given batchId
+      const batch = await schema.Batches.findOne({ _id: batchId });
+
+
+      // Check if the batch exists
+      if (!batch) {
+        return { status: false, message: 'Batch not found' };
+      }
+      const batchName = batch?.batchName
+      // Find the student with the given studentId in the fumigationStudents array
+      const student = batch.fumigationStudents.find((std) => String(std.studentId) === studentId);
+      console.log(student, "nvhvghngvhnvghghn");
+
+      // Check if the student exists
+      if (!student) {
+        return { status: false, message: 'Student not found in the batch' };
+      }
+
+      // Extract the desired details
+      const { name, email, phone, qualification, prefferredLocation } = student;
+
+      // Return the details
+      return {
+        status: true,
+        details: { batchName, name, email, phone, qualification, prefferredLocation },
+      };
+    } catch (error) {
+      console.error('Error retrieving student details:', error);
+      return { status: false, message: 'Error retrieving student details' };
     }
+  },
+  getPassedStudentsDetails: async (batchId: string, fumigationType: string) => {
+    try {
+      const markRecord = await schema.markRecords.findOne({ batchId: batchId });
+
+      if (!markRecord) {
+        return { status: false, message: "Batch not found" };
+      }
+
+      let passedStudentsDetails: string | any[];
+
+      if (fumigationType === 'mock') {
+        passedStudentsDetails = markRecord.mock[0].passed;
+      } else if (fumigationType === 'final') {
+        passedStudentsDetails = markRecord.final[0].passed;
+      } else {
+        return { status: false, message: "Invalid fumigationType" };
+      }
+
+      let studentDetails: any[] = [];
+
+      if (passedStudentsDetails.length > 0) {
+        // Use Promise.all to wait for all promises to resolve
+        await Promise.all(passedStudentsDetails.map(async (studentId: string) => {
+          const batch = await schema.Batches.findOne({
+            'fumigationStudents.studentId': studentId
+          });
+
+          if (batch) {
+            console.log(batch,"batch cominggggggggg");
+            
+            const studentInfo = batch.fumigationStudents.find((std) => std.studentId?.toString() === studentId);
+
+            if (studentInfo) {
+              console.log(studentInfo,"studenyInfo comingggggg");
+              
+              // Assuming 'name' and 'email' are properties of the student object
+              studentDetails.push({
+                studentId: studentId,
+                name: studentInfo.name,
+                email: studentInfo.email,
+                phone: studentInfo.phone,
+                batch: batch.batchName
+              });
+            }
+          }
+        }));
+      }
+
+      return { status: true, passedStudentsDetails: studentDetails };
+    } catch (error) {
+      return { status: false, message: error };
+    }
+  },
+    sendAllDataToAuth : async (data: Array<object>): Promise<any> => {
+    console.log(data, 'fghghsgsh');
+  
+    return new Promise(async (resolve, reject) => {
+      // Listen for the 'authDataResponse' event
+      const authDataResponseHandler = (response: any) => {
+        // Remove the listener after receiving the response
+        eventEmitter.off('authDataResponse', authDataResponseHandler);
+  
+        if (response) {
+          console.log(response, 'Response received in sendAllDataToAuth');
+          resolve(response);
+        } else {
+          reject(new Error('No response received'));
+        }
+      };
+  
+      // Register the event listener
+      eventEmitter.on('authDataResponse', authDataResponseHandler);
+  
+      try {
+        // Send data to authentication service
+        const response = await fumigationProducer(data, 'authentication', 'addStudents');
+        console.log(response, 'Response from fumigationProducer');
+      } catch (error) {
+        // Remove the listener in case of an error
+        eventEmitter.off('authDataResponse', authDataResponseHandler);
+        reject(error);
+      }
+    });
   }
+
+
 }

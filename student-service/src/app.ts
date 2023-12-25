@@ -7,7 +7,7 @@ import { routes } from './routes/index';
 import config from './config/config';
 import expressConfig from './express';
 import { S3Client } from '@aws-sdk/client-s3';
-
+import {consumeStudent} from "../src/events/studentConsumer"
 import expressValidator from 'express-validator';
 import dependencies from './config/dependencies';
 
@@ -43,3 +43,7 @@ app.use('/api', routes(dependencies));
 
 // Start the server
 serverConfig(server, config).startServer();
+
+// setInterval(async()=>{
+//     await consumeStudent()
+// },10000)

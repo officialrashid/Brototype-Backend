@@ -1,5 +1,5 @@
-import { Invigilators } from "./invigilator.schema";
+import { Students } from "./students.schema";
 
 export default{
-    Invigilators,
+    Students,
 }

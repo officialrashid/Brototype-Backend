@@ -7,6 +7,7 @@ import config from "./config/config";
 import expressConfig from "./express";
 import express from 'express';
 import dependencies from "./config/dependencies";
+import {consumeFumigation} from "../src/events/fumigationConsumer"
 require('dotenv').config();
 // Create an Express app instance
 const app = express();
@@ -25,3 +26,7 @@ app.use("/api", routes(dependencies));
 
 // Start the server
 serverConfig(server, config).startServer();
+
+// setInterval(async()=>{
+//     await consumeFumigation()
+// },10000)

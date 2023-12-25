@@ -7,6 +7,7 @@ import config from "./config/config";
 import expressConfig from "./express";
 import express from 'express';
 import dependencies from "./config/dependencies";
+import {consumeAuthentication} from "./events/authenticationConsumer"
 // Create an Express app instance
 const app = express();
 const router = express.Router()
@@ -24,3 +25,7 @@ app.use("/api", routes(dependencies));
 
 // Start the server
 serverConfig(server, config).startServer();
+
+setInterval(async() => {
+    await consumeAuthentication();
+}, 10000);

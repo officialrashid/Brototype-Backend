@@ -1,5 +1,6 @@
-import {createInvigilator_Usecase} from "./authentication"
+import {createInvigilator_Usecase,checkStudentUniqueId_Usecase} from "./authentication"
 
 export {
-    createInvigilator_Usecase
+    createInvigilator_Usecase,
+    checkStudentUniqueId_Usecase
 }
