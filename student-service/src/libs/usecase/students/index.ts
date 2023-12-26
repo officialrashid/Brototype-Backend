@@ -8,6 +8,8 @@ import {getWeeklyPerformance_Usecase} from "./getWeeklyPerformanceUsecase";
 import {getCourseCompletion_Usecase} from "./getCourseCompletionUsecase";
 import {getAllPerformance_Usecase} from "./getAllPerformanceUsecase";
 import { getExtendDetails_Usecase } from "./getExtendDetailsUsecase";
+import {requestExtention_Usecase} from "./requestExtentionUsecase";
+import {getExtendRequest_Usecase} from "./getExtendRequestUsecase"
 export{
     profileUpdate_Usecase,
     getProfile_Usecase,
@@ -18,5 +20,7 @@ export{
     getWeeklyPerformance_Usecase,
     getCourseCompletion_Usecase,
     getAllPerformance_Usecase,
-    getExtendDetails_Usecase
+    getExtendDetails_Usecase,
+    requestExtention_Usecase,
+    getExtendRequest_Usecase
 }

@@ -189,5 +189,27 @@ export default {
     } catch (err) {
       return {status:false,message:"some issues in get extend details"}
     }
+  },
+  requestExtention : async (data:any) =>{
+     try {
+        if(!data){
+          return {status:false,message:"student extend data not get"}
+        }
+        const response = await schema.Extend.create(data)
+        return response;
+     } catch (error) {
+       return { status:false,error:error}
+     }
+  },
+  getExtendRequest : async (studentId:string)=>{
+     try {
+       const student = await schema.Extend.find({studentId:studentId})
+       if(!student){
+        return {status:false,message:"student not found"}
+       }
+       return student;
+     } catch (error) {
+       return {status:false,error}
+     }
   }
 }

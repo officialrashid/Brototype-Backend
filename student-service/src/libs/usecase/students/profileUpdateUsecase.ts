@@ -57,7 +57,7 @@ export const profileUpdate_Usecase = (dependencies: any) => {
       studentId,
       firstName: data.firstName,
       lastName: data.lastName,
-      domain: data.domain,
+      domain:`${data.domain} developer`,
       batch: data.batch,
       imageUrl,
     };

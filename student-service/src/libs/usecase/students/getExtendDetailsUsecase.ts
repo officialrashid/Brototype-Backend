@@ -30,6 +30,7 @@ export const getExtendDetails_Usecase = (dependencies: any) => {
                         middleName: response[0].middleName,
                         lastName : response[0].lastName,
                         batch : response[0].batch,
+                        domain : response[0].domain,
                         currentWeek: `week${currentWeek+1}`
                     }
                     return {status:true,data}

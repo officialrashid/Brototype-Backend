@@ -9,6 +9,8 @@ import getWeeklyPerformance_Controller from "./getWeeklyPerformanceController"
 import getCourseCompletion_Controller from "./getCourseCompletionController"
 import getAllPerformance_Controller from "./getAllPerformanceController"
 import getExtendDetails_Controller from "./getExtendDetailsController"
+import requestExtention_Controller from "./requestExtentionController"
+import getExtendRequest_Controller from "./getExtendRequestController"
 export default (dependencies:any)=>{
 
     return{
@@ -21,6 +23,8 @@ export default (dependencies:any)=>{
         getWeeklyPerformanceController:getWeeklyPerformance_Controller(dependencies),
         getCourseCompletionController:getCourseCompletion_Controller(dependencies),
         getAllPerformanceController:getAllPerformance_Controller(dependencies),
-        getExtendDetailsController: getExtendDetails_Controller(dependencies)
+        getExtendDetailsController: getExtendDetails_Controller(dependencies),
+        requestExtentionController: requestExtention_Controller(dependencies),
+        getExtendRequestController: getExtendRequest_Controller(dependencies)
     }
 }
