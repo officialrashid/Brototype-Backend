@@ -1,9 +1,14 @@
-import { authenticationRepository} from '../libs/app/repository/index'
-import {createInvigilator_Usecase,checkStudentUniqueId_Usecase} from '../libs/usecase';
+import { reviewerRepository} from '../libs/app/repository/index'
+import {scheduleTime_Usecase,getScheduleEvents_Usecase,updateScheduleEvents_Usecase,deleteScheduleEvents_Usecase,getDayTimeLineup_Usecase,getAllDetails_Usecase} from '../libs/usecase';
 
 const useCase:any = {
-   createInvigilator_Usecase,
-   checkStudentUniqueId_Usecase
+   scheduleTime_Usecase,
+   getScheduleEvents_Usecase,
+   updateScheduleEvents_Usecase,
+   deleteScheduleEvents_Usecase,
+   getDayTimeLineup_Usecase,
+   getAllDetails_Usecase
+  
 };
-const repository:any={authenticationRepository}
+const repository:any={reviewerRepository}
 export default {useCase,repository }

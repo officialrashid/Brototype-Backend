@@ -1,3 +1,3 @@
-import authenticationRepository from "./reviewer.repository"
+import reviewerRepository from "./reviewer.repository"
 
-export{authenticationRepository}
+export{reviewerRepository}

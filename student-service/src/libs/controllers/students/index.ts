@@ -11,6 +11,7 @@ import getAllPerformance_Controller from "./getAllPerformanceController"
 import getExtendDetails_Controller from "./getExtendDetailsController"
 import requestExtention_Controller from "./requestExtentionController"
 import getExtendRequest_Controller from "./getExtendRequestController"
+import getReviewDetails_Controller from "./getReviewDetailsController"
 export default (dependencies:any)=>{
 
     return{
@@ -25,6 +26,7 @@ export default (dependencies:any)=>{
         getAllPerformanceController:getAllPerformance_Controller(dependencies),
         getExtendDetailsController: getExtendDetails_Controller(dependencies),
         requestExtentionController: requestExtention_Controller(dependencies),
-        getExtendRequestController: getExtendRequest_Controller(dependencies)
+        getExtendRequestController: getExtendRequest_Controller(dependencies),
+        getReviewDetailsController: getReviewDetails_Controller(dependencies)
     }
 }

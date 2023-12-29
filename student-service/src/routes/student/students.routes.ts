@@ -8,7 +8,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {profileUpdateController,getProfileController,updatePersonalDetailsController,updateAddressDetailsController,updateEducationDetailsController,getBacthwiseBestStdController,getWeeklyPerformanceController,getCourseCompletionController,getAllPerformanceController,getExtendDetailsController,requestExtentionController,getExtendRequestController} = students_controller(dependencies) 
+  const {profileUpdateController,getProfileController,updatePersonalDetailsController,updateAddressDetailsController,updateEducationDetailsController,getBacthwiseBestStdController,getWeeklyPerformanceController,getCourseCompletionController,getAllPerformanceController,getExtendDetailsController,requestExtentionController,getExtendRequestController,getReviewDetailsController} = students_controller(dependencies) 
 
   router.post('/profile-update',upload.single("image"),profileUpdateValidationRules,profileUpdateController)
 
@@ -23,6 +23,7 @@ export default (dependencies:any)=>{
   router.get('/get-extend-details',getExtendDetailsController)
   router.post('/request-extention',requestExtentionController)
   router.get('/get-request-extend/:studentId',getExtendRequestController)
+  router.get('/get-review-details',getReviewDetailsController)
   return router
 }
 

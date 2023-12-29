@@ -211,5 +211,29 @@ export default {
      } catch (error) {
        return {status:false,error}
      }
+  },
+  getReviewDetails : async (studentId:string,batchId:string) =>{
+    console.log(studentId,batchId,"{}{++++++)(****");
+    
+         try {
+           const batch = await schema.WeekRecord.findOne({batchId})
+           if(!batch){
+            return {status:false,message:"batch not found"}
+           }
+           const student = batch.students.find((s)=>s.studentId === studentId)
+           if(!student){
+            return {status:false,message:"student not found"}
+           }
+           const response = student.weeks
+           console.log(response,"review detals coming");
+           
+           if(response.length>0){
+            return response
+           }else{
+            return {status:false,message:"student week not found"}
+           }
+         } catch (error) {
+          return { status:false,message:"get review details some issue found"}
+         }
   }
 }

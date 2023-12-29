@@ -1,5 +1,5 @@
-import { Students } from "./reviewer.schema";
+import { Events } from "./reviewer.schema";
 
 export default{
-    Students,
+    Events,
 }

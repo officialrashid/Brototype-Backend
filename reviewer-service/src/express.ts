@@ -12,7 +12,7 @@ const expressConfig = (app: Express): void => {
             'http://localhost:3001',
             'http://localhost:5173',
         ], // Update with your client's origin
-        methods: ["GET", "POST", "PUT", "DELETE"],
+        methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
         credentials: true, // Allow credentials (cookies, etc.)
     }));
 };
