@@ -9,12 +9,13 @@ const expressConfig = (app: Express): void => {
     
     app.use(cors({
         origin: [
-            'http://localhost:3001',
+            'http://localhost:5173',
             'http://localhost:3000',
+            'http://192.168.44.127:5173'
         ], // Update with your client's origin
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true, // Allow credentials (cookies, etc.)
     }));
-};
+}; 
 
 export default expressConfig;
