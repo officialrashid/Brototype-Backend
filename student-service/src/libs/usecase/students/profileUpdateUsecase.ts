@@ -1,5 +1,6 @@
 // Define the interface for InvigilatorsData
 interface studentsData {
+  studentId: any;
   firstName: string;
   lastName: string;
   domain: string;
@@ -33,7 +34,7 @@ export const profileUpdate_Usecase = (dependencies: any) => {
 
     let imageUrl;
 
-    const studentId = "657aaa012a15acfff364bb5a";
+    const studentId = data.studentId
     if (!file || !studentId) return { message: "Bad Request" };
 
     const { err, key } = await uploadToS3({ file,studentId });

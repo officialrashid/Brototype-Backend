@@ -8,8 +8,8 @@ interface UserPresignedUrlsResponse {
 const s3 = new S3Client({
   region:"ap-south-1",
   credentials: {
-    accessKeyId: "AKIA2PZTHJKAIT2RVKVZ",
-    secretAccessKey: "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",
+    accessKeyId: "AKIA2PZTHJKAG3NEKEN7",
+    secretAccessKey: "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",
   },
 });
 const BUCKET = "brototype-students-profile"
