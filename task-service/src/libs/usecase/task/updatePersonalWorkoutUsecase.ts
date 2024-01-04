@@ -17,7 +17,6 @@ export const updatePersonalWorkout_Usecase = (dependencies: any) => {
   
       const personalWorkout = new PersonalWorkout(data);
       console.log(personalWorkout, "personal workout dataa");
-      
       const response = await taskRepository.updatePersonalWorkout(personalWorkout);
       console.log(response);
       
