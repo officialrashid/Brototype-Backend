@@ -16,8 +16,26 @@ const weeklyTaskUpdationSchema = new mongoose.Schema({
             ]
         }
     ],
-    technicalWorkouts: [{}],
-    miscellaneousWorkout: [{}],
+    technicalWorkouts: [{
+        week: String,
+        mainQuestionNumber: Number,
+        questionNumbersAndAnswers: [
+            {
+                nestedQuestionNumber: String,
+                answer: String,
+            }
+        ]
+    }],
+    miscellaneousWorkouts: [{
+        week: String,
+        mainQuestionNumber: Number,
+        questionNumbersAndAnswers: [
+            {
+                nestedQuestionNumber: String,
+                answer: String,
+            }
+        ]
+    }],
 });
 
 const WeeklyTaskUpdation = mongoose.model("WeeklyTaskUpdation", weeklyTaskUpdationSchema);
