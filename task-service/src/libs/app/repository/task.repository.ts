@@ -371,6 +371,40 @@ getUpdateTask : async (studentId:string)=>{
     } catch (error) {
        return {status:false,message:"updated task not found"} 
     }
-}
+},
+getEditTaskDetails : async (data:any)=>{
+   
+ 
+  const { studentId, mainQuestionNumber, taskType, weekName } = data;
+ console.log(studentId,mainQuestionNumber,taskType,weekName,"log from data");
+ 
+  try {
+    let query: any = {
+      studentId: studentId,
+    };
   
+    // Set the dynamic field based on the taskType
+    query[`${taskType}Workouts.week`] = weekName;
+    query[`${taskType}Workouts.mainQuestionNumber`] = mainQuestionNumber;
+  
+    const response = await schema.WeeklyTaskUpdation.find(query, {
+      _id: 0,
+      [`${taskType}Workouts.$`]: 1, // Project only the matched element from the array
+    });
+  
+    if (response && response.length > 0) {
+      const result = response.map(entry => (entry as any)[`${taskType}Workouts`][0].questionNumbersAndAnswers);
+      
+      return { status: true, message: "Data fetched successfully", data: result };
+    } else {
+      return { status: false, message: "No matching data found" };
+    }
+  } catch (error) {
+    console.error("Error fetching task details:", error);
+    return { status: false, message: "Some issues in fetching data" };
+  }
+  
+  
+  
+}
 }

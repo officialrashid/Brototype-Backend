@@ -10,7 +10,8 @@ import {getAllPerformance_Usecase} from "./getAllPerformanceUsecase";
 import { getExtendDetails_Usecase } from "./getExtendDetailsUsecase";
 import {requestExtention_Usecase} from "./requestExtentionUsecase";
 import {getExtendRequest_Usecase} from "./getExtendRequestUsecase";
-import {getReviewDetails_Usecase} from "./getReviewDetailsUsecase"
+import {getReviewDetails_Usecase} from "./getReviewDetailsUsecase";
+import {secondExtendRequest_Usecase } from "./secondExtendRequestUsecase"
 export{
     profileUpdate_Usecase,
     getProfile_Usecase,
@@ -24,5 +25,6 @@ export{
     getExtendDetails_Usecase,
     requestExtention_Usecase,
     getExtendRequest_Usecase,
-    getReviewDetails_Usecase
+    getReviewDetails_Usecase,
+    secondExtendRequest_Usecase
 }

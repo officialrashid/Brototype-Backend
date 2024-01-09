@@ -10,6 +10,14 @@ const extendSchema= new mongoose.Schema({
     extendDays : Number,
     extendReason : String,
     status:Boolean,
+    requestCount: {
+        type: Number,
+        default: 1, // Set the default value to 1
+      },
+      priority :{
+        type:Boolean,
+        default:false
+      },
     createdAt: {
         type: Date,
         default: Date.now,

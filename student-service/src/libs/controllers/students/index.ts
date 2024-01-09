@@ -12,6 +12,7 @@ import getExtendDetails_Controller from "./getExtendDetailsController"
 import requestExtention_Controller from "./requestExtentionController"
 import getExtendRequest_Controller from "./getExtendRequestController"
 import getReviewDetails_Controller from "./getReviewDetailsController"
+import secondExtendRequest_Controller from "./secondExtendRequestController"
 export default (dependencies:any)=>{
 
     return{
@@ -27,6 +28,7 @@ export default (dependencies:any)=>{
         getExtendDetailsController: getExtendDetails_Controller(dependencies),
         requestExtentionController: requestExtention_Controller(dependencies),
         getExtendRequestController: getExtendRequest_Controller(dependencies),
-        getReviewDetailsController: getReviewDetails_Controller(dependencies)
+        getReviewDetailsController: getReviewDetails_Controller(dependencies),
+        secondExtendRequestController: secondExtendRequest_Controller(dependencies)
     }
 }
