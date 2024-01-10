@@ -87,7 +87,7 @@ export default {
           email: student.email?.toString()
         };
   
-        const accessToken = await jwt.sign(students, config.secretKey, { expiresIn: '1d' });
+        const accessToken = await jwt.sign(students, config.secretKey, { expiresIn: '7d' });
         if (accessToken) {
           const uid = students._id.toString();
           const customToken = await admin.auth().createCustomToken(uid);
