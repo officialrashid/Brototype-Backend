@@ -1,9 +1,10 @@
 import express from "express"
 import {students_controller} from "../../libs/controllers";
 import multer, {memoryStorage} from 'multer'
-import {profileUpdateValidationRules} from "../../input-validation/profileUpdateValidation"
+
 const storage = memoryStorage();
 const upload = multer({storage})
+import {profileUpdateValidationRules} from "../../input-validation/profileUpdateValidation"
 export default (dependencies:any)=>{
 
   const router = express.Router();

@@ -1,5 +1,6 @@
-import { Events } from "./reviewer.schema";
-
+import { Events } from "./event.schema";
+import {Profile} from "./profile.schema"
 export default{
     Events,
+    Profile
 }

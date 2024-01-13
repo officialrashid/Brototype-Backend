@@ -3,6 +3,7 @@ import moment from "moment"; // Import the moment library
 
 // Define the event interface
 interface Event {
+  createdAt: string;
   id: string;
   startTime: string;
   endTime: string;
@@ -12,6 +13,7 @@ interface Event {
   advisorId: string;
   booked: boolean;
   status: boolean;
+
 }
 
 // Define the document interface
