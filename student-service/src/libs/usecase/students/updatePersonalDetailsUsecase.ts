@@ -62,6 +62,8 @@ export const personalDetails_Usecase = (dependencies: any) => {
                     const response = await studentsRepository.updatePersonalDetails(manifest,studentId);
                     if (response) {
                         return { status: true, message:"Persanal Details Update Successfully", response }; // return success status to controller
+                      }else{
+                        return { status: false, message:"Persanal Details update not done, something went wrong" }
                       }
                 }
             }

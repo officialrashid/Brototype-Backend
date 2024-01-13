@@ -1,7 +1,7 @@
 import express from "express"
 import {students_controller} from "../../libs/controllers";
 import multer, {memoryStorage} from 'multer'
-
+const jwtVerify = require('jwt-verify-token')
 const storage = memoryStorage();
 const upload = multer({storage})
 import {profileUpdateValidationRules} from "../../input-validation/profileUpdateValidation"

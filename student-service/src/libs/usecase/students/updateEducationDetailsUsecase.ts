@@ -41,6 +41,8 @@ export const educationDetails_Usecase = (dependencies: any) => {
             const response = await studentsRepository.updateEducationDetails(education, studentId);
             if (response) {
                 return { status: true, message: "Education Details Update Successfully", response }; // return success status to controller
+            }else{
+                return { status: false, message: "Education Details Update not done" }; 
             }
 
         } catch (error) {

@@ -98,6 +98,8 @@ export default {
   },
 
   updateAddressDetails: async (data: any, studentId: string) => {
+    console.log(data,studentId,'address detail coming bakcenddddd');
+    
     try {
       const existingProfile = await schema.Manifest.findOne({ studentId: studentId });
       if (existingProfile) {

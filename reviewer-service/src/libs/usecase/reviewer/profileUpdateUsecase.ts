@@ -11,15 +11,12 @@ interface reviewersData {
 
 interface ProfileUpdate extends reviewersData {
   reviewerId: string;
-  imageUrl?: string;
+  imageUrl?: any;
 }
 
-import { getUserPresignedUrls, uploadToS3 } from "../../../s3";
+import {uploadToS3 } from "../../../s3";
 
-interface S3UploadResult {
-  err?: Error;
-  key?: string;
-}
+
 
 export const profileUpdate_Usecase = (dependencies: any) => {
   const {
@@ -34,28 +31,10 @@ export const profileUpdate_Usecase = (dependencies: any) => {
     console.log(file, "))))))0000000");
     console.log(data, "+++++++++++++");
 
-    let imageUrl;
-
     const reviewerId = data.reviewerId
     if (!file || !reviewerId) return { message: "Bad Request" };
 
-    const { err, key } = await uploadToS3({ file,reviewerId });
-    if (err) return { message: err.message };
-
-    if (key) {
-      await getUserPresignedUrls(reviewerId)
-        .then(({ err, signedUrls }) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(signedUrls, "[][][][][]");
-
-            imageUrl = signedUrls;
-          }
-        })
-        .catch((error) => console.error(error));
-    }
-
+    const { imageUrl } = await uploadToS3({ file,reviewerId });
     const profileData: ProfileUpdate = {
       reviewerId,
       firstName: data.firstName,

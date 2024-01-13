@@ -1,5 +1,5 @@
 // Define the interface for InvigilatorsData
-interface studentsData {
+interface StudentsData {
   studentId: any;
   firstName: string;
   lastName: string;
@@ -7,17 +7,12 @@ interface studentsData {
   batch: string;
 }
 
-interface ProfileUpdate extends studentsData {
+interface ProfileUpdate extends StudentsData {
   studentId: string;
-  imageUrl?: string;
+  imageUrl : any
 }
 
-import { getUserPresignedUrls, uploadToS3 } from "../../../s3";
-
-interface S3UploadResult {
-  err?: Error;
-  key?: string;
-}
+import { uploadToS3 } from "../../../s3"; // Update the path accordingly
 
 export const profileUpdate_Usecase = (dependencies: any) => {
   const {
@@ -25,48 +20,42 @@ export const profileUpdate_Usecase = (dependencies: any) => {
   } = dependencies;
 
   if (!studentsRepository) {
-    return console.log("Error: Fumigation Repository not found");
+    return console.log("Error: Students Repository not found");
   }
 
-  const executeFunction = async (data: studentsData, file: any) => {
+  const executeFunction = async (data: StudentsData, file: any) => {
     console.log(file, "))))))0000000");
     console.log(data, "+++++++++++++");
 
-    let imageUrl;
+    // let imageUrl;
 
-    const studentId = data.studentId
+    const studentId = data.studentId;
     if (!file || !studentId) return { message: "Bad Request" };
 
-    const { err, key } = await uploadToS3({ file,studentId });
-    if (err) return { message: err.message };
-
-    if (key) {
-      await getUserPresignedUrls(studentId)
-        .then(({ err, signedUrls }) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(signedUrls, "[][][][][]");
-
-            imageUrl = signedUrls;
-          }
-        })
-        .catch((error) => console.error(error));
-    }
-
+   const {imageUrl}= await uploadToS3({ file, studentId });
+ console.log(imageUrl,"imageUrl in  usecaseeeeeee");
+ 
     const profileData: ProfileUpdate = {
       studentId,
       firstName: data.firstName,
       lastName: data.lastName,
-      domain:`${data.domain} developer`,
+      domain: `${data.domain} developer`,
       batch: data.batch,
       imageUrl,
     };
 
     const response = await studentsRepository.profileUpdate(profileData);
-    if(response){
-      console.log(response,"98987878997978796");
-      
+    console.log(response, "profile update response in backend ddd");
+
+    if (response) {
+      console.log("response il kerriiiiittaaaaaaa");
+
+      return { status: true, message: "profile updated successfully" };
+    } else {
+      return {
+        status: false,
+        message: "profile update not done, something went wrong",
+      };
     }
   };
 

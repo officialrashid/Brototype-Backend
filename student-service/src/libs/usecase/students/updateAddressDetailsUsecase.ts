@@ -45,6 +45,8 @@ export const addressDetails_Usecase = (dependencies: any) => {
             const response = await studentsRepository.updateAddressDetails(address, studentId);
             if (response) {
                 return { status: true, message: "Address Details Update Successfully", response }; // return success status to controller
+            } else {
+                return { status: false, message: "Address Details Update not done" }; 
             }
 
         } catch (error) {
