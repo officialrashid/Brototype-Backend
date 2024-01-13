@@ -24,7 +24,7 @@ export const getDayTimeLineup_Usecase = (dependencies: any) => {
 
                 // Filter events based on the specified day and booked property
                 const filteredResponse = res.filter((data: any) =>
-                    moment(data.createdAt, 'DD-MM-YYYY').isSame(moment(day, 'DD-MM-YYYY')) && data.booked === true
+                    moment(data.date, 'DD-MM-YYYY').isSame(moment(day, 'DD-MM-YYYY')) && data.booked === true
                 );
 
                 console.log(filteredResponse, "filteredResponse");

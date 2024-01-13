@@ -8,6 +8,7 @@ interface ScheduleData {
   endTime: String;
   day: String;
   label: String;
+  date:string
 }
 
 export const scheduleTime_Usecase = (dependencies: any) => {

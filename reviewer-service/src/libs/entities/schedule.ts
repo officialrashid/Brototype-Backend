@@ -7,7 +7,7 @@ export class Schedule {
   endTime : String;
   day : String;
   label : String;
-
+  date : String;
   constructor(data: ScheduleData) {
     console.log(data,"data coming to entitites");
     
@@ -17,7 +17,7 @@ export class Schedule {
     this.endTime = data.endTime;
     this.day = data.day;
     this.label = data.label;
-  
+    this.date = data.date;
   }
 }
 
@@ -28,4 +28,5 @@ interface ScheduleData {
   endTime: String;
   day : String;
   label: String;
+  date: String;
 }

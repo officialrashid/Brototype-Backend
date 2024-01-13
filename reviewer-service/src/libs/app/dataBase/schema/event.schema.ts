@@ -3,7 +3,6 @@ import moment from "moment"; // Import the moment library
 
 // Define the event interface
 interface Event {
-  createdAt: string;
   id: string;
   startTime: string;
   endTime: string;
@@ -13,6 +12,7 @@ interface Event {
   advisorId: string;
   booked: boolean;
   status: boolean;
+  date : String
 
 }
 
@@ -32,10 +32,7 @@ const eventSchema = new mongoose.Schema({
   advisorId: String,
   booked: Boolean,
   status: Boolean,
-  createdAt: {
-    type: String, // Store as a formatted string
-    default: () => moment().format("DD-MM-YYYY"), // Use default to set the current date in the specified format
-  },
+   date : String
 });
 
 const eventsSchema = new mongoose.Schema({

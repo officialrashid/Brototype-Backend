@@ -40,7 +40,7 @@ export default {
       return { status: false, message: "Data is missing" };
     }
 
-    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status } = data;
+    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status,date } = data;
 
     try {
       // Check if a document with the given reviewerId exists
@@ -53,11 +53,12 @@ export default {
           endTime,
           label,
           day,
+          date,
           studentId: "",
           advisorId: "",
           booked: false,
           status: false,
-          createdAt: ""
+          
         });
 
         // Save the updated document
@@ -75,10 +76,12 @@ export default {
               endTime,
               label,
               day,
+              date,
               studentId: "",
               advisorId: "",
               booked: false,
               status: false,
+              
             },
           ],
         });
