@@ -344,6 +344,62 @@ export default {
     } catch (error) {
       return { status: false, message: "Error in updating extend request", error: error };
     }
+  },
+   getBestStudentsDetails : async (studentId: string) => {
+    console.log(studentId,"student iddssssssss");
+    
+    try {
+        if (!studentId) {
+            return { status: false, message: "Student not found" };
+        }
+
+        // Use findOne to get a single document based on the provided query
+        const response = await schema.Manifest.findOne({ studentId});
+   
+            
+        if (response) {
+            const studentName = `${response.firstName} ${response.lastName}`;
+            const studentProfile = response.imageUrl
+            return { studentName,studentProfile};
+        } else {
+            return { status: false, message: "Student not found in the manifest" };
+        }
+    } catch (error) {
+        // Handle any errors that may occur during the database query
+        return { status: false, message: "Error fetching student details" };
+    }
+},
+getStudentCurrentWeek: async (studentId:string, batchId:string) => {
+  try {
+      if (!batchId) {
+          return { status: false, message: "Batch not found" };
+      }
+
+      // Find the batch based on batchId
+      const batch = await schema.WeekRecord.findOne({ batchId });
+      if (!batch) {
+          return { status: false, message: "Batch not found" };
+      }
+
+      // Find the student in the batch
+      const student = batch.students.find((s) => s.studentId === studentId);
+      if (!student) {
+          return { status: false, message: "Student not found in the batch" };
+      }
+
+      // Count the number of weeks with status true
+      const passedWeeksCount = student.weeks.reduce((count, week) => {
+          if (week.status === true) {
+              count++;
+          }
+          return count;
+      }, 0);
+
+      return { status: true, passedWeeksCount };
+  } catch (error) {
+      console.error("Error in getStudentPassedWeeksCount:", error);
+      return { status: false, message: "Internal server error" };
   }
-  
+}
+
 }
