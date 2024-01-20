@@ -181,7 +181,7 @@ export default {
 
       const [start, end] = weekRange.split('-').map(Number);
 
-      if (isNaN(start) || isNaN(end) || start < 1 || end > 7 || start > end) {
+      if (isNaN(start) || isNaN(end) || start < 1  || start > end) {
         return { status: false, message: "Invalid week range" };
       }
 
