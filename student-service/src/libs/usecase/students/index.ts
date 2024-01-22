@@ -11,7 +11,8 @@ import { getExtendDetails_Usecase } from "./getExtendDetailsUsecase";
 import {requestExtention_Usecase} from "./requestExtentionUsecase";
 import {getExtendRequest_Usecase} from "./getExtendRequestUsecase";
 import {getReviewDetails_Usecase} from "./getReviewDetailsUsecase";
-import {secondExtendRequest_Usecase } from "./secondExtendRequestUsecase"
+import {secondExtendRequest_Usecase } from "./secondExtendRequestUsecase";
+import { governmentIdUpdate_Usecase } from "./governmentIdUpdateUsecase";
 export{
     profileUpdate_Usecase,
     getProfile_Usecase,
@@ -26,5 +27,6 @@ export{
     requestExtention_Usecase,
     getExtendRequest_Usecase,
     getReviewDetails_Usecase,
-    secondExtendRequest_Usecase
+    secondExtendRequest_Usecase,
+    governmentIdUpdate_Usecase
 }

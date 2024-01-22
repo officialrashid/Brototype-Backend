@@ -13,6 +13,7 @@ import requestExtention_Controller from "./requestExtentionController"
 import getExtendRequest_Controller from "./getExtendRequestController"
 import getReviewDetails_Controller from "./getReviewDetailsController"
 import secondExtendRequest_Controller from "./secondExtendRequestController"
+import governmentIdUpdate_Controller from "./governmentIdUpdateController"
 export default (dependencies:any)=>{
 
     return{
@@ -29,6 +30,7 @@ export default (dependencies:any)=>{
         requestExtentionController: requestExtention_Controller(dependencies),
         getExtendRequestController: getExtendRequest_Controller(dependencies),
         getReviewDetailsController: getReviewDetails_Controller(dependencies),
-        secondExtendRequestController: secondExtendRequest_Controller(dependencies)
+        secondExtendRequestController: secondExtendRequest_Controller(dependencies),
+        governmentIdUpdateController: governmentIdUpdate_Controller(dependencies)
     }
 }

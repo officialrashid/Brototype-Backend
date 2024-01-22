@@ -9,7 +9,8 @@ interface StudentsData {
 
 interface ProfileUpdate extends StudentsData {
   studentId: string;
-  imageUrl : any
+  imageUrl : any;
+  isGovernmentId: boolean;
 }
 
 import { uploadToS3 } from "../../../s3"; // Update the path accordingly
@@ -28,11 +29,11 @@ export const profileUpdate_Usecase = (dependencies: any) => {
     console.log(data, "+++++++++++++");
 
     // let imageUrl;
-
+    const isGovernmentId = false
     const studentId = data.studentId;
-    if (!file || !studentId) return { message: "Bad Request" };
+    if (!file || !studentId || !isGovernmentId) return { message: "Bad Request" };
 
-   const {imageUrl}= await uploadToS3({ file, studentId });
+   const {imageUrl}= await uploadToS3({ file, studentId,isGovernmentId });
  console.log(imageUrl,"imageUrl in  usecaseeeeeee");
  
     const profileData: ProfileUpdate = {
@@ -42,6 +43,7 @@ export const profileUpdate_Usecase = (dependencies: any) => {
       domain: `${data.domain} developer`,
       batch: data.batch,
       imageUrl,
+      isGovernmentId: false
     };
 
     const response = await studentsRepository.profileUpdate(profileData);

@@ -38,7 +38,38 @@ export default {
       console.log(err, "error in the Enqueries repository function");
     }
   },
+  governmentIdUpdate : async (governmentIdData: { studentId: string; imageUrl: any; })=>{
+    try {
+      console.log(governmentIdData,"governmentID data ocmniggg");
+      
+      // Check if the profile with the given studentId exists
+      const existingGovernmentId = await schema.Manifest.findOne({
+        studentId: governmentIdData.studentId
+      });
+      console.log(existingGovernmentId,"existing govermnet Id");
+      
+      if (existingGovernmentId) {
+        // If profile exists, update specific fields with the new data
+        const updatedGovernmentId = await schema.Manifest.findOneAndUpdate(
+          { studentId: governmentIdData.studentId },
+          {
+            $set: {
+              governmentIdImageUrl: governmentIdData.imageUrl || existingGovernmentId.governmentIdImageUrl,
+            }
+          },
+          { new: true }
+        );
 
+        return updatedGovernmentId;
+      } else {
+        // If profile doesn't exist, create a new profile
+        const newGovernmentId= await schema.Manifest.create(governmentIdData);
+        return newGovernmentId;
+      }
+    } catch (err) {
+      console.log(err, "error in the Enqueries repository function");
+    }
+  },
 
   getProfile: async (studentId: string) => {
     console.log(studentId, "studentId coming or not check log");
@@ -165,46 +196,33 @@ export default {
       return { status: false, message: "Error in the getting all student details" };
     }
   },
-  getWeeklyPerformance: async (studentId: string, batchId: string, weekRange: string) => {
+  getWeeklyPerformance: async (studentId: string, batchId: string) => {
     try {
       const batch = await schema.WeekRecord.findOne({ batchId });
-
+  
       if (!batch) {
         return { status: false, message: "Batch not found" };
       }
-
+  
       const student = batch.students.find((s) => s.studentId === studentId);
-
+  
       if (!student) {
         return { status: false, message: "Student not found in the batch" };
       }
-
-      const [start, end] = weekRange.split('-').map(Number);
-
-      if (isNaN(start) || isNaN(end) || start < 1  || start > end) {
-        return { status: false, message: "Invalid week range" };
-      }
-
-      const weeklyPerformances = [];
-
-      for (let i = start; i <= end; i++) {
-        const weekName = `week${i}`;
-        const weeklyPerformance = student.weeks.find((w) => w.week === weekName);
-
-        if (weeklyPerformance) {
-          weeklyPerformances.push(weeklyPerformance);
-        }
-      }
-
+  
+      const weeklyPerformances = student.weeks.filter((week) => week.status === true);
+  
       if (weeklyPerformances.length === 0) {
-        return { status: false, message: "No weekly performance found in the specified range" };
+        return { status: false, message: "No weekly performance found with status true for the student" };
       }
-
+  
       return { status: true, data: weeklyPerformances };
     } catch (err) {
       return { status: false, message: "Error in getting weekly performance" };
     }
   },
+  
+  
   getCourseCompletion: async (studentId: string, batchId: string) => {
     console.log(studentId, batchId, "backend course completion data cominggggggg");
 
