@@ -1,13 +1,12 @@
 import express from "express"
 import {students_controller} from "../../libs/controllers";
 import multer, {memoryStorage} from 'multer'
-const jwtVerify = require('jwt-verify-token')
-
 const storage = memoryStorage();
 const upload = multer({storage})
-import {profileUpdateValidationRules} from "../../input-validation/profileUpdateValidation"
-import verifyTokenMiddleware from "../../custom-token/custom-tokenverify"; // Assuming both files are in the same directory
-
+import { profileUpdateValidationRules } from "../../input-validation/profileUpdateValidation"
+import verifyTokenMiddleware from "../../custom-token/custom-tokenverify";
+const jwtVerification = require('jwt-verify-token');
+const secretKey = 'secretidofAccessTokenjwt';
 export default (dependencies:any)=>{
 
   const router = express.Router();
@@ -16,7 +15,7 @@ export default (dependencies:any)=>{
 
   router.post('/profile-update',upload.single("image"),profileUpdateValidationRules,profileUpdateController)
 
-  router.get('/get-profile/:studentId',verifyTokenMiddleware,getProfileController)
+  router.get('/get-profile/:studentId', jwtVerification(secretKey),verifyTokenMiddleware,getProfileController);
   router.post('/update-personal-details',updatePersonalDetailsController)
   router.post('/update-address-details',updateAddressDetailsController)
   router.post('/update-education-details',updateEducationDetailsController)

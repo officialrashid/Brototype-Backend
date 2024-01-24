@@ -9,19 +9,22 @@ admin.initializeApp({
 
 const verifyTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const idToken = req.headers['authorization']; // Assuming the token is sent in the Authorization header
+    const idToken = req.headers['authorization-customtoken']; // Assuming the token is sent in the Authorization header
 
     if (!idToken) {
       throw new Error('No token provided');
     }
-    console.log(idToken,"idToken comnggggg");
+
+    const tokenValue = Array.isArray(idToken) ? idToken[0] : idToken as string;
+
+    console.log(tokenValue, "idToken comnggggg");
     
-    await admin.auth().verifyIdToken(idToken)
+    await admin.auth().verifyIdToken(tokenValue)
       .then((decodedToken) => {
         console.log("successssss");
         
         const uid = decodedToken.uid;
-        console.log(uid,"syuccess user uiddd");
+        console.log(uid, "syuccess user uiddd");
         
         // You can do further verification or processing here
         (req as any).user = { uid };
