@@ -1,7 +1,9 @@
 import express from "express"
 import {reviewer_Controller} from "../../libs/controllers";
 import multer, {memoryStorage} from 'multer'
-
+import verifyTokenMiddleware from "../../custom-token/custom-tokenverify";
+const jwtVerification = require('jwt-verify-token');
+const secretKey = 'secretidofAccessTokenjwt';
 const storage = memoryStorage();
 const upload = multer({storage})
 export default (dependencies:any)=>{
@@ -18,6 +20,6 @@ export default (dependencies:any)=>{
   router.get('/get-reviewer-details/:reviewerId',getAllDetailsController)
   router.post('/profile-update',upload.single("image"),profileUpdateController)
   router.post('/update-work-details',updateWorkDetailsController)
-  router.get('/get-reviewer-profile/:reviewerId',getReviewerProfileController)
+  router.get('/get-reviewer-profile/:reviewerId',jwtVerification(secretKey),verifyTokenMiddleware,getReviewerProfileController)
   return router
 }
