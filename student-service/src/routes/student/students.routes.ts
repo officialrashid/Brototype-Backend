@@ -7,6 +7,7 @@ import { profileUpdateValidationRules } from "../../input-validation/profileUpda
 import verifyTokenMiddleware from "../../custom-token/custom-tokenverify";
 const jwtVerification = require('jwt-verify-token');
 const secretKey = 'secretidofAccessTokenjwt';
+
 export default (dependencies:any)=>{
 
   const router = express.Router();

@@ -22,6 +22,7 @@
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "firebase-admin": "^12.0.0",
+    "firebase-custotoken-verify": "^1.0.0",
     "helmet": "^7.1.0",
     "http": "^0.0.1-security",
     "json-server": "^0.17.4",
