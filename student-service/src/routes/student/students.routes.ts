@@ -16,7 +16,7 @@ export default (dependencies:any)=>{
 
   router.post('/profile-update',upload.single("image"),profileUpdateValidationRules,profileUpdateController)
 
-  router.get('/get-profile/:studentId', jwtVerification(secretKey),verifyTokenMiddleware,getProfileController);
+  router.get('/get-profile/:studentId', jwtVerification(secretKey),getProfileController);
   router.post('/update-personal-details',updatePersonalDetailsController)
   router.post('/update-address-details',updateAddressDetailsController)
   router.post('/update-education-details',updateEducationDetailsController)
