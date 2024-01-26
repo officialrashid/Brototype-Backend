@@ -2,6 +2,7 @@ import mongoose, { Types } from "mongoose";
 
 const studentsSchema = new mongoose.Schema({
     studentId:String,
+    batchId : String,
     name: String,
     email: String,
     phone: String,

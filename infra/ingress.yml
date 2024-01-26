@@ -36,5 +36,19 @@ spec:
           service:
             name: authentication-service
             port:
-              number: 6000
+              number: 6001
+      - path: /api/task/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: task-service
+            port:
+              number: 7001
+      - path: /api/reviewer/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: reviewer-service
+            port:
+              number: 5001
   ingressClassName: nginx

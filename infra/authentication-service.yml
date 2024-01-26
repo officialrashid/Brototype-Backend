@@ -32,6 +32,6 @@ spec:
   ports:
     - name: authentication
       protocol: TCP
-      port: 6000
-      targetPort: 6000
+      port: 6001
+      targetPort: 6001
 

@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fumigation-deployment
+  name: task-deployment
   labels:
-    app: fumigation
+    app: task
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: fumigation
+      app: task
   template:
     metadata:
       labels:
-        app: fumigation
+        app: task
     spec:
       containers:
-        - name: fumigation-service
-          image: officialrashid/fumigation-service:latest
+        - name: task-service
+          image: officialrashid/task-service:latest
         
 
 ---
@@ -25,13 +25,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fumigation-service
+  name: task-service
 spec:
   selector:
-    app: fumigation
+    app: task
   ports:
-    - name: fumigation
+    - name: task
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 7001
+      targetPort: 7001
 

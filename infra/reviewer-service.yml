@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fumigation-deployment
+  name: reviewer-deployment
   labels:
-    app: fumigation
+    app: reviewer
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: fumigation
+      app: reviewer
   template:
     metadata:
       labels:
-        app: fumigation
+        app: reviewer
     spec:
       containers:
-        - name: fumigation-service
-          image: officialrashid/fumigation-service:latest
+        - name: reviewer-service
+          image: officialrashid/reviewer-service:latest
         
 
 ---
@@ -25,13 +25,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fumigation-service
+  name: reviewer-service
 spec:
   selector:
-    app: fumigation
+    app: reviewer
   ports:
-    - name: fumigation
+    - name: reviewer
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 5001
+      targetPort: 5001
 

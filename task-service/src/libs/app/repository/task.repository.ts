@@ -14,6 +14,8 @@ admin.initializeApp({
 export default {
 
     updatePersonalWorkout: async (data: any) => {
+      console.log(data,"opppesss");
+      
         try {
           if (!data) {
             return { status: false, message: "Personal workout data not found" };

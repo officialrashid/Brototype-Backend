@@ -478,7 +478,8 @@ export default {
                 name: studentInfo.name,
                 email: studentInfo.email,
                 phone: studentInfo.phone,
-                batch: batch.batchName
+                batch: batch.batchName,
+                batchId: batchId
               });
             }
           }
@@ -513,7 +514,7 @@ export default {
       try {
         // Send data to authentication service
         const response = await fumigationProducer(data, 'authentication', 'addStudents');
-        console.log(response, 'Response from fumigationProducer');
+        return {status:true,message:"confirm passed students updated successfully"}
       } catch (error) {
         // Remove the listener in case of an error
         eventEmitter.off('authDataResponse', authDataResponseHandler);

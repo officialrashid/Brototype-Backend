@@ -54,6 +54,7 @@ export default {
     try {
       const studentData = {
         studentId: data.studentId,
+        batchId : data.batchId,
         name: data.name,
         email: data.email,
         phone: data.phone,

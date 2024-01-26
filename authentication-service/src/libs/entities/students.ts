@@ -2,6 +2,7 @@
 
 export class Students {
   studentId : string;
+  batchId : string;
   name: String;
   email: String;
   phone: Number;
@@ -12,6 +13,7 @@ export class Students {
     console.log(data,"data coming to entitites");
     
     this.studentId = data.studentId;
+    this.batchId = data.batchId
     this.name = data.name;
     this.email = data.email;
     this.phone = data.phone;
@@ -23,7 +25,8 @@ export class Students {
 }
 
 interface StudentsData {
-  studentId : string
+  studentId : string;
+  batchId : string;
   name: String;
   email: String;
   phone: Number;
