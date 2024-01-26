@@ -11,6 +11,8 @@ export default {
     try {
       const existingEvents = await schema.Events.find({
         reviewerId: reviewerId,
+        $or: [
+          {
         events: {
           $elemMatch: {
             startTime: startTime,
@@ -18,6 +20,24 @@ export default {
             day: day,
           },
         },
+      },
+      {
+        events: {
+          $elemMatch: {
+            startTime: startTime,
+            day: day,
+          },
+        },
+      },
+      {
+        events: {
+          $elemMatch: {
+            endTime: endTime,
+            day: day,
+          },
+        },
+      },
+      ],
       });
 
       if (existingEvents.length > 0) {
