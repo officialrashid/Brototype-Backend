@@ -2,13 +2,19 @@ import {updatePersonalWorkout_Usecase} from "./updatePersonalWorkoutUsecase";
 import {updateTechnicalWorkout_Usecase} from "./updateTechnicalWorkoutUsecase";
 import {updateMiscellaneousWorkout_Usecase} from "./updateMiscellaneousWorkoutUsecase";
 import {getUpdateTask_Usecase} from "./getUpdateTaskUsecase";
-import {getEditTaskDetails_Usecase} from "./getEditTaskDetailsUsecase"
+import {getEditTaskDetails_Usecase} from "./getEditTaskDetailsUsecase";
+import {addPersonalWorkoutsTask_Usecase} from "./addPersonalWorkoutsTaskUsecase";
+import {getPersonalWorkoutTask_Usecase} from "./getPersonalWorkoutTaskUsecase";
+import {addTechnicalWorkoutsTask_Usecase} from "./addTechnicalWorkoutsTaskUsecase"
 
 export{
     updatePersonalWorkout_Usecase,
     updateTechnicalWorkout_Usecase,
     updateMiscellaneousWorkout_Usecase,
     getUpdateTask_Usecase,
-    getEditTaskDetails_Usecase
+    getEditTaskDetails_Usecase,
+    addPersonalWorkoutsTask_Usecase,
+    getPersonalWorkoutTask_Usecase,
+    addTechnicalWorkoutsTask_Usecase
   
 }

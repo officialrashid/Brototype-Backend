@@ -4,6 +4,9 @@ import updateTechnicalWorkout_Controller from "./updateTechnicalWorkoutControlle
 import updateMiscellaneousWorkout_Controller from "./updateMiscellaneousWorkoutController"
 import getUpdateTask_Controller from "./getUpdateTaskController"
 import getEditTaskDetails_Controller from "./getEditTaskDetailsController"
+import addPersonalWorkoutsTask_Controller from "./addPersonalWorkoutsTaskController"
+import getPersonalWorkoutTask_Controller from "./getPersonalWorkoutTaskController"
+import addTechnicalWorkoutsTask_Controller from "./addTechnicalWorkoutsTaskController"
 
 export default (dependencies:any)=>{
 
@@ -13,5 +16,8 @@ export default (dependencies:any)=>{
         updateMiscellaneousWorkoutController: updateMiscellaneousWorkout_Controller(dependencies),
         getUpdateTaskController: getUpdateTask_Controller(dependencies),
         getEditTaskDetailsController: getEditTaskDetails_Controller(dependencies),
+        addPersonalWorkoutsTaskController: addPersonalWorkoutsTask_Controller(dependencies),
+        getPersonalWorkoutTaskController: getPersonalWorkoutTask_Controller(dependencies),
+        addTechnicalWorkoutsTaskController: addTechnicalWorkoutsTask_Controller(dependencies),
     }
 }
