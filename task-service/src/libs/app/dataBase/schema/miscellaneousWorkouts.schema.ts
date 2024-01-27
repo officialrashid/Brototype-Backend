@@ -7,18 +7,17 @@ const NestedQuestionSchema = new mongoose.Schema({
   mainQuestionNumber: { type: Number, required: true },
 });
 
-const TechnicalWorkoutSchema = new mongoose.Schema({
+const MiscellaneousWorkoutSchema = new mongoose.Schema({
   Number: { type: Number, required: true },
   question: { type: String, required: true },
 });
 
-const TechnicalWorkoutsSchema = new mongoose.Schema({
+const MiscellaneousWorkoutsSchema = new mongoose.Schema({
   technicalLeadId: { type: ObjectId, required: true },
   week: { type: String, required: true },
-  domain: { type: String, required: true },
-  technicalWorkouts: [TechnicalWorkoutSchema],
-  technicalWorkoutNestedQuestions: [NestedQuestionSchema],
+  miscellaneousWorkouts: [MiscellaneousWorkoutSchema],
+  miscellaneousWorkoutNestedQuestions: [NestedQuestionSchema],
 });
 
 
-export const TechnicalWorkouts = mongoose.model('TechnicalWorkouts', TechnicalWorkoutsSchema);
+export const MiscellaneousWorkouts = mongoose.model('MiscellaneousWorkouts', MiscellaneousWorkoutsSchema);

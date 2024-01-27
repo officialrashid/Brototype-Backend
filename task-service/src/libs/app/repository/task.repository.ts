@@ -430,8 +430,8 @@ export default {
           }
 
         } else {
-          const PersonalWorkouts = await schema.PersonalWorkouts.create(data);
-          if (!PersonalWorkouts) {
+          const PersonalWorkout = await schema.PersonalWorkouts.create(data);
+          if (!PersonalWorkout) {
             return { status: false, message: "Personal Workout Task not Created" }
           } else {
             return { status: true, message: "Personal Workout Task Create Successfully" }
@@ -474,6 +474,43 @@ export default {
       console.error('Error updating/creating task:', error);
     }
   },
+  addMiscellaneousWorkoutsTask: async (data: any) => {
+
+    try {
+      // Check if the 'flutter' domain already exists
+      const existingWeek = await schema.MiscellaneousWorkouts.findOne({ week: data.week });
+
+      if (existingWeek) {
+        // If domain exists, check if 'week1' already exists
+        const existingTask = await schema.MiscellaneousWorkouts.findOne({ week: data.week });
+
+        if (existingTask) {
+          // If 'week1' exists, update the existing task
+          const updateMiscellaneousWorkoutTask = await schema.MiscellaneousWorkouts.updateOne({ _id: existingTask._id }, { $set: data });
+          if (!updateMiscellaneousWorkoutTask) {
+            return { status: false, message: "task not found" }
+          } else {
+            return { status: true, message: "Miscellaneous Workout Task Updated Successfully" }
+          }
+
+        } else {
+          const MiscellaneousWorkout = await schema.MiscellaneousWorkouts.create(data);
+          if (!MiscellaneousWorkout) {
+            return { status: false, message: "Miscellaneous Workout Task not Created" }
+          } else {
+            return { status: true, message: "Miscellaneous Workout Task Create Successfully" }
+          }
+        }
+      } else {
+        // If 'flutter' domain doesn't exist, push 'week1' as a new task
+        await schema.MiscellaneousWorkouts.create(data);
+        return { status: true, message: "Miscellaneous Workout Task Create Successfilly" }
+      }
+    } catch (error) {
+      console.error('Error updating/creating task:', error);
+    }
+  },
+
   getPersonalWorkout: async (week: string) => {
     try {
       const response = await schema.PersonalWorkouts.findOne({ week: week })
@@ -486,5 +523,45 @@ export default {
     } catch (error) {
 
     }
-  }
+  },
+  getMiscellaneousWorkout: async (week: string) => {
+    try {
+      const response = await schema.MiscellaneousWorkouts.findOne({ week: week })
+      if (!response) {
+        return { status: false, message: "week not found" }
+      } else {
+        return { status: true, response }
+      }
+
+    } catch (error) {
+
+    }
+  },
+  getTechnicalWorkout: async (domain: string, week: string) => {
+    console.log(domain, week, "task get for technicalassss");
+
+    try {
+        const query = { domain: domain.trim(), week: week.trim() };  // Trim whitespaces if necessary
+        console.log("Query:", query);
+
+        const response = await schema.TechnicalWorkouts.find(query);
+        console.log(response, "responseee");
+
+        if (!response || response.length === 0) {
+            return { status: false, message: 'No documents found for the specified domain and week' };
+        } else {
+            return { status: true, response };
+        }
+    } catch (error) {
+        // Handle the error, e.g., log it or return an error response
+        console.error("Error in getTechnicalWorkout:", error);
+        return { status: false, message: 'An error occurred' };
+    }
+}
+
+
+
+
+
+  
 }

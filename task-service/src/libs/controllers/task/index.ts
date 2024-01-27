@@ -7,7 +7,9 @@ import getEditTaskDetails_Controller from "./getEditTaskDetailsController"
 import addPersonalWorkoutsTask_Controller from "./addPersonalWorkoutsTaskController"
 import getPersonalWorkoutTask_Controller from "./getPersonalWorkoutTaskController"
 import addTechnicalWorkoutsTask_Controller from "./addTechnicalWorkoutsTaskController"
-
+import getTechnicalWorkoutTask_Controller from "./getTechnicalWorkoutTaskController "
+import addMiscellaneousWorkoutsTask_Controller from "./addMiscellaneousWorkoutsTaskController"
+import getMiscellaneousWorkoutTask_Controller from "./getMiscellaneousWorkoutTaskController"
 export default (dependencies:any)=>{
 
     return{
@@ -19,5 +21,8 @@ export default (dependencies:any)=>{
         addPersonalWorkoutsTaskController: addPersonalWorkoutsTask_Controller(dependencies),
         getPersonalWorkoutTaskController: getPersonalWorkoutTask_Controller(dependencies),
         addTechnicalWorkoutsTaskController: addTechnicalWorkoutsTask_Controller(dependencies),
+        getTechnicalWorkoutTaskController: getTechnicalWorkoutTask_Controller(dependencies),
+        addMiscellaneousWorkoutsTaskController: addMiscellaneousWorkoutsTask_Controller(dependencies),
+        getMiscellaneousWorkoutTaskController: getMiscellaneousWorkoutTask_Controller(dependencies),
     }
 }
