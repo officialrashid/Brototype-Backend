@@ -1,5 +1,4 @@
-import mongoose, { Document } from "mongoose";
-import moment from "moment"; // Import the moment library
+import mongoose, { Document, Schema, Model } from "mongoose";
 
 // Define the event interface
 interface Event {
@@ -7,13 +6,9 @@ interface Event {
   startTime: string;
   endTime: string;
   label: string;
-  day: String;
-  studentId: string;
-  advisorId: string;
-  booked: boolean;
-  status: boolean;
-  date : String
-
+  day: string;
+  date: string;
+  bookedEvents: {}[]; // Specify the type as an array of empty objects
 }
 
 // Define the document interface
@@ -22,24 +17,21 @@ interface EventsDocument extends Document {
   events: Event[];
 }
 
-const eventSchema = new mongoose.Schema({
+const eventSchema = new Schema({
   id: String,
   startTime: String,
   endTime: String,
   label: String,
   day: String,
-  studentId: String,
-  advisorId: String,
-  booked: Boolean,
-  status: Boolean,
-   date : String
+  date: String,
+  bookedEvents: [{}] // Specify the type as an array of empty objects
 });
 
-const eventsSchema = new mongoose.Schema({
+const eventsSchema = new Schema({
   reviewerId: String,
   events: [eventSchema],
 });
 
-const Events = mongoose.model<EventsDocument>("Events", eventsSchema);
+const Events: Model<EventsDocument> = mongoose.model<EventsDocument>("Events", eventsSchema);
 
 export { Events, Event, EventsDocument };

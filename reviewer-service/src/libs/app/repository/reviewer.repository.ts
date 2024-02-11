@@ -74,11 +74,7 @@ export default {
           label,
           day,
           date,
-          studentId: "",
-          advisorId: "",
-          booked: false,
-          status: false,
-          
+          bookedEvents: []
         });
 
         // Save the updated document
@@ -97,11 +93,9 @@ export default {
               label,
               day,
               date,
-              studentId: "",
-              advisorId: "",
-              booked: false,
-              status: false,
-              
+              bookedEvents:[
+          
+              ],
             },
           ],
         });

@@ -27,15 +27,17 @@ export const scheduleTime_Usecase = (dependencies: any) => {
       if (!data) {
         return { status: false, message: "evet data not found" }
       }
-      const response = await reviewerRepository.scheduleEventExist(data.reviewerId, data.startTime, data.endTime, data.day)
+      // const response = await reviewerRepository.scheduleEventExist(data.reviewerId, data.startTime, data.endTime, data.day)
 
       
-      if (response.status==false) {
+      // if (response.status==false) {
   
          
-        return { status: false, message:"Event already scheduled for the specified time and date." }
-      }
+      //   return { status: false, message:"Event already scheduled for the specified time and date." }
+      // }
       const schedule = new Schedule(data);
+      console.log(schedule,"scheduleeeee");
+      
       const res = await reviewerRepository.scheduleEvents(schedule)
       if (res) {
         return { status: true, message: "Event Schedule Successfully" }
