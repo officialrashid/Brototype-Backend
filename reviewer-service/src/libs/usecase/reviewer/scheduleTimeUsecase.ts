@@ -36,7 +36,7 @@ export const scheduleTime_Usecase = (dependencies: any) => {
       //   return { status: false, message:"Event already scheduled for the specified time and date." }
       // }
       const schedule = new Schedule(data);
-      console.log(schedule,"scheduleeeee");
+     
       
       const res = await reviewerRepository.scheduleEvents(schedule)
       if (res) {

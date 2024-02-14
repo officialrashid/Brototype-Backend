@@ -17,7 +17,7 @@ const verifyTokenMiddleware = async (req: Request, res: Response, next: NextFunc
 
     const tokenValue = Array.isArray(idToken) ? idToken[0] : idToken as string;
 
-    console.log(tokenValue, "idToken comnggggg");
+
     
     await admin.auth().verifyIdToken(tokenValue)
       .then((decodedToken) => {

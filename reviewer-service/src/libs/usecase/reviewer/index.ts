@@ -6,7 +6,8 @@ import { getDayTimeLineup_Usecase} from "./getDayTimeLineupUsecase";
 import { getAllDetails_Usecase } from "./getAllDetailsUsecase";
 import {profileUpdate_Usecase } from "./profileUpdateUsecase";
 import { reviewerWrokDetails_Usecase} from "./updateWorkDetailsUsecase"
-import { getProfile_Usecase} from "./getProfileUsecase"
+import { getProfile_Usecase} from "./getProfileUsecase";
+import { reviewTakeCount_Usecase } from "./reviewTakeCountUsecase";
 export{
     scheduleTime_Usecase,
     getScheduleEvents_Usecase,
@@ -16,6 +17,7 @@ export{
     getAllDetails_Usecase,
     profileUpdate_Usecase,
     reviewerWrokDetails_Usecase,
-    getProfile_Usecase
+    getProfile_Usecase,
+    reviewTakeCount_Usecase
 
 }

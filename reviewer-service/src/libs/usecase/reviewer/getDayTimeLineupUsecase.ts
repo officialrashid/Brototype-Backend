@@ -18,10 +18,9 @@ export const getDayTimeLineup_Usecase = (dependencies: any) => {
 
             const newEvent: any[] = [];
             const res = await reviewerRepository.getTimeLineUp(reviewerId, day);
-            console.log(res, "bsbfshbfdvdfhjgdfjhjds");
 
             if (res) {
-                console.log(newEvent, "newEvents");
+
             
                 // Filter events based on the specified day and booked property
                 const filteredResponse = res.filter((data: { date: moment.MomentInput; bookedEvents: { booked: boolean; }[]; }) =>
@@ -29,10 +28,10 @@ export const getDayTimeLineup_Usecase = (dependencies: any) => {
                     data.bookedEvents && data.bookedEvents.length > 0 && data.bookedEvents.some((event: { booked: boolean; }) => event.booked === true)
                 );
             
-                console.log(filteredResponse, "filteredResponse");
+
             
                 if (filteredResponse.length > 0) {
-                    console.log("keriyannuuuuuu");
+
             
                     // Extract only the bookedEvents objects
                     const bookedEventsOnly = filteredResponse.flatMap((data: { bookedEvents: any; }) => data.bookedEvents);
@@ -45,7 +44,7 @@ export const getDayTimeLineup_Usecase = (dependencies: any) => {
                     });
             
                     if (sortedResponse.length > 0) {
-                        console.log("set aayannuuuuuuu");
+              
             
                         return { status: true, sortedResponse };
                     } else {

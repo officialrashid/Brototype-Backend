@@ -13,31 +13,31 @@ export default {
         reviewerId: reviewerId,
         $or: [
           {
-        events: {
-          $elemMatch: {
-            startTime: startTime,
-            endTime: endTime,
-            day: day,
+            events: {
+              $elemMatch: {
+                startTime: startTime,
+                endTime: endTime,
+                day: day,
+              },
+            },
           },
-        },
-      },
-      {
-        events: {
-          $elemMatch: {
-            startTime: startTime,
-            day: day,
+          {
+            events: {
+              $elemMatch: {
+                startTime: startTime,
+                day: day,
+              },
+            },
           },
-        },
-      },
-      {
-        events: {
-          $elemMatch: {
-            endTime: endTime,
-            day: day,
+          {
+            events: {
+              $elemMatch: {
+                endTime: endTime,
+                day: day,
+              },
+            },
           },
-        },
-      },
-      ],
+        ],
       });
 
       if (existingEvents.length > 0) {
@@ -60,7 +60,7 @@ export default {
       return { status: false, message: "Data is missing" };
     }
 
-    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status,date } = data;
+    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status, date } = data;
 
     try {
       // Check if a document with the given reviewerId exists
@@ -93,8 +93,8 @@ export default {
               label,
               day,
               date,
-              bookedEvents:[
-          
+              bookedEvents: [
+
               ],
             },
           ],
@@ -167,18 +167,18 @@ export default {
     }
   },
   getTimeLineUp: async (reviewerId: string, day: string) => {
-    console.log(day,"pppppppp");
-    
-    try {
-     
+    console.log(day, "pppppppp");
 
-      const reviewer = await schema.Events.findOne({reviewerId})
-      if(!reviewer){
-        return { status:false,messsage:"reviewer not found"}
+    try {
+
+
+      const reviewer = await schema.Events.findOne({ reviewerId })
+      if (!reviewer) {
+        return { status: false, messsage: "reviewer not found" }
       }
-    
-   
-      
+
+
+
       return reviewer.events;
     } catch (error) {
       return { status: false, message: "Error in the get TimeLine up" };
@@ -192,7 +192,7 @@ export default {
       return { status: false, message: "Error in the get all details " }
     }
   },
-  profileUpdate: async (profileData: { reviewerId: any; imageUrl: any; firstName: any; lastName: any; email: any; phone: any; age:string;gender:string }) => {
+  profileUpdate: async (profileData: { reviewerId: any; imageUrl: any; firstName: any; lastName: any; email: any; phone: any; age: string; gender: string }) => {
     try {
       // Check if the profile with the given studentId exists
       const existingProfile = await schema.Profile.findOne({
@@ -256,16 +256,79 @@ export default {
       return { status: false, message: "Error in the update education details" }
     }
   },
-  getProfile : async (reviewerId:string)=>{
-     try {
-       const response = await schema.Profile.find({reviewerId:reviewerId})
-       return response
-     } catch (error) {
-      return {status:false,message:"some issue in get profile" }
-     }
+  getProfile: async (reviewerId: string) => {
+    try {
+      const response = await schema.Profile.find({ reviewerId: reviewerId })
+      return response
+    } catch (error) {
+      return { status: false, message: "some issue in get profile" }
+    }
+  },
+  getReviewTakeCount: async (reviewerId: string) => {
+    try {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1; // JavaScript months are zero-based, so we add 1
+
+      const reviewer = await schema.Events.findOne({ reviewerId: reviewerId });
+      if (!reviewer) {
+        return { status: false, message: "Reviewer not found" };
+      }
+
+      const monthCounts: { [key: string]: number } = {};
+
+      // Initialize monthCounts with counts for all months set to 0
+      for (let month = 1; month <= 12; month++) {
+        monthCounts[month.toString().padStart(2, '0')] = 0;
+      }
+
+      // Iterate through each event
+      reviewer.events.forEach((evt: any) => { // Assuming you cannot specify the exact type of evt
+        // Extract year and month from the event's date
+        const dateParts = evt.date.split("-");
+        const year = parseInt(dateParts[2]);
+        const month = parseInt(dateParts[1]);
+
+        // Check if the event is from the current year
+        if (year === currentYear) {
+          // Count booked events with status=true for each month
+          const count = evt.bookedEvents.reduce((acc: number, event: any) => {
+            if (event.booked === true && event.status === true) {
+              return acc + 1;
+            } else {
+              return acc;
+            }
+          }, 0);
+
+          // Add the count to the respective month in monthCounts
+          monthCounts[month.toString().padStart(2, '0')] += count;
+        }
+      });
+
+      // Convert monthCounts to an array of objects [{ month, count }]
+      const countsArray = Object.entries(monthCounts).map(([month, count]) => ({ month, count }));
+
+      // Sort the countsArray based on the month
+      countsArray.sort((a, b) => parseInt(a.month) - parseInt(b.month));
+
+      // Extract only the counts from the sorted array
+      const sortedCounts = countsArray.map(({ count }) => count);
+
+      console.log(sortedCounts);
+      if (!sortedCounts) {
+        return { status: false, message: "No review Count found current Year" }
+      } else {
+        return { status: true, sortedCounts }
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
 
+
+
+
+
+
 }
-
-

@@ -9,8 +9,6 @@ export default (dependencies: any) => {
         useCase: { deleteScheduleEvents_Usecase }
     } = dependencies
     const deleteScheduleEventsController = async (req: Request, res: Response) => {
-          console.log(req.query,"{}{__delete bodyyyyyyyyyyyyyy");
-          
         const response = await deleteScheduleEvents_Usecase(dependencies).executeFunction(req.query)
         res.status(201).json(response)
 

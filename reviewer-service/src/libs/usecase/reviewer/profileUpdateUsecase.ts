@@ -28,8 +28,6 @@ export const profileUpdate_Usecase = (dependencies: any) => {
   }
 
   const executeFunction = async (data: reviewersData, file: any) => {
-    console.log(file, "))))))0000000");
-    console.log(data, "+++++++++++++");
 
     const reviewerId = data.reviewerId
     if (!file || !reviewerId) return { message: "Bad Request" };

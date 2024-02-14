@@ -11,7 +11,7 @@ export const deleteScheduleEvents_Usecase = (dependencies: any) => {
   }
 
   const executeFunction = async (data:any) => {
-    console.log(data,"data schedule data coming");
+
     
     try {
       if (!data) {

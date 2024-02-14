@@ -16,7 +16,7 @@ export const getAllDetails_Usecase = (dependencies: any) => {
     const currentDate = new Date()
     const currentMomemtoDate = moment();
     const currentMonth = currentMomemtoDate.format("MM"); // Get the current month
-console.log(currentMonth,"currrentMonth");
+
 
     let dayReviewCount = 0;
     let dayTakeReviewCount = 0;
@@ -27,15 +27,12 @@ console.log(currentMonth,"currrentMonth");
         return { status: false, message: "reviewer not found" };
       }
       const response = await reviewerRepository.getAllDetails(reviewerId);
-      console.log(response[0].events, ";;;;;;;;;;response in reviewer all data");
+
 
       if (response.length > 0) {
         response[0].events.forEach((data: any) => {
           data.bookedEvents.forEach((bookedEvent: any) => {
-            console.log(currentMonth,"sdfbdsfsdjfdsjf");
-            
-            console.log(moment(bookedEvent.createdAt).format("MM"));
-            
+           
             // Check if the review is booked, status is true, and it's in the current month
             if (
               bookedEvent.booked === true &&

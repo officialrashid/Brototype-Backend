@@ -8,7 +8,7 @@ export default (dependencies:any)=>{
  const getReviewerProfileController = async (req:Request,res:Response)=>{
     const {reviewerId} = req.params;
     const response = await getProfile_Usecase(dependencies).executeFunction(reviewerId)
-    console.log(response,"response in controller");
+
     
     res.status(201).json(response)
     
