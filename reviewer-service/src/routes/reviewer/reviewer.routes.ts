@@ -21,6 +21,6 @@ export default (dependencies:any)=>{
   router.get('/review-take-count/:reviewerId',reviewTakeCountController)
   router.post('/profile-update',upload.single("image"),profileUpdateController)
   router.post('/update-work-details',updateWorkDetailsController)
-  router.get('/get-reviewer-profile/:reviewerId',jwtVerification(secretKey),verifyTokenMiddleware,getReviewerProfileController)
+  router.get('/get-reviewer-profile/:reviewerId',getReviewerProfileController)
   return router
 }
