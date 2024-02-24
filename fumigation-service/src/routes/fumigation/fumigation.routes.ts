@@ -19,7 +19,7 @@ export default (dependencies:any)=>{
   router.post('/invigilator-login',invigilatorLoginController) //
   router.post('/create-invigilator',jwtVerify,createInvigilatorController) //
   router.get('/get-all-batches',jwtVerify,getAllBatches)
-  router.get('/get-students-mark',jwtVerify,getStudentsMarkController)
+  router.get('/get-students-mark',getStudentsMarkController)
   router.delete('/remove-batchwise-students',jwtVerify,removeBatchwiseStudentsController)
   router.delete('/remove-batch',jwtVerify,removeBatchController)
   router.get('/edit-batch',jwtVerify,editBatchController)

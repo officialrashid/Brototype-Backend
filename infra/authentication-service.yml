@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: authentication-service
-          image: officialrashid/authentication-service:latest
+          image: officialrashid/authentication-service:latest 
         
 
 ---
