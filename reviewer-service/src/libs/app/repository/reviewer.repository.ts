@@ -2,58 +2,47 @@ import { callbackPromise } from "nodemailer/lib/shared";
 import schema from "../dataBase/schema"
 import reviewer from "../../controllers/reviewer";
 import moment from "moment";
+import { String } from "aws-sdk/clients/acm";
 
 
 
 export default {
 
-  scheduleEventExist: async (reviewerId: string, startTime: string, endTime: string, day: string) => {
+  scheduleEventExist: async (reviewerId: any, startTime: moment.MomentInput, endTime: moment.MomentInput, day: any, date: string) => {
     try {
-      const existingEvents = await schema.Events.find({
-        reviewerId: reviewerId,
-        $or: [
-          {
-            events: {
-              $elemMatch: {
-                startTime: startTime,
-                endTime: endTime,
-                day: day,
-              },
-            },
-          },
-          {
-            events: {
-              $elemMatch: {
-                startTime: startTime,
-                day: day,
-              },
-            },
-          },
-          {
-            events: {
-              $elemMatch: {
-                endTime: endTime,
-                day: day,
-              },
-            },
-          },
-        ],
-      });
+        // Parse the incoming start and end times into moment objects
+        const start = moment(startTime, 'hh:mma');
+        const end = moment(endTime, 'hh:mma');
+        
+        // Query to find overlapping events
+        const existingEvents = await schema.Events.find({
+            reviewerId: reviewerId,
+        });
 
-      if (existingEvents.length > 0) {
-        // Event already exists
+        // Loop through existing events to check for overlaps
+        for (const eventData of existingEvents[0].events) {
+            if (eventData.date === date) {
+                const existingStart = moment(eventData.startTime, 'hh:mma');
+                const existingEnd = moment(eventData.endTime, 'hh:mma');
 
+                // Check for overlap
+                if (
+                    (start.isBetween(existingStart, existingEnd) || end.isBetween(existingStart, existingEnd)) ||
+                    (existingStart.isBetween(start, end) || existingEnd.isBetween(start, end))
+                ) {
+                    // There is an overlap, return false
+                    return { status: false };
+                }
+            }
+        }
 
-        return { status: false, message: "Event already scheduled for the specified time and date." };
-      }
-
-      return existingEvents;
+        // No overlaps found, return true
+        return { status: true };
     } catch (err) {
-      console.log(err, "error in the scheduleEventExist check function");
-      throw err;
+        console.log(err, "error in the scheduleEventExist check function");
+        throw err;
     }
-  },
-
+},
 
   scheduleEvents: async (data: any) => {
     if (!data) {

@@ -15,52 +15,48 @@ admin.initializeApp({
 export default {
 
   updatePersonalWorkout: async (data: any) => {
-    console.log(data.personalWorkouts, "opppesss");
+
 
     try {
       if (!data) {
         return { status: false, message: "Personal workout data not found" };
       }
-
-      console.log(data.studentId, "First log");
-      console.log(data.personalWorkouts, "Second log");
-
       const existingStudent = await schema.WeeklyTaskUpdation.findOne({ studentId: data.studentId });
 
-if (existingStudent) {
-    const personalWorkoutArray = existingStudent.personalWorkouts;
+      if (existingStudent) {
+        const personalWorkoutArray = existingStudent.personalWorkouts;
 
-    if (personalWorkoutArray.length > 0) {
-        const existingTaskIndex = personalWorkoutArray.findIndex(
+        if (personalWorkoutArray.length > 0) {
+          const existingTaskIndex = personalWorkoutArray.findIndex(
             (task) => task.week === data.weekName && task.mainQuestionNumber === data.mainQuestionNumber
-        );
-        console.log(existingTaskIndex,"existingTaskIndexxxxx");
-        
-        if (existingTaskIndex !== -1) {
+          );
+
+
+          if (existingTaskIndex !== -1) {
             const existingTask = personalWorkoutArray[existingTaskIndex];
-              console.log(existingTask,"llllllll-----------");
-              
+
+
             // Task exists, update it
             try {
-                existingTask.questionNumbersAndAnswers.forEach((qna, index) => {
-                  data.personalWorkouts.map((item:any,index:number)=>{
-                    console.log(item,"item in backenddd");
-                    
-                    if (qna.nestedQuestionNumber === item.nestedQuestionNumber) {
-                      console.log("keriiiiiiiii");
-                      qna.nestedQuestionNumber = item.nestedQuestionNumber
-                      qna.answer = item.answer
-                     
+              existingTask.questionNumbersAndAnswers.forEach((qna, index) => {
+                data.personalWorkouts.map((item: any, index: number) => {
+
+
+                  if (qna.nestedQuestionNumber === item.nestedQuestionNumber) {
+
+                    qna.nestedQuestionNumber = item.nestedQuestionNumber
+                    qna.answer = item.answer
+
                   }
-                  })
-                   
-                });
+                })
 
-                const updatedStudent = await existingStudent.save();
+              });
 
-                console.log(updatedStudent, "Updated Student");
+              const updatedStudent = await existingStudent.save();
 
-                return { status: true, message: "Personal workout successfully updated", updatedStudent };
+
+
+              return { status: true, message: "Personal workout successfully updated", updatedStudent };
 
             } catch (error) {
               console.error("Error updating personal workout:", error);
@@ -87,7 +83,7 @@ if (existingStudent) {
           };
 
           const response = await schema.WeeklyTaskUpdation.updateOne({ studentId: data.studentId }, updateFields);
-          console.log(response, "Response updated");
+
 
           if (!response) {
             return { status: false, message: "No changes made to the student record" };
@@ -99,7 +95,7 @@ if (existingStudent) {
           return { status: false, message: "Personal workout update issue found" };
         }
       } else {
-        console.log("Student not found, creating a new entry");
+
 
         const personalWorkout = {
           studentId: data.studentId,
@@ -118,7 +114,7 @@ if (existingStudent) {
 
         try {
           const response = await schema.WeeklyTaskUpdation.create(personalWorkout);
-          console.log(response, "Response created");
+
 
           if (response) {
             return { status: true, message: "Personal workout successfully created", response };
@@ -126,64 +122,63 @@ if (existingStudent) {
             return { status: false, message: "Update task issue found" };
           }
         } catch (error) {
-          console.error("Error creating personal workout:", error);
+
           return { status: false, message: "Personal workout creation issue found" };
         }
       }
     } catch (error) {
-      console.error("Error updating personal workout:", error);
+
       return { status: false, message: "Personal workout update issue found" };
     }
   },
   updateTechnicalWorkout: async (data: any) => {
-    console.log(data,"data in technicalll");
-    
+
+
     try {
       if (!data) {
         return { status: false, message: "Personal workout data not found" };
       }
 
-      console.log(data.studentId, "First log");
-      console.log(data.technicalWorkouts, "Second log");
+
 
       const existingStudent = await schema.WeeklyTaskUpdation.findOne({ studentId: data.studentId });
 
       if (existingStudent) {
-          const technicalWorkoutArray = existingStudent.technicalWorkouts;
-      
-          if (technicalWorkoutArray.length > 0) {
-              const existingTaskIndex = technicalWorkoutArray.findIndex(
-                  (task) => task.week === data.weekName && task.mainQuestionNumber === data.mainQuestionNumber
-              );
-              console.log(existingTaskIndex,"existingTaskIndexxxxx");
-              
-              if (existingTaskIndex !== -1) {
-                  const existingTask = technicalWorkoutArray[existingTaskIndex];
-                    console.log(existingTask,"llllllll-----------");
-                    
-                  // Task exists, update it
-                  try {
-                      existingTask.questionNumbersAndAnswers.forEach((qna, index) => {
-                        data.technicalWorkouts.map((item:any,index:number)=>{
-                          console.log(item,"item in backenddd");
-                          
-                          if (qna.nestedQuestionNumber === item.nestedQuestionNumber) {
-                            console.log("keriiiiiiiii");
-                            qna.nestedQuestionNumber = item.nestedQuestionNumber
-                            qna.answer = item.answer
-                           
-                        }
-                        })
-                         
-                      });
-      
-                      const updatedStudent = await existingStudent.save();
-      
-                      console.log(updatedStudent, "Updated Student");
-      
-                      return { status: true, message: "Personal workout successfully updated", updatedStudent };
+        const technicalWorkoutArray = existingStudent.technicalWorkouts;
+
+        if (technicalWorkoutArray.length > 0) {
+          const existingTaskIndex = technicalWorkoutArray.findIndex(
+            (task) => task.week === data.weekName && task.mainQuestionNumber === data.mainQuestionNumber
+          );
+
+
+          if (existingTaskIndex !== -1) {
+            const existingTask = technicalWorkoutArray[existingTaskIndex];
+
+
+            // Task exists, update it
+            try {
+              existingTask.questionNumbersAndAnswers.forEach((qna, index) => {
+                data.technicalWorkouts.map((item: any, index: number) => {
+
+
+                  if (qna.nestedQuestionNumber === item.nestedQuestionNumber) {
+
+                    qna.nestedQuestionNumber = item.nestedQuestionNumber
+                    qna.answer = item.answer
+
+                  }
+                })
+
+              });
+
+              const updatedStudent = await existingStudent.save();
+
+
+
+              return { status: true, message: "Personal workout successfully updated", updatedStudent };
             } catch (error) {
-              console.error("Error updating personal workout:", error);
+
               return { status: false, message: "Personal workout update issue found" };
             }
           }
@@ -203,7 +198,7 @@ if (existingStudent) {
           };
 
           const response = await schema.WeeklyTaskUpdation.updateOne({ studentId: data.studentId }, updateFields);
-          console.log(response, "Response updated");
+
 
           if (!response) {
             return { status: false, message: "No changes made to the student record" };
@@ -212,11 +207,11 @@ if (existingStudent) {
             return { status: true, message: "Personal workout successfully updated", response };
           }
         } catch (error) {
-          console.error("Error updating personal workout:", error);
+
           return { status: false, message: "Personal workout update issue found" };
         }
       } else {
-        console.log("Student not found, creating a new entry");
+
 
         const technicalWorkouts = {
           studentId: data.studentId,
@@ -235,7 +230,7 @@ if (existingStudent) {
 
         try {
           const response = await schema.WeeklyTaskUpdation.create(technicalWorkouts);
-          console.log(response, "Response created");
+
 
           if (response) {
             return { status: true, message: "Personal workout successfully created", response };
@@ -243,61 +238,60 @@ if (existingStudent) {
             return { status: false, message: "Update task issue found" };
           }
         } catch (error) {
-          console.error("Error creating personal workout:", error);
+
           return { status: false, message: "Personal workout creation issue found" };
         }
       }
     } catch (error) {
-      console.error("Error updating personal workout:", error);
+
       return { status: false, message: "Personal workout update issue found" };
     }
   },
   updateMiscellaneousWorkout: async (data: any) => {
-    console.log(data,"data in micesgdfcgb");
-    
+
+
     try {
       if (!data) {
         return { status: false, message: "Personal workout data not found" };
       }
 
-      console.log(data.studentId, "First log");
-      console.log(data.miscellaneousWorkouts, "Second log");
+
 
       const existingStudent = await schema.WeeklyTaskUpdation.findOne({ studentId: data.studentId });
 
       if (existingStudent) {
-          const miscellaneousWorkoutArray = existingStudent.miscellaneousWorkouts;
-      
-          if (miscellaneousWorkoutArray.length > 0) {
-              const existingTaskIndex = miscellaneousWorkoutArray.findIndex(
-                  (task) => task.week === data.weekName && task.mainQuestionNumber === data.mainQuestionNumber
-              );
-              console.log(existingTaskIndex,"existingTaskIndexxxxx");
-              
-              if (existingTaskIndex !== -1) {
-                  const existingTask = miscellaneousWorkoutArray[existingTaskIndex];
-                    console.log(existingTask,"llllllll-----------");
-                    
-                  // Task exists, update it
-                  try {
-                      existingTask.questionNumbersAndAnswers.forEach((qna, index) => {
-                        data.miscellaneousWorkouts.map((item:any,index:number)=>{
-                          console.log(item,"item in backenddd");
-                          
-                          if (qna.nestedQuestionNumber === item.nestedQuestionNumber) {
-                            console.log("keriiiiiiiii");
-                            qna.nestedQuestionNumber = item.nestedQuestionNumber
-                            qna.answer = item.answer
-                           
-                        }
-                        })
-                         
-                      });
-      
-                      const updatedStudent = await existingStudent.save();
-      
-                      console.log(updatedStudent, "Updated Student");
-      
+        const miscellaneousWorkoutArray = existingStudent.miscellaneousWorkouts;
+
+        if (miscellaneousWorkoutArray.length > 0) {
+          const existingTaskIndex = miscellaneousWorkoutArray.findIndex(
+            (task) => task.week === data.weekName && task.mainQuestionNumber === data.mainQuestionNumber
+          );
+
+
+          if (existingTaskIndex !== -1) {
+            const existingTask = miscellaneousWorkoutArray[existingTaskIndex];
+
+
+            // Task exists, update it
+            try {
+              existingTask.questionNumbersAndAnswers.forEach((qna, index) => {
+                data.miscellaneousWorkouts.map((item: any, index: number) => {
+
+
+                  if (qna.nestedQuestionNumber === item.nestedQuestionNumber) {
+
+                    qna.nestedQuestionNumber = item.nestedQuestionNumber
+                    qna.answer = item.answer
+
+                  }
+                })
+
+              });
+
+              const updatedStudent = await existingStudent.save();
+
+
+
 
               if (!response) {
                 return { status: false, message: "No changes made to the student record" };
@@ -305,7 +299,7 @@ if (existingStudent) {
                 return { status: true, message: "Personal workout successfully updated", response };
               }
             } catch (error) {
-              console.error("Error updating personal workout:", error);
+
               return { status: false, message: "Personal workout update issue found" };
             }
           }
@@ -325,7 +319,7 @@ if (existingStudent) {
           };
 
           const response = await schema.WeeklyTaskUpdation.updateOne({ studentId: data.studentId }, updateFields);
-          console.log(response, "Response updated");
+
 
           if (!response) {
             return { status: false, message: "No changes made to the student record" };
@@ -334,11 +328,11 @@ if (existingStudent) {
             return { status: true, message: "Personal workout successfully updated", response };
           }
         } catch (error) {
-          console.error("Error updating personal workout:", error);
+
           return { status: false, message: "Personal workout update issue found" };
         }
       } else {
-        console.log("Student not found, creating a new entry");
+
 
         const miscellaneousWorkouts = {
           studentId: data.studentId,
@@ -357,7 +351,7 @@ if (existingStudent) {
 
         try {
           const response = await schema.WeeklyTaskUpdation.create(miscellaneousWorkouts);
-          console.log(response, "Response created");
+
 
           if (response) {
             return { status: true, message: "Personal workout successfully created", response };
@@ -365,12 +359,12 @@ if (existingStudent) {
             return { status: false, message: "Update task issue found" };
           }
         } catch (error) {
-          console.error("Error creating personal workout:", error);
+
           return { status: false, message: "Personal workout creation issue found" };
         }
       }
     } catch (error) {
-      console.error("Error updating personal workout:", error);
+
       return { status: false, message: "Personal workout update issue found" };
     }
   },
@@ -387,7 +381,7 @@ if (existingStudent) {
 
 
     const { studentId, mainQuestionNumber, taskType, weekName } = data;
-    console.log(studentId, mainQuestionNumber, taskType, weekName, "log from data");
+
 
     try {
       let query: any = {
@@ -467,16 +461,16 @@ if (existingStudent) {
         if (existingTask) {
           // If 'week1' exists, update the existing task
           await schema.TechnicalWorkouts.updateOne({ _id: existingTask._id }, { $set: data });
-          return { status:true,message:"Technical Task Updated Successfully"}
+          return { status: true, message: "Technical Task Updated Successfully" }
         } else {
           // If 'week1' doesn't exist, create a new task
           await schema.TechnicalWorkouts.create(data);
-          return { status:true,message:"Technical Task Created Successfully"}
+          return { status: true, message: "Technical Task Created Successfully" }
         }
       } else {
         // If 'flutter' domain doesn't exist, push 'week1' as a new task
         await schema.TechnicalWorkouts.create(data);
-        return { status:true,message:"Technical Task Created Successfully"}
+        return { status: true, message: "Technical Task Created Successfully" }
       }
     } catch (error) {
       console.error('Error updating/creating task:', error);
@@ -549,27 +543,27 @@ if (existingStudent) {
     console.log(domain, week, "task get for technicalassss");
 
     try {
-        const query = { domain: domain.trim(), week: week.trim() };  // Trim whitespaces if necessary
-        console.log("Query:", query);
+      const query = { domain: domain.trim(), week: week.trim() };  // Trim whitespaces if necessary
 
-        const response = await schema.TechnicalWorkouts.find(query);
-        console.log(response, "responseee");
 
-        if (!response || response.length === 0) {
-            return { status: false, message: 'No documents found for the specified domain and week' };
-        } else {
-            return { status: true, response };
-        }
+      const response = await schema.TechnicalWorkouts.find(query);
+
+
+      if (!response || response.length === 0) {
+        return { status: false, message: 'No documents found for the specified domain and week' };
+      } else {
+        return { status: true, response };
+      }
     } catch (error) {
-        // Handle the error, e.g., log it or return an error response
-        console.error("Error in getTechnicalWorkout:", error);
-        return { status: false, message: 'An error occurred' };
+      // Handle the error, e.g., log it or return an error response
+
+      return { status: false, message: 'An error occurred' };
     }
-}
+  }
 
 
 
 
 
-  
+
 }
