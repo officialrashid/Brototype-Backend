@@ -9,14 +9,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 
 });
-interface Student {
-  _id: string;
-  name?: string | null; // The '?' indicates the property is optional
-  email?: string | null; // The '?' indicates the property is optional
-}
-interface studentLogin {
-   uniqueId: String
-}
+
 export default {
 
   createUniqueId: async () => {
@@ -139,5 +132,38 @@ export default {
     } catch (error) {
       return { error: 'Internal server error' };
     }
+},
+superleadLogin : async (uniqueId:string) =>{
+  try {
+
+    const superlead = await schema.Superleads.findOne({ uniqueId });
+      
+    if (superlead) {
+      console.log(superlead);
+
+      const superleads = {
+        _id: superlead._id.toString(),
+        name: superlead.name?.toString(),
+        email: superlead.email?.toString()
+      };
+
+      const accessToken = await jwt.sign(superleads, config.secretKey, { expiresIn: '7d' });
+      if (accessToken) {
+        const uid = superleads._id.toString();
+        const customToken = await admin.auth().createCustomToken(uid);
+        if (customToken) {
+          return { superlead, accessToken, customToken };
+        }else{
+          return {status:false,message:"superlead not found"}
+        }
+      }else{
+        return {status:false,message:"your access denied some time wait"}
+      }
+    }else{
+      return {status:false,message:"superlead not found"}
+    }
+  } catch (error) {
+    return { error: 'Internal server error' };
+  }
 }
 }

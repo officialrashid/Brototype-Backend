@@ -20,7 +20,8 @@ export default {
         });
 
         // Loop through existing events to check for overlaps
-        for (const eventData of existingEvents[0].events) {
+        if(existingEvents.length > 0){
+          for (const eventData of existingEvents[0].events) {
             if (eventData.date === date) {
                 const existingStart = moment(eventData.startTime, 'hh:mma');
                 const existingEnd = moment(eventData.endTime, 'hh:mma');
@@ -38,6 +39,10 @@ export default {
 
         // No overlaps found, return true
         return { status: true };
+        }else{
+          return { status: true }
+        }
+      
     } catch (err) {
         console.log(err, "error in the scheduleEventExist check function");
         throw err;

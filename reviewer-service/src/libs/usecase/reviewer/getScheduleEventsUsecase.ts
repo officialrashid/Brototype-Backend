@@ -18,7 +18,7 @@ export const getScheduleEvents_Usecase = (dependencies: any) => {
         return { status: false, message: "evet data not found" }
       }
       const response = await reviewerRepository.getScheduleEvents(reviewerId)
-      if(response.length>0){
+      if(response.length > 0){
         return {status:true,response}
       }else{
         return {status:false,message:"scheduleEvents not found"}
