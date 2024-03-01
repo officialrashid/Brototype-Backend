@@ -190,5 +190,27 @@ getAllStudentsStatus : async (uniqueId:string) => {
   } catch (error) {
     return {error:'Internal server error'}
   }
+},
+updateStudentStatus: async (studentId:string, action:string) => {
+  console.log("Incoming backend action", studentId, action);
+  
+  try {
+    if (!studentId) {
+      return { status: false, message: "Student not found" };
+    }
+
+    const student:any = await schema.Students.updateOne({studentId: studentId },{$set:{isStatus:action}},{new:true});
+
+    if (!student) {
+      return { status: false, message: "Student not found" };
+    }
+    // Return success message or other appropriate response
+    return { status: true, message: "Student status updated successfully" };
+  } catch (error) {
+    // Handle errors
+    console.error("Error in updating student status:", error);
+    return { status: false, message: "An error occurred while updating student status" };
+  }
 }
+
 }

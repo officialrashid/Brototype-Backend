@@ -4,6 +4,7 @@ import studentLogin_Controller from "./studentLoginController"
 import reviewerLogin_Controller from "./reviewerLoginController"
 import superleadLogin_Controller from "./superleadLoginController"
 import getAllStudentsStatus_Controller from "./getAllStudentsStatusController"
+import updateStudentStatus_Controller from "./updateStudentStatusController"
 export default (dependencies:any)=>{
 
     return{
@@ -12,5 +13,6 @@ export default (dependencies:any)=>{
         reviewerLoginController: reviewerLogin_Controller(dependencies),
         superleadLoginController: superleadLogin_Controller(dependencies),
         getAllStudentsStatusController: getAllStudentsStatus_Controller(dependencies),
+        updateStudentStatusController: updateStudentStatus_Controller(dependencies),
     }
 }

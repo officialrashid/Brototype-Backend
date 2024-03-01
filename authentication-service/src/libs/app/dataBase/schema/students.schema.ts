@@ -8,6 +8,7 @@ const studentsSchema = new mongoose.Schema({
     phone: String,
     batch: String,
     uniqueId: String,
+    isStatus: String
 });
 
 const Students = mongoose.model("Students", studentsSchema);
