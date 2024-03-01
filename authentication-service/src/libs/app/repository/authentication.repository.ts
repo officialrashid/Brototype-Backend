@@ -165,5 +165,30 @@ superleadLogin : async (uniqueId:string) =>{
   } catch (error) {
     return { error: 'Internal server error' };
   }
+},
+getAllStudentsStatus : async (uniqueId:string) => {
+  try {
+    const indexM = uniqueId.indexOf('M');
+
+    // Extract the prefix (all characters before 'M')
+    const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+    console.log(uniqueLetters,"uniqueLetters");
+
+    // Match documents where uniqueId starts with the extracted prefix
+    const response = await schema.Students.aggregate([
+      {
+        $match: {
+          batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
+        }
+      }
+    ]);
+    if(response && response.length > 0){
+      return {response}
+    }else{
+      return {message:"students not found your hub"}
+    }
+  } catch (error) {
+    return {error:'Internal server error'}
+  }
 }
 }

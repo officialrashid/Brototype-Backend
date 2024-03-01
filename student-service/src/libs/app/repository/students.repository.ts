@@ -418,6 +418,66 @@ getStudentCurrentWeek: async (studentId:string, batchId:string) => {
       console.error("Error in getStudentPassedWeeksCount:", error);
       return { status: false, message: "Internal server error" };
   }
-}
+},
+getAllStudents: async (uniqueId: string) => {
+  console.log(uniqueId, "uniqueId cominggg");
 
+  try {
+    // Find the index of 'M' in the uniqueId
+    const indexM = uniqueId.indexOf('M');
+
+    // Extract the prefix (all characters before 'M')
+    const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+    console.log(uniqueLetters,"uniqueLetters");
+
+    // Match documents where uniqueId starts with the extracted prefix
+    const result = await schema.Manifest.aggregate([
+      {
+        $match: {
+          batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
+        }
+      }
+    ]);
+
+    const response = await schema.WeekRecord.aggregate([
+      // Unwind the students array to deconstruct it into separate documents
+      { $unwind: "$students" },
+    
+      // Match only documents where the status is true and repeat is false
+      {
+        $match: {
+          "students.weeks.status": true,
+          "students.weeks.repeat": false
+        }
+      },
+    
+      // Group by studentId to regroup documents by their original studentId
+      {
+        $group: {
+          _id: "$students.studentId",
+          lastWeek: { $last: "$students.weeks.week" } // Get the last week where repeat is false
+        }
+      },
+    
+      // Project to include only the studentId and current week
+      {
+        $project: {
+          _id: 0,
+          studentId: "$_id",
+          currentWeek: { $arrayElemAt: ["$lastWeek", -1] } // Extract the first (and only) element of the array
+        }
+      }
+    ]);
+  if(result.length > 0 && response.length > 0){
+    console.log("kerriiiiiiii");
+    
+    return {students:result,studentCurrentWeek:response}
+  }else{
+    return {message:"students not found"}
+  }
+  } catch (error) {
+    console.error(error);
+    throw error; // Rethrow the error for further handling if needed
+  }
+}
 }
