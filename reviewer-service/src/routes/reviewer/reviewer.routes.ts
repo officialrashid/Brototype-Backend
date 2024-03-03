@@ -10,7 +10,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController} = reviewer_Controller(dependencies) 
+  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController,getAllReviewersProfileController} = reviewer_Controller(dependencies) 
 
   router.post('/schedule-event',scheduleTimeController)
   router.get('/get-schedule-events/:reviewerId',getScheduleEventsController)
@@ -22,5 +22,6 @@ export default (dependencies:any)=>{
   router.post('/profile-update',upload.single("image"),profileUpdateController)
   router.post('/update-work-details',updateWorkDetailsController)
   router.get('/get-reviewer-profile/:reviewerId',getReviewerProfileController)
+  router.get('/get-all-reviewers-profile',getAllReviewersProfileController)
   return router
 }

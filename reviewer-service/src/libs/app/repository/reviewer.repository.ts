@@ -317,12 +317,18 @@ export default {
     } catch (err) {
       console.error(err);
     }
+  },
+  getAllReviewersProfile : async () =>{
+    try {
+      const response = await schema.Profile.find({})
+      if(response && response.length > 0){
+        return {status:true,response}
+      }else{
+        return {status:false,message:"reviewers not found"}
+      }
+    } catch (error) {
+      return { status:false,message:"Error in the get all reviewers profile" }
+    }
   }
-
-
-
-
-
-
 
 }

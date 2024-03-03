@@ -8,6 +8,7 @@ import {profileUpdate_Usecase } from "./profileUpdateUsecase";
 import { reviewerWrokDetails_Usecase} from "./updateWorkDetailsUsecase"
 import { getProfile_Usecase} from "./getProfileUsecase";
 import { reviewTakeCount_Usecase } from "./reviewTakeCountUsecase";
+import {getAllReviewersProfile_Usecase} from "./getAllReviewersProfileUsecase"
 export{
     scheduleTime_Usecase,
     getScheduleEvents_Usecase,
@@ -18,6 +19,7 @@ export{
     profileUpdate_Usecase,
     reviewerWrokDetails_Usecase,
     getProfile_Usecase,
-    reviewTakeCount_Usecase
+    reviewTakeCount_Usecase,
+    getAllReviewersProfile_Usecase
 
 }

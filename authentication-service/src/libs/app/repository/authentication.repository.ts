@@ -110,7 +110,7 @@ export default {
   
         const reviewers = {
           _id: reviewer._id.toString(),
-          name: reviewer.name?.toString(),
+          name: reviewer.firstName?.toString(),
           email: reviewer.email?.toString()
         };
   
@@ -211,6 +211,82 @@ updateStudentStatus: async (studentId:string, action:string) => {
     console.error("Error in updating student status:", error);
     return { status: false, message: "An error occurred while updating student status" };
   }
-}
+},
+getHubwiseStudentsDetails: async (uniqueId:string) => { 
+  try {
+    if (!uniqueId) {
+      return { status: false, message: "Student not found Your Hub" };
+    }
+    const indexM = uniqueId.indexOf('M');
+    const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+    const response = await schema.Students.aggregate([
+      {
+        $match: {
+          batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
+        }
+      }
+    ]);
+    if(response && response.length > 0){
+      return {response}
+    }else{
+      return {message:"students not found your hub"}
+    }
+  } catch (error) {
+    return { status: false, message: "An error occurred while get hubwise students details" };
+  }
+},
+getAllReviewers : async () =>{
+   try {
+     const response = await schema.Reviewers.find({})
+     if(response && response.length > 0){
+      return response;
+     }else{
+      return {status:false,message:"reviewers not found"}
+     }
+   } catch (error) {
+     return {status:false,message:"Internal Server Error"}
+   }
+},
+createReviewersUniqueId: async () => {
+  try {
+    const response = await schema.Reviewers.find().sort({ _id: -1 }).limit(1).exec()
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+
+},
+reviewerEmailExist : async (email:string,phone:string)=>{
+  try {
+    const response = await schema.Reviewers.find({ $or: [{ email }, { phone }] });
+    return response;
+  } catch (err) {
+    return {status:false,message:"An Error occur whilte creating Reviewer"}
+  }
+},
+reviewerUniqueIdExist: async (uniqueId: String) => {
+  try {
+    const response = await schema.Reviewers.find({ uniqueId: uniqueId })
+    return response;
+  } catch (err) {
+    return {status:false,message:"An Error occur whilte creating Reviewer"}
+  }
+
+},
+createReviewers: async (data: any, uniqueId: string) => {
+  try {
+    const reviewerData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone,
+      uniqueId: uniqueId,
+    };
+    const response = await schema.Reviewers.create(reviewerData);
+    return { status: true, message: "Reviewer created successfully" };
+  } catch (err) {
+    return {status:false,message:"An Error occur whilte creating Reviewer"}
+  }
+},
 
 }

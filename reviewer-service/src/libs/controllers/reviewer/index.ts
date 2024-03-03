@@ -1,13 +1,14 @@
-import scheduleTime_Controller from "./scheduleTimeController"
-import getScheduleEvents_Controller from "./getScheduleEventsController"
-import updateScheduleEvents_Controller from "./updateScheduleEventsController"
-import deleteScheduleEvents_Controller from "./deleteScheduleEventsController"
-import getDayTimeLineup_Controller from "./getDayTimeLineupController"
-import getAllDetails_Controller from "./getAllDetailsController"
-import profileUpdate_Controller from "./profileUpdateController"
+import scheduleTime_Controller from "./scheduleTimeController";
+import getScheduleEvents_Controller from "./getScheduleEventsController";
+import updateScheduleEvents_Controller from "./updateScheduleEventsController";
+import deleteScheduleEvents_Controller from "./deleteScheduleEventsController";
+import getDayTimeLineup_Controller from "./getDayTimeLineupController";
+import getAllDetails_Controller from "./getAllDetailsController";
+import profileUpdate_Controller from "./profileUpdateController";
 import updateWorkDetails_Controller from "./updateWorkDetailsController";
-import getReviewerProfile_Controller from "./getReviewerProfileController"
-import reviewTakeCount_Controller from "./reviewTakeCountController"
+import getReviewerProfile_Controller from "./getReviewerProfileController";
+import reviewTakeCount_Controller from "./reviewTakeCountController";
+import getAllReviewersProfile_Controller from "./getAllReviewersProfileController";
 export default (dependencies:any)=>{
     return{
         scheduleTimeController: scheduleTime_Controller(dependencies),
@@ -20,5 +21,6 @@ export default (dependencies:any)=>{
         updateWorkDetailsController: updateWorkDetails_Controller(dependencies),
         getReviewerProfileController: getReviewerProfile_Controller(dependencies),
         reviewTakeCountController: reviewTakeCount_Controller(dependencies),
+        getAllReviewersProfileController: getAllReviewersProfile_Controller(dependencies),
     }
 }

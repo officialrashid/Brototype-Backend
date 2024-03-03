@@ -1,4 +1,4 @@
-import {createInvigilator_Usecase,checkStudentUniqueId_Usecase,studentLogin_Usecase,reviewerLogin_Usecase,superleadLogin_Usecase,getAllStudentsStatus_Usecase,updateStudentStatus_Usecase} from "./authentication"
+import {createInvigilator_Usecase,checkStudentUniqueId_Usecase,studentLogin_Usecase,reviewerLogin_Usecase,superleadLogin_Usecase,getAllStudentsStatus_Usecase,updateStudentStatus_Usecase,getHubwiseStudentsDetails_Usecase,getAllReviewersStatus_Usecase,addReviewer_Usecase} from "./authentication"
 
 export {
     createInvigilator_Usecase,
@@ -7,5 +7,8 @@ export {
     reviewerLogin_Usecase,
     superleadLogin_Usecase,
     getAllStudentsStatus_Usecase,
-    updateStudentStatus_Usecase
+    updateStudentStatus_Usecase,
+    getHubwiseStudentsDetails_Usecase,
+    getAllReviewersStatus_Usecase,
+    addReviewer_Usecase
 }
