@@ -13,6 +13,10 @@ const batchesSchema = new mongoose.Schema({
     phone:  Number,
     qualification: String,
     prefferredLocation: String,
+    isStatus:{
+      type:String,
+      default:"Active"
+    },
     mock:[
       { examType:String,
         mark : Number,
@@ -74,6 +78,10 @@ const batchesSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  IsCompleted: {
+    type: Boolean,
+    default: false,
   },
 });
 

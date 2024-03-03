@@ -288,5 +288,27 @@ createReviewers: async (data: any, uniqueId: string) => {
     return {status:false,message:"An Error occur whilte creating Reviewer"}
   }
 },
+updateReviewerStatus: async (reviewerId:string, action:string) => {
+  console.log("Incoming backend action", reviewerId, action);
+  
+  try {
+    if (!reviewerId) {
+      return { status: false, message: "reviewer not found" };
+    }
+
+    const reviewer:any = await schema.Reviewers.updateOne({_id: reviewerId },{$set:{isStatus:action}},{new:true});
+console.log(reviewer,"ghvghvhh");
+
+    if (!reviewer) {
+      return { status: false, message: "reviewer not found" };
+    }
+    // Return success message or other appropriate response
+    return { status: true, message: "reviewer status updated successfully" };
+  } catch (error) {
+    // Handle errors
+    console.error("Error in updating reviewer status:", error);
+    return { status: false, message: "An error occurred while updating reviewer status" };
+  }
+},
 
 }

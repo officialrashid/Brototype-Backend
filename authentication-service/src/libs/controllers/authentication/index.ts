@@ -8,6 +8,7 @@ import updateStudentStatus_Controller from "./updateStudentStatusController"
 import getHubwiseStudentsDetails_Controller from "./getHubwiseStudentsDetailsController"
 import getAllReviewersStatus_Controller from "./getAllReviewersStatusController"
 import addReviewer_Controller from "./addReviewerController"
+import updateReviewerStatus_Controller from "./updateReviewerStatusController"
 export default (dependencies:any)=>{
 
     return{
@@ -20,5 +21,6 @@ export default (dependencies:any)=>{
         getHubwiseStudentsDetailsController: getHubwiseStudentsDetails_Controller(dependencies),
         getAllReviewersStatusController: getAllReviewersStatus_Controller(dependencies),
         addReviewerController: addReviewer_Controller(dependencies),
+        updateReviewerStatusController: updateReviewerStatus_Controller(dependencies),
     }
 }
