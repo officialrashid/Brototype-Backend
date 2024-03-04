@@ -4,6 +4,7 @@ const superleadSchema = new mongoose.Schema({
     name: String,
     email: String,
     phone: String,
+    hubLocation: String,
     uniqueId: String,
 });
 

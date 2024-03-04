@@ -22,6 +22,7 @@ import failedStudents_Controller from "./batchController/failedStudentsControlle
 import editStudentMark_Controller from "./studentsController/editStudentMarkController"
 import invigilatorGoogleLogin_Controller from "./invigilatorController/invigilatorGoogleLoginController"
 import confirmPassedStudents_Controller from "./studentsController/confirmPassedStudents"
+import getAllFumigationStudents_Controller from "./studentsController/getAllFumigationStudentsController"
 export default (dependencies:any)=>{
 
     return{
@@ -47,7 +48,8 @@ export default (dependencies:any)=>{
         failedStudentsController: failedStudents_Controller(dependencies),
         editStudentMarkController: editStudentMark_Controller(dependencies),
         invigilatorGoogleLoginController: invigilatorGoogleLogin_Controller(dependencies),
-        confirmPassedStudentsController: confirmPassedStudents_Controller(dependencies)
+        confirmPassedStudentsController: confirmPassedStudents_Controller(dependencies),
+        getAllFumigationStudentsController: getAllFumigationStudents_Controller(dependencies)
 
     }  
 }

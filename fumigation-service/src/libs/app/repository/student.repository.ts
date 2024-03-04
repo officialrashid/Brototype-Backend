@@ -521,7 +521,43 @@ export default {
         reject(error);
       }
     });
-  }
+  },
+  getAllFumigationStudents: async (hubLocation: string) => {
+    try {
+        if (!hubLocation) {
+            return { status: false, message: "Fumigation students not found for your hub" };
+        }
+
+        const students:any = [];
+
+        const incompleteBatches = await schema.Batches.find({ IsCompleted: false });
+
+        incompleteBatches.forEach(batch => {
+            batch.fumigationStudents.forEach(student => {
+                // Check if the preferred location matches the hub location
+                if (student.prefferredLocation === hubLocation) {
+                    students.push({
+                        studentId: student.studentId,
+                        name: student.name,
+                        email: student.email,
+                        phone: student.phone,
+                        qualification: student.qualification,
+                        prefferredLocation: student.prefferredLocation,
+                        batchName: batch.batchName,
+                        status : student.isStatus
+                    });
+                }
+            });
+        });
+
+        console.log(students);
+        
+        return { status: true, students };
+    } catch (error) {
+        console.error("Error occurred while fetching all fumigation students:", error);
+        return { status: false, message: "An error occurred while getting all fumigation students" };
+    }
+},
 
 
 }

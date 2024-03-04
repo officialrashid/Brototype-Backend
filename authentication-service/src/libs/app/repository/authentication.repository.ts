@@ -320,5 +320,23 @@ console.log(reviewer,"ghvghvhh");
     return { status: false, message: "An error occurred while updating reviewer status" };
   }
 },
+getSuperleadHubLocation : async (uniqueId:string) =>{
+   
+  try {
+     if(!uniqueId){
+      return {status:false,message:"some issue in the get hub location"}
+     }
+     const response = await schema.Superleads.findOne({uniqueId:uniqueId})
+     console.log(response,"repose insupreleaddassss");
+     if(!response){
+      return {status:false,message:"superlead not found"}
+     }else{
+      return {status:true,response}
+     }
+
+  } catch (error) {
+    return {status:false,message:"Erro an occur while get hub location"}
+  }
+}
 
 }
