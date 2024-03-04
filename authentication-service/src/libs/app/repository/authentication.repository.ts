@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
+import mongoose from "mongoose";
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -41,32 +42,41 @@ export default {
     }
 
   },
+
+
   createStudents: async (data: any, uniqueId: string) => {
-
-    console.log(data, "++++++6666666");
-    try {
-      const studentData = {
-        studentId: data.studentId,
-        batchId : data.batchId,
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        batch: data.batch,
-        uniqueId: uniqueId,
-      };
-
-      console.log(studentData, "The funcing Data");
-
-      const response = await schema.Students.create(studentData);
-      console.log(response, "Student created successfully");
-
-
-      return { status: true, message: "Students created successfully" };
-    } catch (err) {
-      console.error(err, "Error in creating students");
-      throw err;
-    }
+      console.log(data, "++++++6666666");
+      try {
+          let studentId;
+          if (!data.studentId) {
+              // Generate a random studentId using ObjectId
+              studentId = new mongoose.Types.ObjectId().toHexString();
+          } else {
+              studentId = data.studentId;
+          }
+  
+          const studentData = {
+              studentId: studentId,
+              batchId: data.batchId,
+              name: data.name,
+              email: data.email,
+              phone: data.phone,
+              batch: data.batch,
+              uniqueId: uniqueId,
+          };
+  
+          console.log(studentData, "The funcing Data");
+  
+          const response = await schema.Students.create(studentData);
+          console.log(response, "Student created successfully");
+  
+          return { status: true, message: "Students created successfully" };
+      } catch (err) {
+          console.error(err, "Error in creating students");
+          throw err;
+      }
   },
+  
   studentLogin : async (uniqueId: string) => {
     try {
 
