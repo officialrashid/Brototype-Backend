@@ -14,7 +14,6 @@ export const updateStudentPlaced_Usecase = (dependencies: any) => {
             return { status: false, message: "student not found" }
         }
         const response = await authenticationRepository.updatePlacedStudentStatus(studentId,action,confirm,date)
-        console.log(response, 'response n usecase');
         if (response && response.length != 0) {
             return { response }
         } else {
