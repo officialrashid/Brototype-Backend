@@ -8,7 +8,9 @@ import {profileUpdate_Usecase } from "./profileUpdateUsecase";
 import { reviewerWrokDetails_Usecase} from "./updateWorkDetailsUsecase"
 import { getProfile_Usecase} from "./getProfileUsecase";
 import { reviewTakeCount_Usecase } from "./reviewTakeCountUsecase";
-import {getAllReviewersProfile_Usecase} from "./getAllReviewersProfileUsecase"
+import {getAllReviewersProfile_Usecase} from "./getAllReviewersProfileUsecase";
+import {getBestReviewers_Usecase} from "./getBestReviewersUsecase";
+import {getReviewCountAnalyze_Usecase} from "./getReviewCountAnalyzeUsecase";
 export{
     scheduleTime_Usecase,
     getScheduleEvents_Usecase,
@@ -20,6 +22,8 @@ export{
     reviewerWrokDetails_Usecase,
     getProfile_Usecase,
     reviewTakeCount_Usecase,
-    getAllReviewersProfile_Usecase
+    getAllReviewersProfile_Usecase,
+    getBestReviewers_Usecase,
+    getReviewCountAnalyze_Usecase
 
 }

@@ -329,6 +329,141 @@ export default {
     } catch (error) {
       return { status:false,message:"Error in the get all reviewers profile" }
     }
+  },
+  getBestReviewers : async () =>{
+     try {
+      const currentDate = new Date();
+      const day = currentDate.getDate().toString().padStart(2, '0'); // Get the day and pad with leading zero if needed
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Get the month (1-indexed) and pad with leading zero if needed
+      const year = currentDate.getFullYear();
+      console.log(`${day}-${month}-${year}`);
+      
+     const response = await schema.Events.aggregate([
+
+        { $unwind: "$events" },
+
+        {
+            $match: {
+                "events.date": {
+                    $regex: `^\\d{2}-${month}-${year}$`
+                }
+            }
+        },
+     
+        {
+          $project: {
+            "reviewerId": 1,
+            "events.bookedEvents": 1
+          }
+        },
+        // // Unwind the bookedEvents array
+        { $unwind: "$events.bookedEvents" },
+        // // Match events where booked and status are both true
+        {
+          $match: {
+            "events.bookedEvents.booked": true,
+            "events.bookedEvents.status": true
+          }
+        },
+        // // Group by reviewerId and count the matching events
+        { 
+          $group: { 
+            _id: "$reviewerId",
+            count: { $sum: 1 }
+          }
+        },
+        // Sort by count in descending order
+        { $sort: { count: -1 } },
+    
+        { $limit: 5 }
+      ])
+    if(response.length > 0){
+      console.log(response,";;;;;;;;;;;;;;;;;;;;;;;;");
+      return {status:true,response}
+    }
+      
+     } catch (error) {
+      return {status:false,message:"Erron in the get best reviewers"}
+     }
+  },
+  getBestReviewersDetails : async (reviewerId:string) =>{
+      try {
+        if(!reviewerId){
+          return {status:false,message:"reviewer not found"}
+        }
+        const response = await schema.Profile.findOne({reviewerId:reviewerId})
+        if(!response){
+           return {status:false,message:"reviewer not found"}
+        }
+        const reviewerDetails:any = {
+           reviewerId: response?.reviewerId,
+           firstName : response?.firstName,
+           lastName: response?.lastName,
+           profile : response?.imageUrl
+        }
+        if(!reviewerDetails){
+          return {status:false,message:"reviewer profile not updated"}
+        }else{
+           return {reviewerDetails}
+        }
+        
+      } catch (error) {
+        return {status:false,message:"Error in the get best reviewer details"}
+      }
+  },
+  getReviewCountAnalyze : async () =>{
+     try {
+          const currentDate = new Date();
+      const day = currentDate.getDate().toString().padStart(2, '0'); // Get the day and pad with leading zero if needed
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Get the month (1-indexed) and pad with leading zero if needed
+      const year = currentDate.getFullYear();
+      console.log(`${day}-${month}-${year}`);
+      const response = await schema.Events.aggregate([
+        { $unwind: "$events" },
+
+        {
+            $match: {
+                "events.date": {
+                    $regex: `^\\d{2}-${month}-${year}$`
+                }
+            }
+        },
+     
+        {
+          $project: {
+            "reviewerId": 1,
+            "events.bookedEvents": 1
+          }
+        },
+        // // Unwind the bookedEvents array
+        { $unwind: "$events.bookedEvents" },
+        // // Match events where booked and status are both true
+        {
+          $match: {
+            "events.bookedEvents.booked": true,
+            "events.bookedEvents.status": true
+          }
+        },
+        // // Group by reviewerId and count the matching events
+        { 
+          $group: { 
+            _id: "$reviewerId",
+            count: { $sum: 1 }
+          }
+        },
+        // Sort by count in descending order
+        { $sort: { count: -1 } },
+    
+        // { $limit: 5 }
+      ])
+    if(response.length > 0){
+      console.log(response,";;;;;;;;;;;;;;;;;;;;;;;; in review count analyzeeee");
+      return {status:true,response}
+    }
+
+     } catch (error) {
+      return {status:false,message:"Erro in get review count analyze"}
+     }
   }
 
 }

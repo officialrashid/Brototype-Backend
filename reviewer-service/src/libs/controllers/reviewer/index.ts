@@ -9,6 +9,8 @@ import updateWorkDetails_Controller from "./updateWorkDetailsController";
 import getReviewerProfile_Controller from "./getReviewerProfileController";
 import reviewTakeCount_Controller from "./reviewTakeCountController";
 import getAllReviewersProfile_Controller from "./getAllReviewersProfileController";
+import getBestReviewers_Controller from "./getBestReviewersController";
+import getReviewCountAnalyze_Controller from "./getReviewCountAnalyzeController";
 export default (dependencies:any)=>{
     return{
         scheduleTimeController: scheduleTime_Controller(dependencies),
@@ -22,5 +24,7 @@ export default (dependencies:any)=>{
         getReviewerProfileController: getReviewerProfile_Controller(dependencies),
         reviewTakeCountController: reviewTakeCount_Controller(dependencies),
         getAllReviewersProfileController: getAllReviewersProfile_Controller(dependencies),
+        getBestReviewersController: getBestReviewers_Controller(dependencies),
+        getReviewCountAnalyzeController: getReviewCountAnalyze_Controller(dependencies),
     }
 }
