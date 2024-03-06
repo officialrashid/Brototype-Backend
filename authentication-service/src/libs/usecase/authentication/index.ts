@@ -9,7 +9,8 @@ import {getHubwiseStudentsDetails_Usecase} from "./getHubwiseStudentsDetailsUsec
 import {getAllReviewersStatus_Usecase} from "./getAllReviewersStatusUsecase";
 import {addReviewer_Usecase} from "./addReviewerUsecase";
 import {updateReviewerStatus_Usecase} from "./updateReviewerStatusUsecase";
-import {getSuperleadHub_Usecase} from "./getSuperleadHubUsecase"
+import {getSuperleadHub_Usecase} from "./getSuperleadHubUsecase";
+import {updateStudentPlaced_Usecase} from "./updateStudentPlacedUsecase"
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -22,5 +23,6 @@ export{
     getAllReviewersStatus_Usecase,
     addReviewer_Usecase,
     updateReviewerStatus_Usecase,
-    getSuperleadHub_Usecase
+    getSuperleadHub_Usecase,
+    updateStudentPlaced_Usecase
 }
