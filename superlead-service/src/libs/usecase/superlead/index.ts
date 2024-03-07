@@ -1,8 +1,8 @@
-import {createInvigilator_Usecase} from "./createInvigilatorUsecase";
-import {checkStudentUniqueId_Usecase} from "./checkStudentUniqueIdUsecase"
+import {profileUpdate_Usecase} from "./profileUpdateUsecase";
+
 
 export{
-    createInvigilator_Usecase,
-    checkStudentUniqueId_Usecase,
+    profileUpdate_Usecase,
+
 
 }

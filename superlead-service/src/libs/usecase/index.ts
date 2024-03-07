@@ -1,7 +1,6 @@
-import {createInvigilator_Usecase,checkStudentUniqueId_Usecase} from "./superlead"
+import {profileUpdate_Usecase} from "./superlead"
 
 export {
-    createInvigilator_Usecase,
-    checkStudentUniqueId_Usecase,
+    profileUpdate_Usecase,
  
 }

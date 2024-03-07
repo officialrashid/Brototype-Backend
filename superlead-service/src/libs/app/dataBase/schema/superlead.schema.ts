@@ -1,13 +1,18 @@
 import mongoose, { Types } from "mongoose";
 
 const superleadSchema = new mongoose.Schema({
-    studentId:String,
-    batchId : String,
-    name: String,
+    superleadId:String,
+    firstName: String,
+    lastName: String,
     email: String,
-    phone: String,
-    batch: String,
-    uniqueId: String,
+    phone: Number,
+    gender: String,
+    dateOfBirth: String,
+    hubLocation: String,
+    qualification: String,
+    pastYourWorkedCompany:String,
+    yearOfExpereience: Number,
+    imageUrl: String,
 });
 
 const Superlead = mongoose.model("Superlead", superleadSchema);

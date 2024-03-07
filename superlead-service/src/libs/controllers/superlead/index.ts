@@ -1,13 +1,11 @@
 
-import createInvigilator_Controller from "./createInvigilatorController"
-import studentLogin_Controller from "./studentLoginController"
-import reviewerLogin_Controller from "./reviewerLoginController"
+import profileUpdate_Controller from "./profileUpdateController"
+
 
 export default (dependencies:any)=>{
 
     return{
-        createInvigilatorController: createInvigilator_Controller(dependencies),
-        studentLoginController: studentLogin_Controller(dependencies),
-        reviewerLoginController: reviewerLogin_Controller(dependencies),
+        profileUpdate_Controller: profileUpdate_Controller(dependencies),
+    
     }
 }
