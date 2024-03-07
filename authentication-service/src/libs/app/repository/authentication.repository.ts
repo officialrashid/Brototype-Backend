@@ -10,7 +10,11 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 
 });
-
+interface MonthlyStudentsCount {
+  month: number;
+  currentStudents: number;
+  placedStudents: number;
+}
 export default {
 
   createUniqueId: async () => {
@@ -344,32 +348,68 @@ export default {
         return { status: false, message: "student not found" }
       }
       if (confirm === "confirm") {
-          console.log(action,date,"comg coming inside if casee");
-          
+        console.log(action, date, "comg coming inside if casee");
+
         const student = await schema.Students.updateOne(
           { studentId: studentId }, // Filter criteria
-          { 
-              $set: { 
-                  isStatus: action,
-                  placedDate: date 
-              } 
+          {
+            $set: {
+              isStatus: action,
+              placedDate: date
+            }
           }, // Update operation
           { new: true } // Options object
-      );
-        
+        );
+
 
         if (!student) {
           return { status: false, message: "Student not found" };
         }
         // Return success message or other appropriate response
         return { status: true, message: "Student status updated successfully" };
-      }else{
-        return {status:false,message:"confirm code not updated,try after some time"}
+      } else {
+        return { status: false, message: "confirm code not updated,try after some time" }
       }
     } catch (error) {
       return { status: false, message: "Error in the update Placed Students Status" }
     }
   },
-  
+  getPlacedStudentsAndCurrentStudents: async (uniqueId: string) => {
+    try {
+      if (!uniqueId) {
+        return { status: false, message: 'Current students and placed students not found in your hub' };
+      }
+
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const indexM = uniqueId.indexOf('M');
+      const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+
+      const response = await schema.Students.aggregate([
+        {
+          $match: {
+            batch: { $regex: `^${uniqueLetters}`, $options: 'i' },
+            $or: [
+              { isStatus: 'Active', createdDate: { $regex: `${currentYear}` } },
+              { isStatus: 'Placed', placedDate: { $regex: `${currentYear}-` } }
+            ]
+          }
+        },
+
+      ]);
+   if(response && response.length > 0){
+     return {response}
+   }else{
+    return { satus:false, message:"current year no study students and placed students"};
+   }
+
+    } catch (error) {
+      return { status: false, message: "Error in getting placed students and current students" };
+    }
+  }
+
+
+
+
 
 }
