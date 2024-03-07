@@ -327,7 +327,7 @@ export default {
         return { status: false, message: "some issue in the get hub location" }
       }
       const response = await schema.Superleads.findOne({ uniqueId: uniqueId })
-      console.log(response, "repose insupreleaddassss");
+
       if (!response) {
         return { status: false, message: "superlead not found" }
       } else {
@@ -369,6 +369,7 @@ export default {
     } catch (error) {
       return { status: false, message: "Error in the update Placed Students Status" }
     }
-  }
+  },
+  
 
 }

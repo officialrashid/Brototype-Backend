@@ -5,7 +5,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {createInvigilatorController,studentLoginController,reviewerLoginController,superleadLoginController,getAllStudentsStatusController,updateStudentStatusController,getHubwiseStudentsDetailsController,getAllReviewersStatusController,addReviewerController,updateReviewerStatusController,addStudentController,getSuperleadHubController,updateStudentPlacedController} = authentication_Controller(dependencies) 
+  const {createInvigilatorController,studentLoginController,reviewerLoginController,superleadLoginController,getAllStudentsStatusController,updateStudentStatusController,getHubwiseStudentsDetailsController,getAllReviewersStatusController,addReviewerController,updateReviewerStatusController,addStudentController,getSuperleadHubController,updateStudentPlacedController,getStudentsAndPlacedStudentsController} = authentication_Controller(dependencies) 
 
   router.post('/createInvigilator',createInvigilatorController)
   router.post('/student-login',studentLoginController)
@@ -20,5 +20,6 @@ export default (dependencies:any)=>{
   router.post('/add-student',addStudentController)
   router.get('/get-superlead-hub-location/:uniqueId',getSuperleadHubController)
   router.patch('/update-student-placed-status',updateStudentPlacedController)
+  router.get('/get-students-and-placed-students/:uniqueId',getStudentsAndPlacedStudentsController)
   return router
 }

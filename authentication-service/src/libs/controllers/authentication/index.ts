@@ -12,6 +12,7 @@ import updateReviewerStatus_Controller from "./updateReviewerStatusController"
 import addStudent_Controller from "./addStudentController"
 import getSuperleadHub_Controller from "./getSuperleadHubController"
 import updateStudentPlaced_Controller from "./updateStudentPlacedController"
+import getStudentsAndPlacedStudents_Controller from "./getStudentsAndPlacedStudentsController"
 export default (dependencies:any)=>{
 
     return{
@@ -28,6 +29,7 @@ export default (dependencies:any)=>{
         addStudentController: addStudent_Controller(dependencies),
         getSuperleadHubController: getSuperleadHub_Controller(dependencies),
         updateStudentPlacedController: updateStudentPlaced_Controller(dependencies),
+        getStudentsAndPlacedStudentsController: getStudentsAndPlacedStudents_Controller(dependencies),
 
     }
 }
