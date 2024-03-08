@@ -11,7 +11,7 @@ export default (dependencies:any)=>{
   router.post('/student-login',studentLoginController)
   router.post('/reviewer-login',reviewerLoginController)
   router.post('/superlead-login',superleadLoginController)
-  router.get('/get-all-students-status/:uniqueId',getAllStudentsStatusController)
+  router.get('/get-all-students-status',getAllStudentsStatusController)
   router.patch('/update-student-status',updateStudentStatusController)
   router.patch('/update-reviewer-status',updateReviewerStatusController)
   router.get('/get-hubwise-students-details/:uniqueId',getHubwiseStudentsDetailsController)

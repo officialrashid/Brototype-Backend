@@ -8,8 +8,8 @@ export default (dependencies:any)=>{
         useCase: {getAllStudentsStatus_Usecase}
     } = dependencies
  const getAllStudentsStatusController = async (req:Request,res:Response)=>{
-    const {uniqueId} = req.params
-    const response = await getAllStudentsStatus_Usecase(dependencies).executeFunction(uniqueId)
+    const {superleadUniqueId,currentPage} = req.query
+    const response = await getAllStudentsStatus_Usecase(dependencies).executeFunction(superleadUniqueId,currentPage)
     res.status(201).json(response)
     
  }

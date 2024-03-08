@@ -180,31 +180,43 @@ export default {
       return { error: 'Internal server error' };
     }
   },
-  getAllStudentsStatus: async (uniqueId: string) => {
+  
+  getAllStudentsStatus: async (uniqueId: string, currentPage: number) => {
     try {
+      // Find the index of 'M' in the uniqueId
       const indexM = uniqueId.indexOf('M');
-
+  
       // Extract the prefix (all characters before 'M')
       const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
       console.log(uniqueLetters, "uniqueLetters");
-
+  
+      // Calculate the number of documents to skip based on the currentPage
+      const pageSize = 10; // Number of students per page
+      const skip = (currentPage - 1) * pageSize;
+  
       // Match documents where uniqueId starts with the extracted prefix
       const response = await schema.Students.aggregate([
         {
           $match: {
             batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
           }
-        }
+        },
+        // Pagination: Skip and limit the number of documents returned
+        { $skip: skip },
+        { $limit: pageSize }
       ]);
+  
       if (response && response.length > 0) {
         return { response }
       } else {
         return { message: "students not found your hub" }
       }
     } catch (error) {
+      console.error(error);
       return { error: 'Internal server error' }
     }
   },
+
   updateStudentStatus: async (studentId: string, action: string) => {
     console.log("Incoming backend action", studentId, action);
 
@@ -226,19 +238,22 @@ export default {
       return { status: false, message: "An error occurred while updating student status" };
     }
   },
-  getHubwiseStudentsDetails: async (uniqueId: string) => {
+  getHubwiseStudentsDetails: async (uniqueId: string, page: number = 1, pageSize: number = 10) => {
     try {
       if (!uniqueId) {
         return { status: false, message: "Student not found Your Hub" };
       }
       const indexM = uniqueId.indexOf('M');
       const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+      const skip = (page - 1) * pageSize;
       const response = await schema.Students.aggregate([
         {
           $match: {
             batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
           }
-        }
+        },
+        { $skip: skip },
+        { $limit: pageSize }
       ]);
       if (response && response.length > 0) {
         return { response }

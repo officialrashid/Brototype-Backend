@@ -9,12 +9,12 @@ export const getAllStudents_Usecase = (dependencies: any) => {
         return console.log("Error: student Repository not found");
     }
 
-    const executeFunction = async (uniqueId: string) => {
+    const executeFunction = async (uniqueId: string,currentPage:number) => {
         try {
             if(!uniqueId){
                 return { status:false,message:"uniqueId not found"}
             }
-            const response = await studentsRepository.getAllStudents(uniqueId)
+            const response = await studentsRepository.getAllStudents(uniqueId,currentPage)
        
             
             if(response && response.length !=0){

@@ -419,7 +419,7 @@ getStudentCurrentWeek: async (studentId:string, batchId:string) => {
       return { status: false, message: "Internal server error" };
   }
 },
-getAllStudents: async (uniqueId: string) => {
+getAllStudents: async (uniqueId: string, currentPage: number) => {
   console.log(uniqueId, "uniqueId cominggg");
 
   try {
@@ -428,7 +428,11 @@ getAllStudents: async (uniqueId: string) => {
 
     // Extract the prefix (all characters before 'M')
     const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
-    console.log(uniqueLetters,"uniqueLetters");
+    console.log(uniqueLetters, "uniqueLetters");
+
+    // Calculate the number of documents to skip based on the currentPage
+    const pageSize = 10; // Number of students per page
+    const skip = (currentPage - 1) * pageSize;
 
     // Match documents where uniqueId starts with the extracted prefix
     const result = await schema.Manifest.aggregate([
@@ -436,13 +440,15 @@ getAllStudents: async (uniqueId: string) => {
         $match: {
           batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
         }
-      }
+      },
+      // Pagination: Skip and limit the number of documents returned
+      { $skip: skip },
+      { $limit: pageSize }
     ]);
 
     const response = await schema.WeekRecord.aggregate([
       // Unwind the students array to deconstruct it into separate documents
       { $unwind: "$students" },
-    
       // Match only documents where the status is true and repeat is false
       {
         $match: {
@@ -450,7 +456,6 @@ getAllStudents: async (uniqueId: string) => {
           "students.weeks.repeat": false
         }
       },
-    
       // Group by studentId to regroup documents by their original studentId
       {
         $group: {
@@ -458,7 +463,6 @@ getAllStudents: async (uniqueId: string) => {
           lastWeek: { $last: "$students.weeks.week" } // Get the last week where repeat is false
         }
       },
-    
       // Project to include only the studentId and current week
       {
         $project: {
@@ -468,16 +472,18 @@ getAllStudents: async (uniqueId: string) => {
         }
       }
     ]);
-  if(result.length > 0 && response.length > 0){
-    console.log("kerriiiiiiii");
-    
-    return {students:result,studentCurrentWeek:response}
-  }else{
-    return {message:"students not found"}
-  }
+
+    if (result.length > 0 && response.length > 0) {
+      console.log("kerriiiiiiii");
+
+      return { students: result, studentCurrentWeek: response }
+    } else {
+      return { message: "students not found" }
+    }
   } catch (error) {
     console.error(error);
     throw error; // Rethrow the error for further handling if needed
   }
 }
+
 }

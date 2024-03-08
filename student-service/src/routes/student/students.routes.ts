@@ -31,7 +31,7 @@ export default (dependencies:any)=>{
   router.get('/get-review-details',getReviewDetailsController)
   router.post('/second-extend-request/:extendId',secondExtendRequestController)
   router.post('/update-governmentId',upload.single("image"),governmentIdUpdateController)
-  router.get('/get-all-students/:uniqueId',getAllStudentsController)
+  router.get('/get-all-students',getAllStudentsController)
   return router
 }
 

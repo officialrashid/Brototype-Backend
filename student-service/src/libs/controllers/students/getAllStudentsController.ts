@@ -9,9 +9,10 @@ export default (dependencies:any)=>{
  const getAllStudentsController = async (req:Request,res:Response)=>{
     console.log(req.params,"paramss loggggg");
     
-    const {  uniqueId  } = req.params;
-
-    const response = await getAllStudents_Usecase(dependencies).executeFunction(uniqueId)
+    const {  superleadUniqueId ,currentPage  } = req.query;
+console.log(superleadUniqueId,"superleadUniqueId");
+console.log(currentPage,"currentPage");
+    const response = await getAllStudents_Usecase(dependencies).executeFunction(superleadUniqueId,currentPage)
      if(response){
         res.status(201).json(response)
      }  
