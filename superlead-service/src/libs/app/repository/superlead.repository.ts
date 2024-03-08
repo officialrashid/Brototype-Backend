@@ -32,30 +32,30 @@ export default {
       console.log(err, "error in the invigilatorEmailExist check function");
     }
   },
-  updateProfile: async (profileData: { superleadId: string; imageUrl: string; firstName: string; lastName: string; email:string; phone: string; gender:string; dateOfBirth:string; hubLocation:string,qualification:string;pastYourWorkedCompany:string;yearOfExpereience:string }) => {
+  updateProfile: async (data: { superleadId: string; imageUrl: string; firstName: string; lastName: string; email:string; phone: string; gender:string; dateOfBirth:string; hubLocation:string,qualification:string;pastYourWorkedCompany:string;yearOfExpereience:string }) => {
     try {
       // Check if the profile with the given superleadId exists
       const existingProfile = await schema.Superlead.findOne({
-        superleadId: profileData.superleadId
+        superleadId: data.superleadId
       });
 
       if (existingProfile) {
         // If profile exists, update specific fields with the new data
         const updatedProfile = await schema.Superlead.findOneAndUpdate(
-          { superleadId: profileData.superleadId },
+          { superleadId: data.superleadId },
           {
             $set: {
-              imageUrl: profileData.imageUrl || existingProfile.imageUrl,
-              firstName: profileData.firstName || existingProfile.firstName,
-              lastName: profileData.lastName || existingProfile.lastName,
-              email: profileData.email || existingProfile.email,
-              phone: profileData.phone || existingProfile.phone,
-              gender: profileData.gender || existingProfile.gender,
-              dateOfBirth: profileData.dateOfBirth || existingProfile.dateOfBirth,
-              hubLocation: profileData.hubLocation || existingProfile.hubLocation,
-              qualification: profileData.qualification || existingProfile.qualification,
-              pastYourWorkedCompany: profileData.pastYourWorkedCompany || existingProfile.pastYourWorkedCompany,
-              yearOfExpereience: profileData.yearOfExpereience || existingProfile.yearOfExpereience,
+              imageUrl: data.imageUrl || existingProfile.imageUrl,
+              firstName: data.firstName || existingProfile.firstName,
+              lastName: data.lastName || existingProfile.lastName,
+              email: data.email || existingProfile.email,
+              phone: data.phone || existingProfile.phone,
+              gender: data.gender || existingProfile.gender,
+              dateOfBirth: data.dateOfBirth || existingProfile.dateOfBirth,
+              hubLocation: data.hubLocation || existingProfile.hubLocation,
+              qualification: data.qualification || existingProfile.qualification,
+              pastYourWorkedCompany: data.pastYourWorkedCompany || existingProfile.pastYourWorkedCompany,
+              yearOfExpereience: data.yearOfExpereience || existingProfile.yearOfExpereience,
               // Add other fields here if needed
             }
           },
@@ -65,7 +65,7 @@ export default {
         return updatedProfile;
       } else {
         // If profile doesn't exist, create a new profile
-        const newProfile = await schema.Superlead.create(profileData);
+        const newProfile = await schema.Superlead.create(data);
         return newProfile;
       }
     } catch (err) {
@@ -83,7 +83,52 @@ export default {
       } catch (error) {
         return {status:false,message:"Error in the Superlead Profile Access"}
       }
+  },
+  patchSuperleadProfile: async (data: any) => {
+    try {
+      if (!data || !data.superleadId) {
+        return { status: false, message: "Superlead not found" };
+      }
+  
+      const existingProfile = await schema.Superlead.findOne({
+        superleadId: data.superleadId
+      });
+  
+      if (!existingProfile) {
+        return { status: false, message: "Superlead not found" };
+      }
+  
+      const updatedProfile = await schema.Superlead.updateOne(
+        { superleadId: data.superleadId },
+        {
+          $set: {
+            imageUrl: data.imageUrl || existingProfile.imageUrl,
+            firstName: data.firstName || existingProfile.firstName,
+            lastName: data.lastName || existingProfile.lastName,
+            email: data.email || existingProfile.email,
+            phone: data.phone || existingProfile.phone,
+            gender: data.gender || existingProfile.gender,
+            dateOfBirth: data.dateOfBirth || existingProfile.dateOfBirth,
+            hubLocation: data.hubLocation || existingProfile.hubLocation,
+            qualification: data.qualification || existingProfile.qualification,
+            pastYourWorkedCompany: data.pastYourWorkedCompany || existingProfile.pastYourWorkedCompany,
+            yearOfExperience: data.yearOfExperience || existingProfile.yearOfExpereience,
+            // Add other fields here if needed
+          }
+        }
+      );
+  
+      if (!updatedProfile) {
+        return { status: false, message: "Profile not updated" };
+      }else{
+        return { status: true, message: "Superlead profile updated successfully" };
+      }
+
+    } catch (error) {
+      return { status: false, message: "Error in updating the Superlead profile" };
+    }
   }
+  
   
  
 }
