@@ -30,6 +30,8 @@ export const profileUpdate_Usecase = (dependencies: any) => {
   }
 
   const executeFunction = async (data: StudentsData, file: any) => {
+    console.log(data,"dataaaa");
+    console.log(file,"fuleeeee");
     const superleadId = data.superleadId;
     if (!file || !superleadId) return { message: "Bad Request" };
 
@@ -50,7 +52,7 @@ export const profileUpdate_Usecase = (dependencies: any) => {
       imageUrl,
     };
 
-    const emailPhoneCheckResult = await superleadRepository.checkEmailAndPhone(data?.email,data?.phone);
+    const emailPhoneCheckResult = await superleadRepository.checkEmailAndPhone(data?.email,data?.phone,data?.superleadId);
     if (!emailPhoneCheckResult || (emailPhoneCheckResult && emailPhoneCheckResult.length === 0)) {
           const response = await superleadRepository.updateProfile(profileData);
           if (!response) {
@@ -60,7 +62,23 @@ export const profileUpdate_Usecase = (dependencies: any) => {
               return { status: true, message:"profile Update Successfully", response };
             }
       }else{
-        return {status:false,message:"Email or Phone already in use"}
+        console.log(emailPhoneCheckResult,"2222222");
+        console.log(emailPhoneCheckResult.status,"2222222");
+        console.log(emailPhoneCheckResult.message,"qqqqqq");
+        if(emailPhoneCheckResult.status===true && emailPhoneCheckResult.message === "same Superlead email and password"){
+          const response = await superleadRepository.updateProfile(profileData);
+          if (!response) {
+            return { status: false, message:"Persanal Details update not done, something went wrong" }
+               // return success status to controller
+            }else{
+              console.log("true message coming after updateee");
+              
+              return { status: true, message:"profile Update Successfully", response };
+            }
+        }else{
+          return {status:false,message:"Email or Phone already in use"}
+        }
+
       }
   }
   
