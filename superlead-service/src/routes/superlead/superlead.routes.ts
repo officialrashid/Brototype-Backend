@@ -7,9 +7,10 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {profileUpdate_Controller} = superlead_Controller(dependencies) 
+  const {profileUpdateController,getProfileController} = superlead_Controller(dependencies) 
 
-  router.post('/profile-update',upload.single("image"),profileUpdate_Controller)
+  router.post('/profile-update',upload.single("image"),profileUpdateController)
+  router.get('/get-superlead-profile/:superleadId',getProfileController)
 
   return router
 }

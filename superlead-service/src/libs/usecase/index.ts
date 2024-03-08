@@ -1,6 +1,7 @@
-import {profileUpdate_Usecase} from "./superlead"
+import {profileUpdate_Usecase,getProfile_Usecase} from "./superlead"
 
 export {
     profileUpdate_Usecase,
+    getProfile_Usecase
  
 }

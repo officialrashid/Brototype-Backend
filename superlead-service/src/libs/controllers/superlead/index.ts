@@ -1,11 +1,12 @@
 
 import profileUpdate_Controller from "./profileUpdateController"
-
+import getProfile_Controller from "./getProfileController"
 
 export default (dependencies:any)=>{
 
     return{
-        profileUpdate_Controller: profileUpdate_Controller(dependencies),
+        profileUpdateController: profileUpdate_Controller(dependencies),
+        getProfileController: getProfile_Controller(dependencies),
     
     }
 }

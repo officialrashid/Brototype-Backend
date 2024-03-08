@@ -63,7 +63,17 @@ export default {
     }
   },
   
- 
+  getProfile : async  (superleadId:string) =>{
+      try {
+        if(!superleadId){
+          return {status:false,message:"Your Profile Not Found"}
+        }
+        const response = await schema.Superlead.find({superleadId:superleadId})
+        return response;
+      } catch (error) {
+        return {status:false,message:"Error in the Superlead Profile Access"}
+      }
+  }
   
  
 }
