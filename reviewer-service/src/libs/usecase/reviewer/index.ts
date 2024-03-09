@@ -11,6 +11,7 @@ import { reviewTakeCount_Usecase } from "./reviewTakeCountUsecase";
 import {getAllReviewersProfile_Usecase} from "./getAllReviewersProfileUsecase";
 import {getBestReviewers_Usecase} from "./getBestReviewersUsecase";
 import {getReviewCountAnalyze_Usecase} from "./getReviewCountAnalyzeUsecase";
+import {getPerPageReviewers_Usecase} from "./getPerPageReviewersUsecase"
 export{
     scheduleTime_Usecase,
     getScheduleEvents_Usecase,
@@ -24,6 +25,7 @@ export{
     reviewTakeCount_Usecase,
     getAllReviewersProfile_Usecase,
     getBestReviewers_Usecase,
-    getReviewCountAnalyze_Usecase
+    getReviewCountAnalyze_Usecase,
+    getPerPageReviewers_Usecase
 
 }

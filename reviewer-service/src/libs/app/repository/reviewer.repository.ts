@@ -318,18 +318,27 @@ export default {
       console.error(err);
     }
   },
-  getAllReviewersProfile : async () =>{
+  
+  getAllReviewersProfile: async (currentPage: number) => {
     try {
+      const pageSize = 10; // Number of reviewers per page
+      const skip = (currentPage - 1) * pageSize;
+  
+      // Fetch reviewers' profiles with pagination
       const response = await schema.Profile.find({})
-      if(response && response.length > 0){
-        return {status:true,response}
-      }else{
-        return {status:false,message:"reviewers not found"}
+        .skip(skip)
+        .limit(pageSize);
+  
+      if (response && response.length > 0) {
+        return { status: true, response };
+      } else {
+        return { status: false, message: "Reviewers not found" };
       }
     } catch (error) {
-      return { status:false,message:"Error in the get all reviewers profile" }
+      return { status: false, message: "Error in fetching all reviewers' profiles" };
     }
   },
+  
   getBestReviewers : async () =>{
      try {
       const currentDate = new Date();
@@ -463,6 +472,21 @@ export default {
 
      } catch (error) {
       return {status:false,message:"Erro in get review count analyze"}
+     }
+  },
+  getPerPageReviewers : async (perPage:number)=>{
+     try {
+ 
+      const response = await schema.Profile.find({}).limit(parseInt(perPage.toString())).exec()
+      if(response && response.length > 0){
+        return {status:true,response}
+      }else{
+        return {status:false,message:"per page reviewers details not found"}
+      }
+
+      
+     } catch (error) {
+       return {status:false,message:"Error in the get ask count reviewers"}
      }
   }
 

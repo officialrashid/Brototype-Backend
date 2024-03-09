@@ -1,5 +1,5 @@
 
-export const getAllReviewersProfile_Usecase = (dependencies: any) => {
+export const getPerPageReviewers_Usecase = (dependencies: any) => {
 
     const {
         repository: { reviewerRepository },
@@ -10,7 +10,7 @@ export const getAllReviewersProfile_Usecase = (dependencies: any) => {
     }
     const executeFunction = async (currentPage:number) => {
         try {
-            const response = await reviewerRepository.getAllReviewersProfile(currentPage);
+            const response = await reviewerRepository.getPerPageReviewers(currentPage);
             console.log(response,"resppnse in get all revewers");
             
             if (response && response.response.length>0) {

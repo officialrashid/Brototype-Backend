@@ -10,7 +10,8 @@ export default (dependencies: any) => {
         useCase: { getAllReviewersProfile_Usecase }
     } = dependencies
     const getAllReviewersProfileController = async (req: Request, res: Response) => {
-        const response = await getAllReviewersProfile_Usecase(dependencies).executeFunction()
+        const {currentPage} = req.params
+        const response = await getAllReviewersProfile_Usecase(dependencies).executeFunction(currentPage)
         res.status(201).json(response);
     }
     return getAllReviewersProfileController;

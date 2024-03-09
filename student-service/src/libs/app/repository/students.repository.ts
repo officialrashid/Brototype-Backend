@@ -537,7 +537,9 @@ export default {
         console.log(result,"nxsbcmsdbfsdfjsdhfsdhfdsjfsdjhfsdhdsdshysdufysud");
         
         return { students: result, studentCurrentWeek: response }
-    } 
+    } else{
+      return {status:false,message:"per page student not found"}
+    }
   } catch (error) {
       console.error(error);
       return { status: false, message: "Error in fetching per page students" };
