@@ -8,7 +8,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   //  import all controll //
-  const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController,getAllBatches,getStudentsMarkController,removeBatchwiseStudentsController,removeBatchController,editBatchController,editBatchSubmitController,getInvigilatorsController,editInvigilatorController,editInvigilatorSubmitController,removeInvigilatorsController,passedStudentsController,failedStudentsController,editStudentMarkController,invigilatorGoogleLoginController,confirmPassedStudentsController,getAllFumigationStudentsController} = fumigation_Controller(dependencies) 
+  const {fumigationController,getAllPendingStudent,createBatch,addStudents,getBatchwiseStudentsController,studentsMarkController,invigilatorLoginController,createInvigilatorController,getAllBatches,getStudentsMarkController,removeBatchwiseStudentsController,removeBatchController,editBatchController,editBatchSubmitController,getInvigilatorsController,editInvigilatorController,editInvigilatorSubmitController,removeInvigilatorsController,passedStudentsController,failedStudentsController,editStudentMarkController,invigilatorGoogleLoginController,confirmPassedStudentsController,getAllFumigationStudentsController,updateStudentStatusController,getPerPageStudentController} = fumigation_Controller(dependencies) 
 // define the all api ..
   router.post('/enquery',fumigationController) //
   router.get('/get-enquery',jwtVerify,getAllPendingStudent) //
@@ -33,6 +33,8 @@ export default (dependencies:any)=>{
   router.get('/edit-student-mark',editStudentMarkController)
   router.post('/invigilator-google-login',invigilatorGoogleLoginController)
   router.post('/confirm-passed-students',confirmPassedStudentsController)
-  router.get('/get-all-fumigation-students/:hubLocation',getAllFumigationStudentsController)
+  router.get('/get-all-fumigation-students',getAllFumigationStudentsController)
+  router.patch('/update-student-status',updateStudentStatusController)
+  router.get('/get-per-page-students',getPerPageStudentController)
   return router
 }

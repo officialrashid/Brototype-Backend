@@ -2,6 +2,8 @@
 import schema from "../dataBase/schema"
 import { fumigationProducer } from "../../../events/fumigationProducer";
 import eventEmitter from '../../../events/eventEmitter';
+import { ObjectId } from "mongodb";
+import { Types } from "mongoose";
 export default {
 
   Enqueries: async (data: any) => {
@@ -522,42 +524,131 @@ export default {
       }
     });
   },
-  getAllFumigationStudents: async (hubLocation: string) => {
+  getAllFumigationStudents: async (hubLocation: string, currentPage: number) => {
     try {
         if (!hubLocation) {
             return { status: false, message: "Fumigation students not found for your hub" };
         }
-
-        const students:any = [];
+        const pageSize = 3; // Number of students per page
+        const skip = (currentPage - 1) * pageSize;
 
         const incompleteBatches = await schema.Batches.find({ IsCompleted: false });
 
+        const students: {
+            studentId: any | undefined;
+            name: string | undefined;
+            email: string | undefined;
+            phone: number | undefined;
+            qualification: string | undefined;
+            prefferredLocation: string;
+            batchName: string | undefined;
+            status: string;
+        }[] = [];
+
+        // Loop through incomplete batches and filter students by preferred location
         incompleteBatches.forEach(batch => {
             batch.fumigationStudents.forEach(student => {
-                // Check if the preferred location matches the hub location
                 if (student.prefferredLocation === hubLocation) {
                     students.push({
-                        studentId: student.studentId,
+                        studentId: student?.studentId,
                         name: student.name,
                         email: student.email,
                         phone: student.phone,
                         qualification: student.qualification,
                         prefferredLocation: student.prefferredLocation,
                         batchName: batch.batchName,
-                        status : student.isStatus
+                        status: student.isStatus
                     });
                 }
             });
         });
 
-        console.log(students);
-        
-        return { status: true, students };
+        // Paginate the students array
+        const paginatedStudents = students.slice(skip, skip + pageSize);
+
+        return { status: true, students: paginatedStudents };
     } catch (error) {
         console.error("Error occurred while fetching all fumigation students:", error);
         return { status: false, message: "An error occurred while getting all fumigation students" };
     }
 },
+
+updateStudentStatus: async (studentId: string, batch: string, action: string) => {
+  try {
+    if (!studentId || !batch || !action) {
+      return { status: false, message: "Fumigation students not updated, some issue occurred. Please try again later." };
+    }
+
+    // Find the batch
+    const findBatch = await schema.Batches.findOne({ batchName: batch });
+    if (!findBatch) {
+      return { status: false, message: "Student batch not found." };
+    }
+
+    // Find the student in the batch
+    const student = findBatch.fumigationStudents.find(std => String(std.studentId) === studentId);
+    if (!student) {
+      return { status: false, message: "Student not found." };
+    }
+
+    // Update the student's status
+    student.isStatus = action;
+    await findBatch.save();
+
+    return { status: true, message: "Student status updated successfully." };
+  } catch (error) {
+    console.error(error);
+    return { status: false, message: "Error in updating the fumigation student status." };
+  }
+},
+getPerPageStudents: async (hubLocation: string, perPage: number) => {
+  try {
+      if (!hubLocation) {
+          return { status: false, message: "Fumigation students not found for your hub" };
+      }
+console.log(perPage,"dfdbfdfdfdperp pageeeee");
+
+      const incompleteBatches = await schema.Batches.find({ IsCompleted: false });
+
+      const students: {
+          studentId: any | undefined;
+          name: string | undefined;
+          email: string | undefined;
+          phone: number | undefined;
+          qualification: string | undefined;
+          prefferredLocation: string;
+          batchName: string | undefined;
+          status: string;
+      }[] = [];
+
+      // Loop through incomplete batches and filter students by preferred location
+      incompleteBatches.forEach(batch => {
+          batch.fumigationStudents.forEach(student => {
+              if (student.prefferredLocation === hubLocation) {
+                  students.push({
+                      studentId: student?.studentId,
+                      name: student.name,
+                      email: student.email,
+                      phone: student.phone,
+                      qualification: student.qualification,
+                      prefferredLocation: student.prefferredLocation,
+                      batchName: batch.batchName,
+                      status: student.isStatus
+                  });
+              }
+          });
+      });
+
+      // Limit the number of students based on the perPage parameter
+      const limitedStudents = students.slice(0, (perPage));
+       console.log(limitedStudents,"ndfdfdfdfdhfdfdfdvghfvdfdvfvgdvfghdfvdvfvdfvdf");
+       
+      return { status: true, students: limitedStudents };
+  } catch (error) {
+      console.error("Error occurred while fetching all fumigation students:", error);
+      return { status: false, message: "An error occurred while getting all fumigation students" };
+  }
+}
 
 
 }

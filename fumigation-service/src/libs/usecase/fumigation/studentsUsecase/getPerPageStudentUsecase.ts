@@ -1,5 +1,5 @@
 
-export const getAllFumigationStudents_Usecase = (dependencies: any) => {
+export const getPerPageStudent_Usecase = (dependencies: any) => {
     const {
        repository: { studentRepository }
     } = dependencies;
@@ -8,10 +8,10 @@ export const getAllFumigationStudents_Usecase = (dependencies: any) => {
        return console.log("Error: Fumigation Repository not found");
     }
  
-    const excutefunction = async (hubLocation:string,currentPage:number) => {
+    const excutefunction = async (hubLocation:string,perPage:number) => {
        try {
-          const response = await studentRepository.getAllFumigationStudents(hubLocation,currentPage); 
-          if (!response) { // check response coming or not
+          const response = await studentRepository.getPerPageStudents(hubLocation,perPage); 
+          if (!response) { // check response coming ors not
            return {status:false,message:"fumigation students not found"}
           }else{
             return { response };

@@ -7,7 +7,9 @@ import {getBatchwiseStudents_Usecase} from "./getBatchwiseStudentsUsecase";
 import {removeBatchwiseStudents_Usecase} from "./removeBatchwiseStudnetsController";
 import { editStudentMark_Usecase } from "./editStudentMarkUsecase";
 import {confirmPassedStudents_Usecase} from "./confirmPassedStudentsUsecase";
-import {getAllFumigationStudents_Usecase} from "./getAllFumigationStudentsUsecase"
+import {getAllFumigationStudents_Usecase} from "./getAllFumigationStudentsUsecase";
+import {updateStudentStatus_Usecase} from "./updateStudentStatusUsecase";
+import {getPerPageStudent_Usecase} from "./getPerPageStudentUsecase";
 export{
     fumigation_Usecase,
     getAllPendingStudents_Usecase,
@@ -18,5 +20,7 @@ export{
     removeBatchwiseStudents_Usecase,
     editStudentMark_Usecase,
     confirmPassedStudents_Usecase,
-    getAllFumigationStudents_Usecase
+    getAllFumigationStudents_Usecase,
+    updateStudentStatus_Usecase,
+    getPerPageStudent_Usecase
 }

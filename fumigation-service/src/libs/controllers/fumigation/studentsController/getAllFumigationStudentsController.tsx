@@ -9,8 +9,8 @@ export default (dependencies:any)=>{
     } = dependencies
  const getAllFumigationStudentsController = async (req:Request,res:Response)=>{
     try{
-        const {hubLocation} = req?.params
-        const response = await  getAllFumigationStudents_Usecase(dependencies).excutefunction(hubLocation) // call the excute function define to usecase
+        const {hubLocation,currentPage} = req?.query
+        const response = await  getAllFumigationStudents_Usecase(dependencies).excutefunction(hubLocation,currentPage) // call the excute function define to usecase
         res.status(201).json(response) // return response
     } catch(err){
         res.status(500).json({err:"Internal Server Error"}) //  handle exception
