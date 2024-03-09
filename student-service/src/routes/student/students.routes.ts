@@ -12,7 +12,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {profileUpdateController,getProfileController,updatePersonalDetailsController,updateAddressDetailsController,updateEducationDetailsController,getBacthwiseBestStdController,getWeeklyPerformanceController,getCourseCompletionController,getAllPerformanceController,getExtendDetailsController,requestExtentionController,getExtendRequestController,getReviewDetailsController,secondExtendRequestController,governmentIdUpdateController,getAllStudentsController} = students_controller(dependencies) 
+  const {profileUpdateController,getProfileController,updatePersonalDetailsController,updateAddressDetailsController,updateEducationDetailsController,getBacthwiseBestStdController,getWeeklyPerformanceController,getCourseCompletionController,getAllPerformanceController,getExtendDetailsController,requestExtentionController,getExtendRequestController,getReviewDetailsController,secondExtendRequestController,governmentIdUpdateController,getAllStudentsController,getPerPageStudentController} = students_controller(dependencies) 
 
   router.post('/profile-update',upload.single("image"),profileUpdateValidationRules,profileUpdateController)
 
@@ -32,6 +32,7 @@ export default (dependencies:any)=>{
   router.post('/second-extend-request/:extendId',secondExtendRequestController)
   router.post('/update-governmentId',upload.single("image"),governmentIdUpdateController)
   router.get('/get-all-students',getAllStudentsController)
+  router.get('/get-per-page-students',getPerPageStudentController)
   return router
 }
 

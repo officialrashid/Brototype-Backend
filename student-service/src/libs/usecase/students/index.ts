@@ -13,7 +13,8 @@ import {getExtendRequest_Usecase} from "./getExtendRequestUsecase";
 import {getReviewDetails_Usecase} from "./getReviewDetailsUsecase";
 import {secondExtendRequest_Usecase } from "./secondExtendRequestUsecase";
 import { governmentIdUpdate_Usecase } from "./governmentIdUpdateUsecase";
-import {getAllStudents_Usecase} from "./getAllStudentsUsecase"
+import {getAllStudents_Usecase} from "./getAllStudentsUsecase";
+import {getPerPageStudent_Usecase} from "./getPerPageStudentUsecase"
 export{
     profileUpdate_Usecase,
     getProfile_Usecase,
@@ -30,5 +31,6 @@ export{
     getReviewDetails_Usecase,
     secondExtendRequest_Usecase,
     governmentIdUpdate_Usecase,
-    getAllStudents_Usecase
+    getAllStudents_Usecase,
+    getPerPageStudent_Usecase
 }

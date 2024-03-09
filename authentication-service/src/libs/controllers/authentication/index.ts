@@ -13,6 +13,7 @@ import addStudent_Controller from "./addStudentController"
 import getSuperleadHub_Controller from "./getSuperleadHubController"
 import updateStudentPlaced_Controller from "./updateStudentPlacedController"
 import getStudentsAndPlacedStudents_Controller from "./getStudentsAndPlacedStudentsController"
+import getPerPageStudentStatus_Controller from "./getPerPageStudentStatusController"
 export default (dependencies:any)=>{
 
     return{
@@ -30,6 +31,7 @@ export default (dependencies:any)=>{
         getSuperleadHubController: getSuperleadHub_Controller(dependencies),
         updateStudentPlacedController: updateStudentPlaced_Controller(dependencies),
         getStudentsAndPlacedStudentsController: getStudentsAndPlacedStudents_Controller(dependencies),
+        getPerPageStudentStatusController: getPerPageStudentStatus_Controller(dependencies),
 
     }
 }

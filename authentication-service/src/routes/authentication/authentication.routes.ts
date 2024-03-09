@@ -21,5 +21,6 @@ export default (dependencies:any)=>{
   router.get('/get-superlead-hub-location/:uniqueId',getSuperleadHubController)
   router.patch('/update-student-placed-status',updateStudentPlacedController)
   router.get('/get-students-and-placed-students/:uniqueId',getStudentsAndPlacedStudentsController)
+  router.get('/get-per-page-students-status',getStudentsAndPlacedStudentsController)
   return router
 }

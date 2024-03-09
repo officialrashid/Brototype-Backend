@@ -202,8 +202,6 @@ export default {
           }
         },
         // Pagination: Skip and limit the number of documents returned
-        { $skip: skip },
-        { $limit: pageSize }
       ]);
   
       if (response && response.length > 0) {
@@ -238,22 +236,19 @@ export default {
       return { status: false, message: "An error occurred while updating student status" };
     }
   },
-  getHubwiseStudentsDetails: async (uniqueId: string, page: number = 1, pageSize: number = 10) => {
+  getHubwiseStudentsDetails: async (uniqueId: string) => {
     try {
       if (!uniqueId) {
         return { status: false, message: "Student not found Your Hub" };
       }
       const indexM = uniqueId.indexOf('M');
       const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
-      const skip = (page - 1) * pageSize;
       const response = await schema.Students.aggregate([
         {
           $match: {
             batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
           }
-        },
-        { $skip: skip },
-        { $limit: pageSize }
+        }
       ]);
       if (response && response.length > 0) {
         return { response }

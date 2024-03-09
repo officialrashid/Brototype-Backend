@@ -11,7 +11,8 @@ import {addReviewer_Usecase} from "./addReviewerUsecase";
 import {updateReviewerStatus_Usecase} from "./updateReviewerStatusUsecase";
 import {getSuperleadHub_Usecase} from "./getSuperleadHubUsecase";
 import {updateStudentPlaced_Usecase} from "./updateStudentPlacedUsecase";
-import {getStudentsAndPlacedStudents_Usecase} from "./getStudentsAndPlacedStudentsUsecase"
+import {getStudentsAndPlacedStudents_Usecase} from "./getStudentsAndPlacedStudentsUsecase";
+import {gePerPageStudentStatus_Usecase} from "./getPerPageStudentStatusUsecase"
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -26,5 +27,6 @@ export{
     updateReviewerStatus_Usecase,
     getSuperleadHub_Usecase,
     updateStudentPlaced_Usecase,
-    getStudentsAndPlacedStudents_Usecase
+    getStudentsAndPlacedStudents_Usecase,
+    gePerPageStudentStatus_Usecase
 }
