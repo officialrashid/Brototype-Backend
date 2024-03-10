@@ -44,6 +44,13 @@ spec:
             name: task-service
             port:
               number: 7001
+      - path: /api/superlead/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: superlead-service
+            port:
+              number: 8001
       - path: /api/reviewer/?(.*)
         pathType: Prefix
         backend:

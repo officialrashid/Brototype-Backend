@@ -1,0 +1,37 @@
+# user-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superlead-deployment
+  labels:
+    app: superlead
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: superlead
+  template:
+    metadata:
+      labels:
+        app: superlead
+    spec:
+      containers:
+        - name: superlead-service
+          image: officialrashid/superlead-service:latest 
+        
+
+---
+# user-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: superlead-service
+spec:
+  selector:
+    app: superlead
+  ports:
+    - name: superlead
+      protocol: TCP
+      port: 8001
+      targetPort: 8001
+

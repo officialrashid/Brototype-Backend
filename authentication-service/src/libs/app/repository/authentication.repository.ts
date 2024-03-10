@@ -416,10 +416,47 @@ export default {
     } catch (error) {
       return { status: false, message: "Error in getting placed students and current students" };
     }
+  },
+
+  createAdvisorsUniqueId :async () =>{
+     try {
+      const response = await schema.Advisors.find().sort({ _id: -1 }).limit(1).exec()
+      return response;
+     } catch (error) {
+       return {status:false,message:"Error in the craete advisors uniqueId"}
+     }
+  },
+  advisorEmailExist : async (email:string,phone:string) =>{
+    try {
+      const response = await schema.Advisors.find({ $or: [{ email }, { phone }] });
+      return response;
+    } catch (err) {
+      return { status: false, message: "An Error occur whilte creating Advisor" }
+    }
+  },
+  advisorUniqueIdExist : async (uniqueId:string) =>{
+    try {
+      const response = await schema.Advisors.find({ uniqueId: uniqueId })
+      return response;
+    } catch (err) {
+      return { status: false, message: "An Error occur whilte creating advisor" }
+    }
+
+  },
+  createAdvisors : async (data:any,uniqueId:string) =>{
+    try {
+      const advisorData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        uniqueId: uniqueId,
+      };
+      const response = await schema.Advisors.create(advisorData);
+      return { status: true, message: "advisor created successfully" };
+    } catch (err) {
+      return { status: false, message: "An Error occur whilte creating advisor" }
+    }
   }
-
-
-
-
 
 }
