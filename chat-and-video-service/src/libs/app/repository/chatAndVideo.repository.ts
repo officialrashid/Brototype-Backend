@@ -13,20 +13,47 @@ admin.initializeApp({
 
 export default {
 
- 
-
-  getProfile : async  (superleadId:string) =>{
-      try {
-        if(!superleadId){
-          return {status:false,message:"Your Profile Not Found"}
+  createChat : async (chatData:any) => {
+    try {
+        if (!chatData || !chatData.initiatorId || !chatData.recipientId) {
+            return { status: false, message: "Invalid chat data" };
         }
-        const response = await schema.Superlead.find({superleadId:superleadId})
-        return response;
-      } catch (error) {
-        return {status:false,message:"Error in the Superlead Profile Access"}
+        
+        // Create a new chat instance
+        const newChat = new schema.Chat({
+            participants: [{
+                initiatorId: chatData.initiatorId,
+                recipientId: chatData.recipientId
+            }]
+        });
+
+        // Save the new chat to the database
+        const response = await newChat.save();
+
+        return { status: true, message: "Chat created successfully", data: response };
+    } catch (error) {
+        return { status: false, message: "Error creating chat", error: error };
+    }
+},
+checkHaveAlreadyChatCreated: async (initiatorId:string, recipientId:string) => {
+  try {
+      if (!initiatorId || !recipientId) {
+          return { status: false, message: "Some issue in Chat Create" };
       }
-  },
- 
+      const response = await schema.Chat.exists({
+          participants: {
+              $elemMatch: {
+                  initiatorId: initiatorId,
+                  recipientId: recipientId
+              }
+          }
+      });
+      return { status: response, message: response ? "Chat already exists" : "Chat does not exist" };
+  } catch (error) {
+      return { status: false, message: "Error checking chat existence: " + error };
+  }
+}
+
   
  
 }

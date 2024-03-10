@@ -7,10 +7,10 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {getProfileController} = chatAndVideo_Controller(dependencies) 
+  const {createChatController} = chatAndVideo_Controller(dependencies) 
 
 
-  router.get('/get-superlead-profile/:superleadId',getProfileController)
+  router.post('/create-chat',createChatController)
 
 
   return router

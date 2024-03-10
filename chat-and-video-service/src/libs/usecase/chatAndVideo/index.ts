@@ -1,11 +1,8 @@
 
-import {getProfile_Usecase} from "./getProfileUsecase";
+import {createChat_Usecase} from "./createChatUsecase";
 
 
 export{
 
-    getProfile_Usecase,
-
-
-
+    createChat_Usecase,
 }

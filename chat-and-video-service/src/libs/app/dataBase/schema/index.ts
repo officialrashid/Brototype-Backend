@@ -1,5 +1,5 @@
-import { Superlead } from "./chat.schema";
+import { Chat } from "./chat.schema";
 
 export default{
-    Superlead,
+    Chat,
 }

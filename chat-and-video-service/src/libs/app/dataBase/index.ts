@@ -1,5 +1,5 @@
-import superleadSchema from "./schema"
+import chatAndVideoSchema from "./schema"
 
 export default{
-    superleadSchema
+    chatAndVideoSchema
 }

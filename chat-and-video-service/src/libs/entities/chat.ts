@@ -1,38 +1,19 @@
 // entities/enquiries.ts
 
-export class Students {
-  studentId : string;
-  batchId : string;
-  name: String;
-  email: String;
-  phone: Number;
-  batch: String;
-  uniqueId : String;
+export class Chat {
+  initiatorId : string;
+  recipientId: string;
 
-  constructor(data: StudentsData) {
-    console.log(data,"data coming to entitites");
+  constructor(initiatorId:string,recipientId:string) {
+    console.log(initiatorId,"data coming to entitites",recipientId);
     
-    this.studentId = data.studentId;
-    this.batchId = data.batchId
-    this.name = data.name;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.batch = data.batch;
-    this.uniqueId = data.uniqueId;
-
-
+    this.initiatorId = initiatorId,
+    this.recipientId = recipientId
   }
 }
 
-interface StudentsData {
-  studentId : string;
-  batchId : string;
-  name: String;
-  email: String;
-  phone: Number;
-  batch: String;
-  uniqueId: String;
-
-
+interface ChatData {
+  initiatorId : string;
+  recipientId: string;
 
 }

@@ -1,11 +1,11 @@
 
 
-import getProfile_Controller from "./getProfileController"
+import createChat_Controller from "./createChatController"
 
 export default (dependencies:any)=>{
 
     return{
-        getProfileController: getProfile_Controller(dependencies),
+        createChatController: createChat_Controller(dependencies),
         
     
     }
