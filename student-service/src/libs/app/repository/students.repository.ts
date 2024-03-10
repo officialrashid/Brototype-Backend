@@ -544,7 +544,37 @@ export default {
       console.error(error);
       return { status: false, message: "Error in fetching per page students" };
     }
+  },
+  getAllChatStudents: async (uniqueId:string) => {
+    try {
+      const indexM = uniqueId.indexOf('M');
+  
+      // Extract the prefix (all characters before 'M')
+      const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+      console.log(uniqueLetters, "uniqueLetters");
+      
+      const result = await schema.Manifest.aggregate([
+        {
+          $match: {
+            batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
+          }
+        },
+        {
+          $project: {
+            studentId:1,
+            imageUrl: 1,
+            firstName: 1,
+            lastName: 1,
+            phone: 1
+          }
+        }
+      ]);
+      
+      // Return the result
+      return result;
+    } catch (error) {
+      return { status: false, message: "students not get chat section" };
+    }
   }
   
-
 }

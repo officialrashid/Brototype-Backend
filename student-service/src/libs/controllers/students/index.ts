@@ -16,6 +16,7 @@ import secondExtendRequest_Controller from "./secondExtendRequestController"
 import governmentIdUpdate_Controller from "./governmentIdUpdateController"
 import getAllStudents_Controller from "./getAllStudentsController"
 import getPerPageStudent_Controller from "./getPerPageStudentController"
+import getAllChatStudents_Controller from "./getAllChatStudentsController"
 export default (dependencies:any)=>{
 
     return{
@@ -35,6 +36,7 @@ export default (dependencies:any)=>{
         secondExtendRequestController: secondExtendRequest_Controller(dependencies),
         governmentIdUpdateController: governmentIdUpdate_Controller(dependencies),
         getAllStudentsController: getAllStudents_Controller(dependencies),
-        getPerPageStudentController: getPerPageStudent_Controller(dependencies)
+        getPerPageStudentController: getPerPageStudent_Controller(dependencies),
+        getAllChatStudentsController: getAllChatStudents_Controller(dependencies)
     }
 }
