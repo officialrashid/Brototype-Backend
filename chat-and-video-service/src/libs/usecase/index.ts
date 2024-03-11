@@ -1,9 +1,10 @@
-import {createChat_Usecase,sendMessage_Usecase,getAllChatRecipients_Usecase} from "./chatAndVideo"
+import {createChat_Usecase,sendMessage_Usecase,getAllChatRecipients_Usecase,getMessages_Usecase} from "./chatAndVideo"
 
 export {
 
     createChat_Usecase,
     sendMessage_Usecase,
-    getAllChatRecipients_Usecase
+    getAllChatRecipients_Usecase,
+    getMessages_Usecase
 
 }

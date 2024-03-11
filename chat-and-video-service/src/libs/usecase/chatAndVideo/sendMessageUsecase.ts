@@ -1,30 +1,28 @@
+// sendMessageUsecase.ts
 import { Chat } from "../../entities/chat";
-
-export const sendMessage_Usecase = (dependencies: any) => {
+import sendMessage from "../../app/repository/chatAndVideo.repository"
+import dependencies from "../../../config/dependencies";
+export const sendMessage_Usecase = async (senderId: string, receiverId: string, content: string) => {
     const { repository: { chatAndVideoRepository } } = dependencies;
 
     if (!chatAndVideoRepository) {
         throw new Error("Error: chatAndVideo Repository not found");
     }
-
-    const executeFunction = async (senderId: string, receiverId: string,content:string) => {
+   
         try {
             if (!senderId || !receiverId || !content) {
-                return { status: false, message: "message not send" };
-            }
-           
-            const sendMessage = await chatAndVideoRepository.sendMessage(senderId,receiverId,content);
-
-            if(sendMessage.status===true){
-                return {sendMessage}
-            }else{
-                return {status:false,message:"Message Sended not success"}
+                return { status: false, message: "Message not sent" };
             }
 
-        } catch (err) {
-            return { status: false, message: "Error creating chat: " + err };
+            const sendMessage = await chatAndVideoRepository.sendMessage(senderId, receiverId, content);
+
+            if (sendMessage.status === true) {
+                return { status: true, message: "Message sent successfully", sendMessage };
+            } else {
+                return { status: false, message: "Failed to send message" };
+            }
+        } catch (error) {
+            return { status: false, message: "Error sending message: " + error };
         }
-    };
-
-    return { executeFunction };
 };
+export default sendMessage_Usecase

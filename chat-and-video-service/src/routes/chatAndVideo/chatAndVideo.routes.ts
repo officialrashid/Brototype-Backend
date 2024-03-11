@@ -7,12 +7,13 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {createChatController,sendMessageController,getAllChatRecipientsController} = chatAndVideo_Controller(dependencies) 
+  const {createChatController,sendMessageController,getAllChatRecipientsController,getMessagesController} = chatAndVideo_Controller(dependencies) 
 
 
   router.post('/create-chat',createChatController)
   router.post('/send-message',sendMessageController)
   router.get('/get-all-chat-recipients/:initiatorId',getAllChatRecipientsController)
+  router.get('/get-messages',getMessagesController)
 
 
   return router
