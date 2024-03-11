@@ -13,28 +13,29 @@ admin.initializeApp({
 
 export default {
 
-  createChat : async (chatData:any) => {
-    try {
-        if (!chatData || !chatData.initiatorId || !chatData.recipientId) {
-            return { status: false, message: "Invalid chat data" };
+    createChat: async (chatData: { initiatorId: any; recipientId: any; }) => {
+        try {
+            if (!chatData || !chatData.initiatorId || !chatData.recipientId) {
+                return { status: false, message: "Invalid chat data" };
+            }
+            
+            // Create a new chat instance
+            const newChat = new schema.Chat({
+                participants: [{
+                    initiatorId: chatData.initiatorId,
+                    recipientId: chatData.recipientId
+                }]
+            });
+    
+            // Save the new chat to the database
+            const response = await newChat.save();
+            
+            return { status: true, message: "Chat created successfully", data: response };
+        } catch (error) {
+            return { status: false, message: "Error creating chat", error: error };
         }
-        
-        // Create a new chat instance
-        const newChat = new schema.Chat({
-            participants: [{
-                initiatorId: chatData.initiatorId,
-                recipientId: chatData.recipientId
-            }]
-        });
-
-        // Save the new chat to the database
-        const response = await newChat.save();
-
-        return { status: true, message: "Chat created successfully", data: response };
-    } catch (error) {
-        return { status: false, message: "Error creating chat", error: error };
-    }
-},
+    },
+    
 checkHaveAlreadyChatCreated: async (initiatorId:string, recipientId:string) => {
   try {
       if (!initiatorId || !recipientId) {
@@ -52,8 +53,117 @@ checkHaveAlreadyChatCreated: async (initiatorId:string, recipientId:string) => {
   } catch (error) {
       return { status: false, message: "Error checking chat existence: " + error };
   }
-}
+},
+sendMessage : async  (senderId:string,receiverId:string,content:string) =>{
+   try {
+     if(!senderId || !receiverId || !content){
+      return {status:false,message:"message send not success"}
+     }
+     const data = new schema.Messages({
 
-  
+        senderId: senderId,
+        receiverId: receiverId,
+        content: content
+    })
+    const messageResponse = await data.save()
+    const filterResponse = {
+        senderId: messageResponse?.senderId,
+        receiverId: messageResponse?.receiverId,
+        content: messageResponse?.content
+    }
+    //adding to chat the messageId
+    if (messageResponse) {
+
+        const response = await schema.Chat.findOneAndUpdate(
+            {
+                participants: {
+                    $elemMatch: {
+                        $or:
+                            [
+                                { initiatorId: senderId, recipientId: receiverId },
+                                { recipientId: senderId, initiatorId: receiverId }
+                            ]
+
+                    }
+                }
+
+            },
+            {
+                $push: { messages: messageResponse._id },
+                $set: { lastMessage: messageResponse._id },
+            }, {
+            new: true
+        })
+        return { status:true,message: filterResponse, chatId: response?._id }
+
+    }
+   } catch (error) {
+     return {status:false,message:"Error in the message create"}
+   }
+},
+ updateChatersDetails : async (chatersDetails: { firstName: string; lastName: string; phone:string; imageUrl: string; }, recipientId: any) => {
+
+    
+    try {
+        if (!chatersDetails) {
+            return { status: false, message: "Chaters details not provided for update." };
+        }
+
+        
+          const chaterData = {
+            chaterId: recipientId,
+            firstName: chatersDetails.firstName,
+            lastName: chatersDetails.lastName,
+            phone :chatersDetails.phone,
+            imageUrl: chatersDetails.imageUrl
+          }
+          console.log(chaterData,"chatDetailsssssssssss 111111");// If the recipient doesn't exist, create a new document
+           const chatersData = await schema.Chaters.create(chaterData);
+       console.log(chatersData,"dmfdfvdvfdvf coming chaters datat");
+       
+        return { status: true, message: "Chaters details updated successfully." };
+    } catch (error) {
+        return { status: false, message: "Error in updating chaters details." };
+    }
+
  
+},
+updateChatersExit : async (chaterId:string) =>{
+  try {
+     if(!chaterId){
+        return {status:false,message:"chater not found"}
+     }
+     const response = await schema.Chaters.find({chaterId:chaterId})
+     console.log(response,"dsnmfsdbffvdvfdvfdh");
+     
+     if(response && response.length > 0){
+        return {status:false,message:"chater details already created"}
+       
+     }else{
+        return {status:true,message:"chater details not created"}
+     }
+  } catch (error) {
+     return {status:false,message:"Error in the update Chaters Exist"}
+  }
+},
+ getAllChatRecipients : async (initiatorId: string) => {
+    try {
+        if (!initiatorId) {
+            return { status: false, message: "Initiator ID not provided" };
+        }
+
+        // Query the Chaters collection to find all entries except the one with the provided initiatorId
+        const recipients = await schema.Chaters.find({ _id: { $ne: initiatorId } });
+        
+        console.log(recipients,"dnfdfbdffdfvdghfd  recipients recipients");
+        
+        // Ex tract only the recipient IDs from the found entries
+        
+
+        // return { status: true, recipients: recipientIds };
+    } catch (error) {
+        return { status: false, message: "Error in getting all chat recipients", error: error };
+    }
+},
+
 }

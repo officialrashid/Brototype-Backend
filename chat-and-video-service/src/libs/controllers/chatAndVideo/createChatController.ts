@@ -6,10 +6,12 @@ export default (dependencies: any) => {
 
     const createChatController = async (req: Request, res: Response) => {
         try {
-            console.log(req.body,"nmfbdhfbdjhfdgfdgf");
+         
             
-            const { initiatorId, recipientId } = req.body;
-            const response = await createChat_Usecase(dependencies).executeFunction(initiatorId, recipientId);
+            const { initiatorId, recipientId,chaters } = req.body;
+
+            
+            const response = await createChat_Usecase(dependencies).executeFunction(initiatorId, recipientId,chaters);
             res.status(201).json(response);
         } catch (error) {
             res.status(500).json({ status: false, message: "Internal server error" });
