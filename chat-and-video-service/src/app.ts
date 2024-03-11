@@ -7,6 +7,7 @@ import config from "./config/config";
 import expressConfig from "./express";
 import express from 'express';
 import dependencies from "./config/dependencies";
+import socketConnection from "./socket.io/socket.io";
 // import {consumeAuthentication} from "./events/authenticationConsumer"
 // Create an Express app instance
 const app = express();
@@ -24,6 +25,7 @@ expressConfig(app);
 app.use("/api", routes(dependencies));
 
 // Start the server
+
 serverConfig(server, config).startServer();
 
 // setInterval(async() => {

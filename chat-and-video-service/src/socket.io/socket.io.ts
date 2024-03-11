@@ -1,43 +1,43 @@
-// socketConnection.js
 import { Server } from "socket.io";
-import {sendMessage_Usecase} from "../libs/usecase/chatAndVideo/sendMessageUsecase"
-    const socketConnection = async (server: any) => {
-        console.log();
+import { sendMessage_Usecase } from "../libs/usecase/chatAndVideo/sendMessageUsecase";
+
+const socketConnection = async (server:any) => {
+    const io = new Server(server, { cors: { origin: "*" } });
+ 
+    
+    io.on('connection', (socket) => {
+        console.log(socket);
         
-        const io = new Server(server, {cors: {origin: "*",}})
-        io.on('connection', (socket) => {
-            console.log("socket connection successfullyy");
+        console.log("Socket connection successfully");
+
+        // socket.emit('connect', { message: 'A new client connected' }, socket.id);
+
+        socket.on('message', async (data) => {
+            console.log(data, "Data in socket");
             
-            socket.emit('connect', { message: 'A new client connected' },socket.id);
-
-            // Incoming messages
-            socket.on('message', async (data: any) => {
-                try {
-                    const { senderId, receiverId, content } = data;
-                    const response = await sendMessage_Usecase(senderId, receiverId, content);
-
-                    if (response.status === true && response.sendMessage.chatId) {
-                        const roomId = response.sendMessage.chatId.toString();
-                        const payload = {
-                            chatId: roomId,
-                            content: response.sendMessage.message
-                        };
-
-                        // Emit message to all clients in the room
-                        io.to(roomId).emit("received", payload);
-
-                        // Broadcast notification to all clients except the sender
-                        socket.broadcast.emit("notification", { message: "New message received" });
-                    } else {
-                        console.error("Failed to send message:", response.message);
-                    }
-                } catch (error) {
-                    console.error("Error processing message:", error);
+            try {
+                const { senderId, receiverId, content } = data;
+                const response = await sendMessage_Usecase(senderId, receiverId, content);
+                
+                if (response.status === true && response.sendMessage.chatId) {
+                    const roomId = response.sendMessage.chatId.toString();
+                    const payload = {
+                        chatId: roomId,
+                        content: response.sendMessage.message
+                    };
+                    
+                    io.to(roomId).emit("received", payload);
+                    socket.emit("messageResponse", { status: true });
+                } else {
+                    console.error("Failed to send message:", response.message);
+                    socket.emit("messageResponse", { status: false, message: response.message });
                 }
-            });
+            } catch (error) {
+                console.error("Error processing message:", error);
+                socket.emit("messageResponse", { status: false, message: error });
+            }
         });
-       
-    };
-    export default socketConnection;
-   
+    });
+};
 
+export default socketConnection;

@@ -117,9 +117,9 @@ export default {
                 phone: chatersDetails.phone,
                 imageUrl: chatersDetails.imageUrl
             }
-            console.log(chaterData, "chatDetailsssssssssss 111111");// If the recipient doesn't exist, create a new document
+          // If the recipient doesn't exist, create a new document
             const chatersData = await schema.Chaters.create(chaterData);
-            console.log(chatersData, "dmfdfvdvfdvf coming chaters datat");
+          ;
 
             return { status: true, message: "Chaters details updated successfully." };
         } catch (error) {
@@ -134,7 +134,7 @@ export default {
                 return { status: false, message: "chater not found" }
             }
             const response = await schema.Chaters.find({ chaterId: chaterId })
-            console.log(response, "dsnmfsdbffvdvfdvfdh");
+
 
             if (response && response.length > 0) {
                 return { status: false, message: "chater details already created" }
@@ -155,7 +155,7 @@ export default {
             // Query the Chaters collection to find all entries except the one with the provided initiatorId
             const recipients = await schema.Chaters.find({ _id: { $ne: initiatorId } });
 
-            console.log(recipients, "dnfdfbdffdfvdghfd  recipients recipients");
+
             if (recipients.length > 0) {
                 return { status: true, recipients }
             } else {
@@ -182,8 +182,7 @@ export default {
             if (!chat) {
                 return { status: false, message: "Chat not found" };
             }
-         console.log(chat.messages,"messages get that");
-         console.log(chat.lastMessage,"dfnfbdbfhdfdgfd");
+
          
          
             return { status: true, messages: chat.messages, lastMessage: chat.lastMessage };

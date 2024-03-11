@@ -1,16 +1,18 @@
 // serverConfig.ts
-import socketConfguration from "../src/socket.io/socket.io";
+import socketConnection from "../src/socket.io/socket.io";
 const serverConfig = (server: any, config: any) => {
-
-  const startServer = () => {
+   let socketServer;
+  const startServer = async  () => {
     
-    const response = server.listen(config.port, () => {
+   socketServer= await server.listen(config.port, () => {
 
       console.log(`Server listening on port ${config.port} - chatAndVideoService`);
+      
     });
-    if(response){
-      socketConfguration(response)
+    if(socketServer){
+      await socketConnection(socketServer);
     }
+ 
   };
 
   return {
