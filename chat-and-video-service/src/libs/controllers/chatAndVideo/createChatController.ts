@@ -10,6 +10,7 @@ export default (dependencies: any) => {
             
             const { initiatorId, recipientId,chaters } = req.body;
 
+            console.log(req.body,"llllllllllllllll");
             
             const response = await createChat_Usecase(dependencies).executeFunction(initiatorId, recipientId,chaters);
             res.status(201).json(response);

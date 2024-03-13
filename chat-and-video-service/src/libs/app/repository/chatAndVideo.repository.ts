@@ -153,10 +153,12 @@ export default {
             }
 
             // Query the Chaters collection to find all entries except the one with the provided initiatorId
-            const recipients = await schema.Chaters.find({ _id: { $ne: initiatorId } });
+            const recipients = await schema.Chaters.find({ chaterId: { $ne: initiatorId } });
 
 
             if (recipients.length > 0) {
+                console.log(recipients,"fdbfdfhbdbfdfhjd");
+                
                 return { status: true, recipients }
             } else {
                 return { status: false, message: "your started not chat" }

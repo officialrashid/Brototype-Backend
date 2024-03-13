@@ -127,8 +127,32 @@ export default {
     } catch (error) {
       return { status: false, message: "Error in updating the Superlead profile" };
     }
+  },
+  getAllChatSuperleads : async  () =>{
+    try {
+      const result = await schema.Superlead.aggregate([
+     
+        {
+          $project: {
+            superleadId:1,
+            imageUrl: 1,
+            firstName: 1,
+            lastName: 1,
+            phone: 1
+          }
+        }
+      ]);
+
+      
+      if(result && result.length > 0){
+        console.log(result,"result comnggg");
+        return {status:true,result}
+      }
+      
+    } catch (error) {
+      return {status:false,message:"Error int the get all chat superleads"}
+    }
   }
-  
   
  
 }

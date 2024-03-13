@@ -51,6 +51,13 @@ spec:
             name: superlead-service
             port:
               number: 8001
+      - path: /api/chat-and-video/?(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-and-video-service
+            port:
+              number: 9001
       - path: /api/reviewer/?(.*)
         pathType: Prefix
         backend:

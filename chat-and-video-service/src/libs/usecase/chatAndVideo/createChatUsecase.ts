@@ -20,10 +20,12 @@ export const createChat_Usecase = (dependencies: any) => {
             if (chatExists.status===null) {
           
                 const chat = new Chat( initiatorId, recipientId );
- 
+                console.log(chat,"chatssssssssss");
+                
                 
                 const response = await chatAndVideoRepository.createChat(chat);
-
+                  console.log(response,'dnf dfdfvdvhdfdhfd chat ceare chat respnse');
+                  
                     if(response.status===true){
         
                         // const updateChatersExit = await chatAndVideoRepository.updateChatersExit(recipientId)
