@@ -16,13 +16,11 @@ export const createChat_Usecase = (dependencies: any) => {
            
             const chatExists = await chatAndVideoRepository.checkHaveAlreadyChatCreated(initiatorId, recipientId);
     
+            console.log(chatExists,"chatExistssssssss");
             
             if (chatExists.status===null) {
           
                 const chat = new Chat( initiatorId, recipientId );
-                console.log(chat,"chatssssssssss");
-                
-                
                 const response = await chatAndVideoRepository.createChat(chat);
                   console.log(response,'dnf dfdfvdvhdfdhfd chat ceare chat respnse');
                   
@@ -36,7 +34,7 @@ export const createChat_Usecase = (dependencies: any) => {
                  
                    
                 
-                return { status: true, response };
+                return { status: true, response ,chatExists};
             }else{
                 return { status: false, message: "Chat already exists" };
             }

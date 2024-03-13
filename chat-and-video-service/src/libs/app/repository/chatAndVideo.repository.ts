@@ -42,18 +42,31 @@ export default {
                 return { status: false, message: "Some issue in Chat Create" };
             }
             const response = await schema.Chat.exists({
-                participants: {
-                    $elemMatch: {
-                        initiatorId: initiatorId,
-                        recipientId: recipientId
+                $and: [
+                    {
+                        participants: {
+                            $elemMatch: {
+                                initiatorId: initiatorId,
+                                recipientId: recipientId
+                            }
+                        }
+                    },
+                    {
+                        participants: {
+                            $elemMatch: {
+                                initiatorId: recipientId,
+                                recipientId: initiatorId
+                            }
+                        }
                     }
-                }
+                ]
             });
-            return { status: response, message: response ? "Chat already exists" : "Chat does not exist" };
+            return { status: response, message: response };
         } catch (error) {
             return { status: false, message: "Error checking chat existence: " + error };
         }
     },
+    
     sendMessage: async (senderId: string, receiverId: string, content: string) => {
         try {
             if (!senderId || !receiverId || !content) {
