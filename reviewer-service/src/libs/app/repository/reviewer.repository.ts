@@ -269,66 +269,63 @@ scheduleEvents: async (data: any) => {
       return { status: false, message: "some issue in get profile" }
     }
   },
-  // getReviewTakeCount: async (reviewerId: string) => {
-  //   try {
-  //     const currentDate = new Date();
-  //     const currentYear = currentDate.getFullYear();
-  //     const currentMonth = currentDate.getMonth() + 1; // JavaScript months are zero-based, so we add 1
-
-  //     const reviewer = await schema.Events.findOne({ reviewerId: reviewerId });
-  //     if (!reviewer) {
-  //       return { status: false, message: "Reviewer not found" };
-  //     }
-
-  //     const monthCounts: { [key: string]: number } = {};
-
-  //     // Initialize monthCounts with counts for all months set to 0
-  //     for (let month = 1; month <= 12; month++) {
-  //       monthCounts[month.toString().padStart(2, '0')] = 0;
-  //     }
-
-  //     // Iterate through each event
-  //     reviewer.events.forEach((evt: any) => { // Assuming you cannot specify the exact type of evt
-  //       // Extract year and month from the event's date
-  //       const dateParts = evt.date.split("-");
-  //       const year = parseInt(dateParts[2]);
-  //       const month = parseInt(dateParts[1]);
-
-  //       // Check if the event is from the current year
-  //       if (year === currentYear) {
-  //         // Count booked events with status=true for each month
-  //         const count = evt.bookedEvents.reduce((acc: number, event: any) => {
-  //           if (event.booked === true && event.status === true) {
-  //             return acc + 1;
-  //           } else {
-  //             return acc;
-  //           }
-  //         }, 0);
-
-  //         // Add the count to the respective month in monthCounts
-  //         monthCounts[month.toString().padStart(2, '0')] += count;
-  //       }
-  //     });
-
-  //     // Convert monthCounts to an array of objects [{ month, count }]
-  //     const countsArray = Object.entries(monthCounts).map(([month, count]) => ({ month, count }));
-
-  //     // Sort the countsArray based on the month
-  //     countsArray.sort((a, b) => parseInt(a.month) - parseInt(b.month));
-
-  //     // Extract only the counts from the sorted array
-  //     const sortedCounts = countsArray.map(({ count }) => count);
-
-  //     console.log(sortedCounts);
-  //     if (!sortedCounts) {
-  //       return { status: false, message: "No review Count found current Year" }
-  //     } else {
-  //       return { status: true, sortedCounts }
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // },
+  getReviewTakeCount: async (reviewerId: string) => {
+    try {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1;
+  
+      // Find the reviewer document by reviewerId
+      const reviewer = await schema.Events.findOne({ reviewerId });
+  
+      if (!reviewer) {
+        return { status: false, message: "Reviewer not found" };
+      }
+  
+      const monthCounts: { [key: string]: number } = {};
+  
+      // Initialize monthCounts with counts for all months set to 0
+      for (let month = 1; month <= 12; month++) {
+        monthCounts[month.toString().padStart(2, '0')] = 0;
+      }
+  
+      // Iterate through each event
+      reviewer.events.forEach((event: any) => {
+        // Iterate through each booked event
+        event.bookedEvents.forEach((bookedEvent: any) => {
+          // Extract year and month from the event's date
+          const dateParts = bookedEvent.date.split("-");
+          const year = parseInt(dateParts[2]);
+          const month = parseInt(dateParts[1]);
+  
+          // Check if the event is from the current year
+          if (year === currentYear) {
+            // Count booked events with status=true for each month
+            const count = bookedEvent.booked === true && bookedEvent.status === true ? 1 : 0;
+  
+            // Add the count to the respective month in monthCounts
+            monthCounts[month.toString().padStart(2, '0')] += count;
+          }
+        });
+      });
+  
+      // Convert monthCounts to an array of objects [{ month, count }]
+      const countsArray = Object.entries(monthCounts).map(([month, count]) => ({ month, count }));
+  
+      // Sort the countsArray based on the month
+      countsArray.sort((a, b) => parseInt(a.month) - parseInt(b.month));
+  
+      // Extract only the counts from the sorted array
+      const sortedCounts   = await countsArray.map(({ count }) => count);
+      console.log(sortedCounts,"await await");
+      
+      return { status: true, sortedCounts };
+    } catch (err) {
+      console.error(err);
+      return { status: false, message: err };
+    }
+    
+  },
   
   getAllReviewersProfile: async (currentPage: number) => {
     try {
