@@ -6,8 +6,12 @@ interface Event {
   startTime: string;
   endTime: string;
   label: string;
-  day: string;
-  date: string;
+  customType :String;
+  day: [];
+  date: [];
+  weekly : [];
+  monthly : [];
+  specifDays : []
   bookedEvents: {}[]; // Specify the type as an array of empty objects
 }
 
@@ -22,8 +26,12 @@ const eventSchema = new Schema({
   startTime: String,
   endTime: String,
   label: String,
-  day: String,
-  date: String,
+  customType: String,
+  weekly : [],
+  monthly : [],
+  specifDays : [],
+  day: [],
+  date: [],
   bookedEvents: [{}] // Specify the type as an array of empty objects
 });
 

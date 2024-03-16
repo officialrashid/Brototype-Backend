@@ -22,19 +22,19 @@ export default {
         // Loop through existing events to check for overlaps
         if(existingEvents.length > 0){
           for (const eventData of existingEvents[0].events) {
-            if (eventData.date === date) {
-                const existingStart = moment(eventData.startTime, 'hh:mma');
-                const existingEnd = moment(eventData.endTime, 'hh:mma');
+            // if (eventData.date === date) {
+            //     const existingStart = moment(eventData.startTime, 'hh:mma');
+            //     const existingEnd = moment(eventData.endTime, 'hh:mma');
 
-                // Check for overlap
-                if (
-                    (start.isBetween(existingStart, existingEnd) || end.isBetween(existingStart, existingEnd)) ||
-                    (existingStart.isBetween(start, end) || existingEnd.isBetween(start, end))
-                ) {
-                    // There is an overlap, return false
-                    return { status: false };
-                }
-            }
+            //     // Check for overlap
+            //     if (
+            //         (start.isBetween(existingStart, existingEnd) || end.isBetween(existingStart, existingEnd)) ||
+            //         (existingStart.isBetween(start, end) || existingEnd.isBetween(start, end))
+            //     ) {
+            //         // There is an overlap, return false
+            //         return { status: false };
+            //     }
+            // }
         }
 
         // No overlaps found, return true
@@ -54,7 +54,7 @@ export default {
       return { status: false, message: "Data is missing" };
     }
 
-    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status, date } = data;
+    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status, date,customType } = data;
 
     try {
       // Check if a document with the given reviewerId exists
@@ -68,7 +68,11 @@ export default {
           label,
           day,
           date,
-          bookedEvents: []
+          customType,
+          bookedEvents: [],
+          weekly: [],
+          monthly: [],
+          specifDays: []
         });
 
         // Save the updated document
@@ -87,9 +91,13 @@ export default {
               label,
               day,
               date,
+              customType,
               bookedEvents: [
 
               ],
+              weekly: [],
+              monthly: [],
+              specifDays: []
             },
           ],
         });
