@@ -15,7 +15,8 @@ export default (dependencies: any) => {
 
        
         const response = await getDayTimeLineup_Usecase(dependencies).executeFunction(reviewerId,dayTimeLine)
-
+       console.log(response,"respone in controller get time line usecasee");
+       
         res.status(201).json(response);
     }
     return getDayTimeLineupController;

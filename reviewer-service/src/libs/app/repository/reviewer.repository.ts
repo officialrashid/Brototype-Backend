@@ -8,48 +8,51 @@ import { String } from "aws-sdk/clients/acm";
 
 export default {
 
-  scheduleEventExist: async (reviewerId: any, startTime: moment.MomentInput, endTime: moment.MomentInput, day: any, date: string) => {
+  scheduleEventExist: async (reviewerId: any, startTime: moment.MomentInput, endTime: moment.MomentInput, day: any, date: string[]) => {
     try {
         // Parse the incoming start and end times into moment objects
         const start = moment(startTime, 'hh:mma');
         const end = moment(endTime, 'hh:mma');
-        
+
         // Query to find overlapping events
-        const existingEvents = await schema.Events.find({
+        const existingEvents: any = await schema.Events.find({
             reviewerId: reviewerId,
         });
 
         // Loop through existing events to check for overlaps
-        if(existingEvents.length > 0){
-          for (const eventData of existingEvents[0].events) {
-            // if (eventData.date === date) {
-            //     const existingStart = moment(eventData.startTime, 'hh:mma');
-            //     const existingEnd = moment(eventData.endTime, 'hh:mma');
+        if (existingEvents.length > 0) {
+            for (const eventData of existingEvents[0].events) {
+                // Check if any of the dates in the date array are included in eventData.date
+                if (date.some(d => eventData.date.includes(d))) {
+                    console.log("matcheddd");
 
-            //     // Check for overlap
-            //     if (
-            //         (start.isBetween(existingStart, existingEnd) || end.isBetween(existingStart, existingEnd)) ||
-            //         (existingStart.isBetween(start, end) || existingEnd.isBetween(start, end))
-            //     ) {
-            //         // There is an overlap, return false
-            //         return { status: false };
-            //     }
-            // }
-        }
+                    // Parse existing event start and end times into moment objects
+                    const existingStart = moment(eventData.startTime, 'hh:mma');
+                    const existingEnd = moment(eventData.endTime, 'hh:mma');
 
-        // No overlaps found, return true
-        return { status: true };
-        }else{
-          return { status: true }
+                    // Check for overlap
+                    if (
+                        (start.isSameOrBefore(existingEnd) && end.isSameOrAfter(existingStart)) ||
+                        (existingStart.isSameOrBefore(end) && existingEnd.isSameOrAfter(start))
+                    ) {
+                        // There is an overlap, return false
+                        return { status: false };
+                    }
+                }
+            }
+
+            // No overlaps found, return true
+            return { status: true };
+        } else {
+            return { status: true };
         }
-      
     } catch (err) {
         console.log(err, "error in the scheduleEventExist check function");
         throw err;
     }
 },
 
-  scheduleEvents: async (data: any) => {
+scheduleEvents: async (data: any) => {
     if (!data) {
       return { status: false, message: "Data is missing" };
     }
@@ -266,66 +269,66 @@ export default {
       return { status: false, message: "some issue in get profile" }
     }
   },
-  getReviewTakeCount: async (reviewerId: string) => {
-    try {
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth() + 1; // JavaScript months are zero-based, so we add 1
+  // getReviewTakeCount: async (reviewerId: string) => {
+  //   try {
+  //     const currentDate = new Date();
+  //     const currentYear = currentDate.getFullYear();
+  //     const currentMonth = currentDate.getMonth() + 1; // JavaScript months are zero-based, so we add 1
 
-      const reviewer = await schema.Events.findOne({ reviewerId: reviewerId });
-      if (!reviewer) {
-        return { status: false, message: "Reviewer not found" };
-      }
+  //     const reviewer = await schema.Events.findOne({ reviewerId: reviewerId });
+  //     if (!reviewer) {
+  //       return { status: false, message: "Reviewer not found" };
+  //     }
 
-      const monthCounts: { [key: string]: number } = {};
+  //     const monthCounts: { [key: string]: number } = {};
 
-      // Initialize monthCounts with counts for all months set to 0
-      for (let month = 1; month <= 12; month++) {
-        monthCounts[month.toString().padStart(2, '0')] = 0;
-      }
+  //     // Initialize monthCounts with counts for all months set to 0
+  //     for (let month = 1; month <= 12; month++) {
+  //       monthCounts[month.toString().padStart(2, '0')] = 0;
+  //     }
 
-      // Iterate through each event
-      reviewer.events.forEach((evt: any) => { // Assuming you cannot specify the exact type of evt
-        // Extract year and month from the event's date
-        const dateParts = evt.date.split("-");
-        const year = parseInt(dateParts[2]);
-        const month = parseInt(dateParts[1]);
+  //     // Iterate through each event
+  //     reviewer.events.forEach((evt: any) => { // Assuming you cannot specify the exact type of evt
+  //       // Extract year and month from the event's date
+  //       const dateParts = evt.date.split("-");
+  //       const year = parseInt(dateParts[2]);
+  //       const month = parseInt(dateParts[1]);
 
-        // Check if the event is from the current year
-        if (year === currentYear) {
-          // Count booked events with status=true for each month
-          const count = evt.bookedEvents.reduce((acc: number, event: any) => {
-            if (event.booked === true && event.status === true) {
-              return acc + 1;
-            } else {
-              return acc;
-            }
-          }, 0);
+  //       // Check if the event is from the current year
+  //       if (year === currentYear) {
+  //         // Count booked events with status=true for each month
+  //         const count = evt.bookedEvents.reduce((acc: number, event: any) => {
+  //           if (event.booked === true && event.status === true) {
+  //             return acc + 1;
+  //           } else {
+  //             return acc;
+  //           }
+  //         }, 0);
 
-          // Add the count to the respective month in monthCounts
-          monthCounts[month.toString().padStart(2, '0')] += count;
-        }
-      });
+  //         // Add the count to the respective month in monthCounts
+  //         monthCounts[month.toString().padStart(2, '0')] += count;
+  //       }
+  //     });
 
-      // Convert monthCounts to an array of objects [{ month, count }]
-      const countsArray = Object.entries(monthCounts).map(([month, count]) => ({ month, count }));
+  //     // Convert monthCounts to an array of objects [{ month, count }]
+  //     const countsArray = Object.entries(monthCounts).map(([month, count]) => ({ month, count }));
 
-      // Sort the countsArray based on the month
-      countsArray.sort((a, b) => parseInt(a.month) - parseInt(b.month));
+  //     // Sort the countsArray based on the month
+  //     countsArray.sort((a, b) => parseInt(a.month) - parseInt(b.month));
 
-      // Extract only the counts from the sorted array
-      const sortedCounts = countsArray.map(({ count }) => count);
+  //     // Extract only the counts from the sorted array
+  //     const sortedCounts = countsArray.map(({ count }) => count);
 
-      console.log(sortedCounts);
-      if (!sortedCounts) {
-        return { status: false, message: "No review Count found current Year" }
-      } else {
-        return { status: true, sortedCounts }
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  },
+  //     console.log(sortedCounts);
+  //     if (!sortedCounts) {
+  //       return { status: false, message: "No review Count found current Year" }
+  //     } else {
+  //       return { status: true, sortedCounts }
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
   
   getAllReviewersProfile: async (currentPage: number) => {
     try {
