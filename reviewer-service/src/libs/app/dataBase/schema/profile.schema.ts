@@ -12,9 +12,9 @@ const profileSchema = new mongoose.Schema({
   age: Number,
   gender: String,
   experience: Number,
-  skills: String,
+  skills: [],
   CurrentWorkingCompanyName: String,
-  PrefferedDomainsForReview: String,
+  PrefferedDomainsForReview: [],
   imageUrl: String,
 });
 
