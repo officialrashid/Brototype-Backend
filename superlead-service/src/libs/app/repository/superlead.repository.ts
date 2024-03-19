@@ -1,10 +1,11 @@
 import schema from "../dataBase/schema"
 import config from "../../../config/config";
 import jwt from 'jsonwebtoken'
-
+import {format} from 'date-fns'
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
 import superlead from "../../controllers/superlead";
+
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -152,7 +153,112 @@ export default {
     } catch (error) {
       return {status:false,message:"Error int the get all chat superleads"}
     }
-  }
+  },
+  updateActivityEvents : async (data:any) =>{
+    try {
+      if (!data) {
+        return { status: false, message: "not found schedule Events data" };
+      }
   
- 
+      console.log(data.superleadId, "superleadis cimngggg");
+  
+      const { superleadId, title, startTime, endTime, label, day, id, status, date, customType } = data;
+  
+      try {
+        // Check if a document with the given superleadId exists
+        const existingDocument = await schema.Events.findOne({ superleadId });
+  
+        if (existingDocument) {
+          existingDocument.events.push({
+            id,
+            title,
+            startTime,
+            endTime,
+            label,
+            day,
+            date,
+            customType,
+            weekly: [],
+            monthly: [],
+            specificDays: [],
+            status: false // Setting status to false
+          });
+  
+          // Save the updated document
+          const response = await existingDocument.save();
+          return response;
+        } else {
+          // If the document doesn't exist, create a new one with the superleadId and the new event
+          const newDocument = await schema.Events.create({
+            superleadId,
+            events: [
+              {
+                id,
+                title,
+                startTime,
+                endTime,
+                label,
+                day,
+                date,
+                customType,
+                weekly: [],
+                monthly: [],
+                specificDays: [],
+                status: false // Setting status to false
+              },
+            ],
+          });
+  
+          return newDocument;
+        }
+      } catch (err) {
+        console.error(err, "Error in creating/updating events");
+        throw err;
+      }
+    } catch (error) {
+      return { status: false, message: "Error Occurred while creating activity timeline" };
+    }
+  },
+  getAllActivityEvents : async (superleadId:string) =>{
+      try {
+        if(!superleadId){
+          return {status:false,message:"Yoyr Activity Events not found"}
+        }
+        const response = await schema.Events.find({ superleadId: superleadId })
+        return response;
+      } catch (error) {
+         return {status:false,message:"Erron Occured while get activity timeline"}
+      }
+  },
+  getActivityTimeLineup: async (superleadId: string) => {
+    try {
+        if (!superleadId) {
+            return { status: false, message: "Superlead ID not provided" };
+        }
+     
+
+        const currentDate = new Date(); // get current date
+         const formatDate = format(currentDate, "dd-MM-yyyy") // formatted Date DD-MM-YYY.
+        
+        
+        const events = await schema.Events.findOne({ superleadId }); // Assuming schema.Events is your Mongoose model
+        if (!events) {
+            return { status: false, message: "Activity events not found" };
+        }
+
+        // Filter events based on the target date
+        const filteredEvents = events.events.filter((event: any) => {
+            return event.date.includes(formatDate);
+        });
+
+        console.log(filteredEvents, "Filtered events for target date:", formatDate);
+
+        return { status: true, events: filteredEvents };
+    } catch (error) {
+        console.error("Error occurred while getting activity timeline:", error);
+        return { status: false, message: "Error occurred while getting activity timeline" };
+    }
+}
+
+
 }

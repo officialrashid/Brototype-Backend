@@ -3,6 +3,9 @@ import profileUpdate_Controller from "./profileUpdateController"
 import getProfile_Controller from "./getProfileController"
 import patchProfile_Controller from "./patchProfileController"
 import getChatAllSuperleads_Controller from "./getChatAllSuperleadsController"
+import updateActivityEvent_Controller from "./updateActivityEventController"
+import getActivityEvents_Controller from "./getActivityEventsController"
+import getActivityTimeLineup_Controller from "./getActivityTimeLineupController"
 export default (dependencies:any)=>{
 
     return{
@@ -10,5 +13,8 @@ export default (dependencies:any)=>{
         getProfileController: getProfile_Controller(dependencies),
         patchProfileController: patchProfile_Controller(dependencies),
         getChatAllSuperleadsController: getChatAllSuperleads_Controller(dependencies),
+        updateActivityEventController: updateActivityEvent_Controller(dependencies),
+        getActivityEventsController: getActivityEvents_Controller(dependencies),
+        getActivityTimeLineupController: getActivityTimeLineup_Controller(dependencies),
     }
 }
