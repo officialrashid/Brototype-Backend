@@ -10,8 +10,11 @@ export const getBestReviewers_Usecase = (dependencies: any) => {
 
     const executeFunction = async () => {
         try {
+            console.log("get best reviewrs found section starteddddd");
+            
             const response = await reviewerRepository.getBestReviewers();
-
+             console.log(response,"response in get best reviewwrsss");
+             
             if (response && response.response.length > 0) {
                 console.log(response, "response in use case");
                 const bestReviewersDetails = await Promise.all(response.response.map(async (data: any) => {

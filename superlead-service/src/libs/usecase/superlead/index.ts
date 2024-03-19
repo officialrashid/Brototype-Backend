@@ -5,6 +5,8 @@ import {getChatAllSuperleads_Usecase} from "./getChatAllSuperleadsUsecase"
 import {updateActivityEvent_Usecase} from "./updateActivityEventUsecase"
 import {getActivityEvents_Usecase} from "./getActivityEventsUsecase"
 import {getActivityTimeLineup_Usecase} from "./getActivityTimeLineupUsecase"
+import {editActivityEvent_Usecase} from "./EditActivityEventUsecase"
+import {deleteActivityEvent_Usecase} from "./deleteActivityEventUsecase"
 
 export{
     profileUpdate_Usecase,
@@ -13,7 +15,9 @@ export{
     getChatAllSuperleads_Usecase,
     updateActivityEvent_Usecase,
     getActivityEvents_Usecase,
-    getActivityTimeLineup_Usecase
+    getActivityTimeLineup_Usecase,
+    editActivityEvent_Usecase,
+    deleteActivityEvent_Usecase
 
 
 }
