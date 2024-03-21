@@ -4,6 +4,7 @@ import createChat_Controller from "./createChatController"
 import sendMessage_Controller from "./sendMessageController"
 import getAllChatRecipients_Controller from "./getAllChatRecipientsController"
 import getMessages_Controller from "./getMessagesController"
+import storeChatAudio_Controller from "./storeChatAudioController"
 export default (dependencies:any)=>{
 
     return{
@@ -11,6 +12,7 @@ export default (dependencies:any)=>{
         sendMessageController: sendMessage_Controller(dependencies),
         getAllChatRecipientsController: getAllChatRecipients_Controller(dependencies),
         getMessagesController: getMessages_Controller(dependencies),
+        storeChatAudioController: storeChatAudio_Controller(dependencies),
     
     }
 }

@@ -8,10 +8,10 @@ export default (dependencies: any) => {
         try {
    
             
-            const { senderId, receiverId, content } = req.body;
+            const { senderId, receiverId, content, type } = req.body;
      
             
-            const response = await sendMessage_Usecase(dependencies).executeFunction(senderId, receiverId, content);
+            const response = await sendMessage_Usecase(dependencies).executeFunction(senderId, receiverId, content,type);
             res.status(201).json(response);
         } catch (error) {
             res.status(500).json({ status: false, message: "Internal server error" });

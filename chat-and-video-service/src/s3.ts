@@ -9,21 +9,21 @@ const s3 = new S3Client({
     secretAccessKey: "NNp0IeJaMY1mW8GPDOnX3UHeR6J92q4/gpjjltlr",
   },
 });
-const BUCKET = "brototype-reviewers-profile"
+const BUCKET = "brototype-chat-audio"
 if (!BUCKET) {
   throw new Error("BUCKET environment variable is not defined.");
 }
-interface ProfileUpdate {
+interface ChatData {
   file: {
     buffer: Buffer;
     mimetype: string;
   };
-  superleadId: string;
-  imageUrl?: string; // Make imageUrl optional
+  senderId: string;
+  audioUrl?: string; // Make imageUrl optional
 }
 
-export const uploadToS3 = async ({ file, superleadId }: ProfileUpdate): Promise<ProfileUpdate> => {
-  const key = `${superleadId}/${uuid()}`;
+export const uploadToS3 = async ({ file, senderId }: ChatData): Promise<ChatData> => {
+  const key = `${senderId}/${uuid()}`;
   const command = new PutObjectCommand({
     Bucket: BUCKET,
     Key: key,
@@ -38,10 +38,10 @@ export const uploadToS3 = async ({ file, superleadId }: ProfileUpdate): Promise<
     const url: string = `https://s3.ap-south-1.amazonaws.com/${BUCKET}/${key}`;
     console.log(url, "url coming s3");
 
-    return { file, superleadId, imageUrl: url };
+    return { file, senderId, audioUrl: url };
   } catch (err) {
     console.error(err,"pppppppppppppp");
-    return { file, superleadId, imageUrl: undefined }; 
+    return { file, senderId, audioUrl: undefined }; 
   }
   
 };

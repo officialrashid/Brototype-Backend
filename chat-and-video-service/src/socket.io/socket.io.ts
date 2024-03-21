@@ -9,8 +9,8 @@ const socketConnection = async (server: any) => {
 
         socket.on('message', async (data) => {
             try {
-                const { senderId, receiverId, content } = data;
-                const response = await sendMessage_Usecase(senderId, receiverId, content);
+                const { senderId, receiverId, content , type} = data;
+                const response = await sendMessage_Usecase(senderId, receiverId, content, type);
 
                 if (response?.status === true && response?.sendMessage?.chatId) {
                     const roomId = response.sendMessage.chatId.toString();

@@ -38,11 +38,14 @@ export default {
 
     checkHaveAlreadyChatCreated: async (initiatorId: string, recipientId: string) => {
         try {
+            console.log("initiatorId:", initiatorId);
+            console.log("recipientId:", recipientId);
+    
             if (!initiatorId || !recipientId) {
                 return { status: false, message: "Some issue in Chat Create" };
             }
-            const response = await schema.Chat.exists({
-                $and: [
+            const query = {
+                $or: [
                     {
                         participants: {
                             $elemMatch: {
@@ -60,14 +63,21 @@ export default {
                         }
                     }
                 ]
-            });
-            return { status: response, message: response };
+            };
+            console.log("Query:", query);
+    
+            const response = await schema.Chat.exists(query);
+            console.log("Response:", response);
+    
+            console.log(response, "chat already created");
+            return { status:false,response };
         } catch (error) {
+            console.error("Error:", error);
             return { status: false, message: "Error checking chat existence: " + error };
         }
     },
     
-    sendMessage: async (senderId: string, receiverId: string, content: string) => {
+    sendMessage: async (senderId: string, receiverId: string, content: string,type:string) => {
         try {
             if (!senderId || !receiverId || !content) {
                 return { status: false, message: "message send not success" }
@@ -76,13 +86,15 @@ export default {
 
                 senderId: senderId,
                 receiverId: receiverId,
-                content: content
+                content: content,
+                type: type
             })
             const messageResponse = await data.save()
             const filterResponse = {
                 senderId: messageResponse?.senderId,
                 receiverId: messageResponse?.receiverId,
-                content: messageResponse?.content
+                content: messageResponse?.content,
+                type : messageResponse?.type,
             }
             //adding to chat the messageId
             if (messageResponse) {

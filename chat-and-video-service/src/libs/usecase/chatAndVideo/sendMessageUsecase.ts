@@ -2,7 +2,7 @@
 import { Chat } from "../../entities/chat";
 import sendMessage from "../../app/repository/chatAndVideo.repository"
 import dependencies from "../../../config/dependencies";
-export const sendMessage_Usecase = async (senderId: string, receiverId: string, content: string) => {
+export const sendMessage_Usecase = async (senderId: string, receiverId: string, content: string, type:string) => {
     const { repository: { chatAndVideoRepository } } = dependencies;
 
     if (!chatAndVideoRepository) {
@@ -10,11 +10,11 @@ export const sendMessage_Usecase = async (senderId: string, receiverId: string, 
     }
    
         try {
-            if (!senderId || !receiverId || !content) {
+            if (!senderId || !receiverId || !content || !type) {
                 return { status: false, message: "Message not sent" };
             }
 
-            const sendMessage = await chatAndVideoRepository.sendMessage(senderId, receiverId, content);
+            const sendMessage = await chatAndVideoRepository.sendMessage(senderId, receiverId, content,type);
 
             if (sendMessage.status === true) {
                 return { status: true, message: "Message sent successfully", sendMessage };

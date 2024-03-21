@@ -46,6 +46,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/multer": "^1.4.11"
+    "@types/multer": "^1.4.11",
+    "@types/uuid": "^9.0.8"
   }
 }

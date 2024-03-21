@@ -15,7 +15,7 @@ export default (dependencies:any)=>{
         // return 
       // } 
     const {file} = req
-   console.log(file,req.body);
+   console.log(file,req.body,"{}{}{}{{");
    
     const response = await profileUpdate_Usecase(dependencies).executeFunction(req.body,file)
     res.status(201).json(response)

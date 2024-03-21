@@ -18,25 +18,25 @@ export const createChat_Usecase = (dependencies: any) => {
     
             console.log(chatExists,"chatExistssssssss");
             
-            if (chatExists.status===null) {
+            if (chatExists.response===null) {
           
                 const chat = new Chat( initiatorId, recipientId );
                 const response = await chatAndVideoRepository.createChat(chat);
                   console.log(response,'dnf dfdfvdvhdfdhfd chat ceare chat respnse');
-                  
+                  const updateChaters = await chatAndVideoRepository.updateChatersDetails(chaters,recipientId)
                     if(response.status===true){
         
                         // const updateChatersExit = await chatAndVideoRepository.updateChatersExit(recipientId)
                         // console.log(updateChatersExit,"dsfhsjhfdsjhgfhsdgfsgfsjhsjf cominggggg tyarr");
                         // // if(response.status)
-                        const updateChaters = await chatAndVideoRepository.updateChatersDetails(chaters,recipientId)
+                       
                     }
                  
                    
                 
                 return { status: true, response ,chatExists};
             }else{
-                return { status: false, message: "Chat already exists" };
+                return { status: false, chatExists };
             }
 
         } catch (err) {
