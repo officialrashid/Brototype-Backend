@@ -6,7 +6,7 @@ import getChatAllSuperleads_Controller from "./getChatAllSuperleadsController"
 import updateActivityEvent_Controller from "./updateActivityEventController"
 import getActivityEvents_Controller from "./getActivityEventsController"
 import getActivityTimeLineup_Controller from "./getActivityTimeLineupController"
-import EditActivityEvent_Controller from "./EditActivityEventController"
+import EditActivityEvent_Controller from "./editActivityEventController"
 import deleteActivityEvent_Controller from "./deleteActivityEventController"
 export default (dependencies:any)=>{
 

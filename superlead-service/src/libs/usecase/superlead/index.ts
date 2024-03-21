@@ -5,7 +5,7 @@ import {getChatAllSuperleads_Usecase} from "./getChatAllSuperleadsUsecase"
 import {updateActivityEvent_Usecase} from "./updateActivityEventUsecase"
 import {getActivityEvents_Usecase} from "./getActivityEventsUsecase"
 import {getActivityTimeLineup_Usecase} from "./getActivityTimeLineupUsecase"
-import {editActivityEvent_Usecase} from "./EditActivityEventUsecase"
+import {editActivityEvent_Usecase} from "./editActivityEventUsecase"
 import {deleteActivityEvent_Usecase} from "./deleteActivityEventUsecase"
 
 export{
