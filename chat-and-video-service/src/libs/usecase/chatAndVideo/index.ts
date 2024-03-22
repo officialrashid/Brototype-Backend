@@ -3,7 +3,8 @@ import {createChat_Usecase} from "./createChatUsecase";
 import {sendMessage_Usecase} from "./sendMessageUsecase";
 import {getAllChatRecipients_Usecase} from "./getAllChatRecipientsUsecase";
 import {getMessages_Usecase} from "./getMessagesUsecase";
-import {storeChatAudio_Usecase} from "./storeChatAudioUsecase"
+import {storeChatAudio_Usecase} from "./storeChatAudioUsecase";
+import {storeChatImage_Usecase} from "./storeChatImageUsecase"
 
 export{
 
@@ -11,5 +12,6 @@ export{
     sendMessage_Usecase,
     getAllChatRecipients_Usecase,
     getMessages_Usecase,
-    storeChatAudio_Usecase
+    storeChatAudio_Usecase,
+    storeChatImage_Usecase
 }
