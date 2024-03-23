@@ -16,5 +16,6 @@ export default (dependencies: any): Router => {
     router.post('/store-chat-audio',upload.single('audio'),storeChatAudioController);
     router.post('/store-chat-image',upload.single('image'),storeChatImageController);
     router.post('/store-chat-video',upload.single('video'),storeChatImageController);
+    router.post('/store-chat-document',upload.single('document'),storeChatImageController);
     return router;
 };

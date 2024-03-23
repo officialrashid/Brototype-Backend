@@ -7,6 +7,7 @@ import getMessages_Controller from "./getMessagesController"
 import storeChatAudio_Controller from "./storeChatAudioController"
 import storeChatImage_Controller from "./storeChatImageController"
 import storeChatVideo_Controller from "./storeChatVideoController"
+import storeChatDocument_Controller from "./storeChatDocumentController"
 export default (dependencies:any)=>{
 
     return{
@@ -17,5 +18,6 @@ export default (dependencies:any)=>{
         storeChatAudioController: storeChatAudio_Controller(dependencies),
         storeChatImageController: storeChatImage_Controller(dependencies),
         storeChatVideoController: storeChatVideo_Controller(dependencies),
+        storeChatDocumentController: storeChatDocument_Controller(dependencies),
     }
 }
