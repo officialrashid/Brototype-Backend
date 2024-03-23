@@ -1,5 +1,5 @@
 import { chatAndVideoRepository} from '../libs/app/repository/index'
-import {createChat_Usecase,sendMessage_Usecase,getAllChatRecipients_Usecase,getMessages_Usecase,storeChatAudio_Usecase,storeChatImage_Usecase} from '../libs/usecase';
+import {createChat_Usecase,sendMessage_Usecase,getAllChatRecipients_Usecase,getMessages_Usecase,storeChatAudio_Usecase,storeChatImage_Usecase,storeChatVideo_Usecase} from '../libs/usecase';
 
 const useCase:any = {
 
@@ -8,7 +8,8 @@ const useCase:any = {
    getAllChatRecipients_Usecase,
    getMessages_Usecase,
    storeChatAudio_Usecase,
-   storeChatImage_Usecase
+   storeChatImage_Usecase,
+   storeChatVideo_Usecase
 
 };
 const repository:any={chatAndVideoRepository}

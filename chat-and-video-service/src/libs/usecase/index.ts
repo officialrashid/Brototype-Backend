@@ -1,4 +1,4 @@
-import {createChat_Usecase,sendMessage_Usecase,getAllChatRecipients_Usecase,getMessages_Usecase,storeChatAudio_Usecase,storeChatImage_Usecase} from "./chatAndVideo"
+import {createChat_Usecase,sendMessage_Usecase,getAllChatRecipients_Usecase,getMessages_Usecase,storeChatAudio_Usecase,storeChatImage_Usecase,storeChatVideo_Usecase} from "./chatAndVideo"
 
 export {
 
@@ -7,6 +7,7 @@ export {
     getAllChatRecipients_Usecase,
     getMessages_Usecase,
     storeChatAudio_Usecase,
-    storeChatImage_Usecase
+    storeChatImage_Usecase,
+    storeChatVideo_Usecase
 
 }
