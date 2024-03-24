@@ -7,36 +7,42 @@ export const createChat_Usecase = (dependencies: any) => {
         throw new Error("Error: chatAndVideo Repository not found");
     }
 
-    const executeFunction = async (initiatorId: string, recipientId: string,chaters:any) => {
+    const executeFunction = async (initiatorId: string, recipientId: string, chaters: any) => {
         try {
             if (!initiatorId || !recipientId) {
                 return { status: false, message: "Chat not created because initiator or recipient not found" };
             }
-         
-           
+
+
             const chatExists = await chatAndVideoRepository.checkHaveAlreadyChatCreated(initiatorId, recipientId);
-    
-            console.log(chatExists,"chatExistssssssss");
-            
-            if (chatExists.response===null) {
-          
-                const chat = new Chat( initiatorId, recipientId );
-                const response = await chatAndVideoRepository.createChat(chat);
-                  console.log(response,'dnf dfdfvdvhdfdhfd chat ceare chat respnse');
-                  const updateChaters = await chatAndVideoRepository.updateChatersDetails(chaters,recipientId)
-                    if(response.status===true){
-        
-                        // const updateChatersExit = await chatAndVideoRepository.updateChatersExit(recipientId)
-                        // console.log(updateChatersExit,"dsfhsjhfdsjhgfhsdgfsgfsjhsjf cominggggg tyarr");
-                        // // if(response.status)
-                       
+
+            console.log(chatExists, "chatExistssssssss");
+
+            if (chatExists.response === null) {
+
+                const chat = new Chat(initiatorId, recipientId);
+                const response = await chatAndVideoRepository.createChat(chat); // create chat room
+                console.log(response, 'dnf dfdfvdvhdfdhfd chat ceare chat respnse');
+
+                if (response.status === true) {
+
+                    const updateChatersExit = await chatAndVideoRepository.updateChatersExit(recipientId) // check chat user update or not
+                    if (updateChatersExit.status === true && updateChatersExit.message === "chater details not created") {
+                        const updateChaters = await chatAndVideoRepository.updateChatersDetails(chaters, recipientId)
                     }
-                 
-                   
-                
-                return { status: true, response ,chatExists};
-            }else{
-                return { status: false, chatExists };
+
+
+                }
+                return { status: true, response, chatExists };  // return response //
+            } else {
+                  
+                // incase chat already created but chater detail not update case section ////
+
+                const updateChatersExit = await chatAndVideoRepository.updateChatersExit(recipientId)
+                if (updateChatersExit.status === true && updateChatersExit.message === "chater details not created") {
+                    const updateChaters = await chatAndVideoRepository.updateChatersDetails(chaters, recipientId)
+                }
+                return { status: false, chatExists }; // return response
             }
 
         } catch (err) {
