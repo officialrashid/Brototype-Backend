@@ -1,7 +1,7 @@
 import schema from "../dataBase/schema"
 import config from "../../../config/config";
 import jwt from 'jsonwebtoken'
-
+import mongoose from 'mongoose';
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
 
@@ -10,6 +10,14 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 
 });
+interface GroupChatData {
+    profile: string;
+    groupName: string;
+    description: string;
+    participants: mongoose.Types.ObjectId[];
+    admins: mongoose.Types.ObjectId[];
+}
+
 
 export default {
 
@@ -179,8 +187,16 @@ export default {
 
             // Query the Chaters collection to find all entries except the one with the provided initiatorId
             const recipients = await schema.Chaters.find({ chaterId: { $ne: initiatorId } });
-
-
+            const groups = await schema.GroupChat.find({
+                participants: {
+                    $elemMatch: {
+                        participant: new mongoose.Types.ObjectId(initiatorId)
+                    }
+                }
+            });
+         
+            console.log(groups,"lllll groupsaaaaa");
+            
             if (recipients.length > 0) {
                 console.log(recipients,"fdbfdfhbdbfdfhjd");
                 
@@ -217,5 +233,38 @@ export default {
             return { status: false, message: "Error in getting messages", error: error };
         }
     },
+     createGroupChat : async (groupChatData:any) => {
+        try {
+            if (!groupChatData) {
+                return { status: false, message: "Group chat data not found, please try after some time" };
+            }
     
+            // Map participants array to format participant objects
+            const participants = groupChatData.participants.map((participant: { participant: number; unreadMessagesCount: any; }) => ({
+                participant: new mongoose.Types.ObjectId(participant.participant),
+                unreadMessagesCount: participant.unreadMessagesCount || 0
+            }));
+    
+            // Create group chat data object
+            const data = {
+                profile: groupChatData.profile,
+                groupName: groupChatData.groupName,
+                description: groupChatData.description,
+                participants: participants,
+                admins: groupChatData.admins.map((admin: number) => new mongoose.Types.ObjectId(admin))
+            };
+    
+            // Create new GroupChat document
+            const response = await schema.GroupChat.create(data);
+            
+            if (response) {
+                return { status: true, response };
+            } else {
+                return { status: false, message: "Failed to create group chat. Please try again later." };
+            }
+        } catch (error) {
+            console.error("Error in the createGroupChat function:", error);
+            return { status: false, message: "Error in the createGroupChat function" };
+        }
+    }
 }

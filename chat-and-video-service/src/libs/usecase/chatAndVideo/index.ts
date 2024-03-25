@@ -6,7 +6,8 @@ import {getMessages_Usecase} from "./getMessagesUsecase";
 import {storeChatAudio_Usecase} from "./storeChatAudioUsecase";
 import {storeChatImage_Usecase} from "./storeChatImageUsecase";
 import {storeChatVideo_Usecase} from "./storeChatVideoUsecase";
-import {storeChatDocument_Usecase} from "./storeChatDocumentUsecase"
+import {storeChatDocument_Usecase} from "./storeChatDocumentUsecase";
+import {createGroupChat_Usecase} from "./createGroupChatUsecase"
 
 export{
 
@@ -17,5 +18,6 @@ export{
     storeChatAudio_Usecase,
     storeChatImage_Usecase,
     storeChatVideo_Usecase,
-    storeChatDocument_Usecase
+    storeChatDocument_Usecase,
+    createGroupChat_Usecase
 }
