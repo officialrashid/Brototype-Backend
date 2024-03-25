@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose';
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
+import { ObjectId } from "mongodb";
 
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
@@ -48,7 +49,7 @@ export default {
         try {
             console.log("initiatorId:", initiatorId);
             console.log("recipientId:", recipientId);
-    
+
             if (!initiatorId || !recipientId) {
                 return { status: false, message: "Some issue in Chat Create" };
             }
@@ -73,19 +74,19 @@ export default {
                 ]
             };
             console.log("Query:", query);
-    
+
             const response = await schema.Chat.exists(query);
             console.log("Response:", response);
-    
+
             console.log(response, "chat already created");
-            return { status:false,response };
+            return { status: false, response };
         } catch (error) {
             console.error("Error:", error);
             return { status: false, message: "Error checking chat existence: " + error };
         }
     },
-    
-    sendMessage: async (senderId: string, receiverId: string, content: string,type:string) => {
+
+    sendMessage: async (senderId: string, receiverId: string, content: string, type: string) => {
         try {
             if (!senderId || !receiverId || !content) {
                 return { status: false, message: "message send not success" }
@@ -102,7 +103,7 @@ export default {
                 senderId: messageResponse?.senderId,
                 receiverId: messageResponse?.receiverId,
                 content: messageResponse?.content,
-                type : messageResponse?.type,
+                type: messageResponse?.type,
             }
             //adding to chat the messageId
             if (messageResponse) {
@@ -150,9 +151,9 @@ export default {
                 phone: chatersDetails.phone,
                 imageUrl: chatersDetails.imageUrl
             }
-          // If the recipient doesn't exist, create a new document
+            // If the recipient doesn't exist, create a new document
             const chatersData = await schema.Chaters.create(chaterData);
-          ;
+            ;
 
             return { status: true, message: "Chaters details updated successfully." };
         } catch (error) {
@@ -185,22 +186,36 @@ export default {
                 return { status: false, message: "Initiator ID not provided" };
             }
 
+
             // Query the Chaters collection to find all entries except the one with the provided initiatorId
             const recipients = await schema.Chaters.find({ chaterId: { $ne: initiatorId } });
-            const groups = await schema.GroupChat.find({
-                participants: {
-                    $elemMatch: {
-                        participant: new mongoose.Types.ObjectId(initiatorId)
+            const groups = await schema.GroupChat.find({});
+            const initiatorGroups: any = [];
+            
+            // Loop through each group chat document
+            for (const group of groups) {
+  
+                for (const participant of group.participants) {
+     
+            
+                    // Convert initiatorId to ObjectId
+                    const initiatorObjectId = new mongoose.Types.ObjectId(initiatorId);
+            
+                    // Check if participant's ID matches initiatorId
+                    if (participant.participant && participant.participant.equals(initiatorObjectId)) {
+                        // If matched, push the participant's ID to initiatorGroups array
+                        initiatorGroups.push(group);
+                        break; // Break the loop since we found a match for this document
                     }
                 }
-            });
-         
-            console.log(groups,"lllll groupsaaaaa");
+            }
             
-            if (recipients.length > 0) {
-                console.log(recipients,"fdbfdfhbdbfdfhjd");
-                
-                return { status: true, recipients }
+
+
+            if (recipients.length > 0 || initiatorGroups.length > 0) {
+              
+
+                return { status: true, recipients , initiatorGroups}
             } else {
                 return { status: false, message: "your started not chat" }
             }
@@ -209,54 +224,55 @@ export default {
             return { status: false, message: "Error in getting all chat recipients", error: error };
         }
     },
- getMessages : async (initiatorId: string, recipientId: string) => {
+    getMessages: async (initiatorId: string, recipientId: string) => {
         try {
             if (!initiatorId || !recipientId) {
                 return { status: false, message: "Sender ID or receiver ID not provided" };
             }
-    
+
             const chat = await schema.Chat.findOne({
                 $or: [
                     { "participants.initiatorId": initiatorId, "participants.recipientId": recipientId },
                     { "participants.initiatorId": recipientId, "participants.recipientId": initiatorId }
                 ]
             }).populate("messages lastMessage");
-    
+
             if (!chat) {
                 return { status: false, message: "Chat not found" };
             }
 
-         
-         
+
+
             return { status: true, messages: chat.messages, lastMessage: chat.lastMessage };
         } catch (error) {
             return { status: false, message: "Error in getting messages", error: error };
         }
     },
-     createGroupChat : async (groupChatData:any) => {
+    createGroupChat: async (groupChatData: any) => {
         try {
             if (!groupChatData) {
                 return { status: false, message: "Group chat data not found, please try after some time" };
             }
     
-            // Map participants array to format participant objects
-            const participants = groupChatData.participants.map((participant: { participant: number; unreadMessagesCount: any; }) => ({
-                participant: new mongoose.Types.ObjectId(participant.participant),
+            // Convert participant and admin IDs to ObjectId
+            const participants = groupChatData.participants.map((participant: any) => ({
+                participant: new mongoose.Types.ObjectId(participant),
                 unreadMessagesCount: participant.unreadMessagesCount || 0
             }));
+            const admins = groupChatData.admins.map((admin: string) => new mongoose.Types.ObjectId(admin));
     
             // Create group chat data object
             const data = {
                 profile: groupChatData.profile,
                 groupName: groupChatData.groupName,
                 description: groupChatData.description,
-                participants: participants,
-                admins: groupChatData.admins.map((admin: number) => new mongoose.Types.ObjectId(admin))
+                participants: participants, // Include participant IDs along with unreadMessagesCount
+                admins: admins
             };
     
             // Create new GroupChat document
             const response = await schema.GroupChat.create(data);
-            
+    
             if (response) {
                 return { status: true, response };
             } else {
@@ -267,4 +283,5 @@ export default {
             return { status: false, message: "Error in the createGroupChat function" };
         }
     }
+    
 }
