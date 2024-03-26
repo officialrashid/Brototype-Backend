@@ -19,5 +19,6 @@ export default (dependencies: any): Router => {
     router.post('/store-chat-document',upload.single('document'),storeChatImageController);
     router.post('/create-group-chat',upload.single('groupChatProfile'),createGroupChatController);
     router.get('/get-group-messages', getGroupMessagesController);
+    router.get('/get-group-members-details/:groupId', getGroupMessagesController);
     return router;
 };

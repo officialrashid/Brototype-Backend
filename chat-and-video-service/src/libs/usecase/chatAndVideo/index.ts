@@ -8,8 +8,9 @@ import {storeChatAudio_Usecase} from "./storeChatAudioUsecase";
 import {storeChatImage_Usecase} from "./storeChatImageUsecase";
 import {storeChatVideo_Usecase} from "./storeChatVideoUsecase";
 import {storeChatDocument_Usecase} from "./storeChatDocumentUsecase";
-import {createGroupChat_Usecase} from "./createGroupChatUsecase"
-import {getGroupMessages_Usecase} from "./getGroupMessageUsecase"
+import {createGroupChat_Usecase} from "./createGroupChatUsecase";
+import {getGroupMessages_Usecase} from "./getGroupMessageUsecase";
+import {getGroupMembers_Usecase} from "./getGroupMembersUsecase"
 export{
 
     createChat_Usecase,
@@ -22,5 +23,6 @@ export{
     storeChatDocument_Usecase,
     createGroupChat_Usecase,
     sendGroupMessage_Usecase,
-    getGroupMessages_Usecase
+    getGroupMessages_Usecase,
+    getGroupMembers_Usecase
 }

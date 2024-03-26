@@ -358,7 +358,17 @@ export default {
         } catch (error) {
             return { status: false, message: "Error in creating the message" };
         }
+    },
+ getGroupMembers : (groupId:string) =>{
+    try {
+        if(groupId){
+            return {status:false,message:"Group Members Not Found"}
+        }
+        
+    } catch (error) {
+       return {status:false,message:"Error in the Get Group Members"} 
     }
+ }
     
 }
 
