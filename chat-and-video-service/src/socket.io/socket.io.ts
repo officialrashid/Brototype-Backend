@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { sendMessage_Usecase } from "../libs/usecase/chatAndVideo/sendMessageUsecase";
-
+import { sendGroupMessage_Usecase } from "../libs/usecase/chatAndVideo/sendGroupMessageUsecase";
 const socketConnection = async (server: any) => {
     const io = new Server(server, { cors: { origin: "*" } });
 
@@ -29,6 +29,33 @@ const socketConnection = async (server: any) => {
                 socket.emit("messageResponse", { status: false, message: error });
             }
         });
+
+        socket.on('groupMessage', async (data) => {
+            try {
+                const { groupId, senderId, content , type} = data;
+                const response = await sendGroupMessage_Usecase(groupId, senderId, content, type);
+                  console.log(response,"group message response coming  sockettt");
+                  
+                if (response?.status === true && response?.sendMessage?.chatId) {
+                    const roomId = response.sendMessage.chatId.toString();
+                    const payload = {
+                        chatId: roomId,
+                        content: response.sendMessage.message
+                    };
+                    io.to(roomId).emit("received", payload);
+                    socket.emit("groupMessageResponse", { status: true });
+                } else {
+                    console.error("Failed to send message:", response?.message);
+                    socket.emit("messageResponse", { status: false, message: response?.message });
+                }
+            } catch (error) {
+                console.error("Error processing message:", error);
+                socket.emit("messageResponse", { status: false, message: error });
+            }
+        });
+
+
+    
 
         socket.on('joinRoom', async (chatId) => {
             console.log('receive join room event');

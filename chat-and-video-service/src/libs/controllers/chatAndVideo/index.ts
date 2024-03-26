@@ -9,6 +9,7 @@ import storeChatImage_Controller from "./storeChatImageController"
 import storeChatVideo_Controller from "./storeChatVideoController"
 import storeChatDocument_Controller from "./storeChatDocumentController"
 import createGroupChat_Controller from "./createGroupChatController"
+import getGroupMessages_Controller from "./getGroupMessagesController"
 export default (dependencies:any)=>{
 
     return{
@@ -21,5 +22,6 @@ export default (dependencies:any)=>{
         storeChatVideoController: storeChatVideo_Controller(dependencies),
         storeChatDocumentController: storeChatDocument_Controller(dependencies),
         createGroupChatController: createGroupChat_Controller(dependencies),
+        getGroupMessagesController: getGroupMessages_Controller(dependencies),
     }
 }
