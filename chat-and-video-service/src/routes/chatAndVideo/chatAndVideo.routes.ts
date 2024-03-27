@@ -7,7 +7,7 @@ const upload = multer({ storage });
 
 export default (dependencies: any): Router => {
     const router = express.Router();
-    const { createChatController, sendMessageController, getAllChatRecipientsController, getMessagesController, storeChatAudioController,storeChatImageController,createGroupChatController,getGroupMessagesController } = chatAndVideo_Controller(dependencies);
+    const { createChatController, sendMessageController, getAllChatRecipientsController, getMessagesController, storeChatAudioController,storeChatImageController,createGroupChatController,getGroupMessagesController,getGroupMembersController } = chatAndVideo_Controller(dependencies);
 
     router.post('/create-chat', createChatController);
     router.post('/send-message', sendMessageController);
@@ -19,6 +19,6 @@ export default (dependencies: any): Router => {
     router.post('/store-chat-document',upload.single('document'),storeChatImageController);
     router.post('/create-group-chat',upload.single('groupChatProfile'),createGroupChatController);
     router.get('/get-group-messages', getGroupMessagesController);
-    router.get('/get-group-members-details/:groupId', getGroupMessagesController);
+    router.get('/get-group-members-details/:groupId',getGroupMembersController);
     return router;
 };
