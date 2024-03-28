@@ -16,10 +16,12 @@ export const getGroupMembers_Usecase = (dependencies: any) => {
            
             const response = await chatAndVideoRepository.getGroupMembers(groupId);
 
-            if(response.length > 0){
-                return {status:true,response}
-            }else{
+             
+            if(!response){
                 return {status:false,message:"Group Members Not Found"}
+           
+            }else{
+                return {status:true,response} 
             }
 
         } catch (err) {

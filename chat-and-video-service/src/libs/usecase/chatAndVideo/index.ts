@@ -10,7 +10,8 @@ import {storeChatVideo_Usecase} from "./storeChatVideoUsecase";
 import {storeChatDocument_Usecase} from "./storeChatDocumentUsecase";
 import {createGroupChat_Usecase} from "./createGroupChatUsecase";
 import {getGroupMessages_Usecase} from "./getGroupMessageUsecase";
-import {getGroupMembers_Usecase} from "./getGroupMembersUsecase"
+import {getGroupMembers_Usecase} from "./getGroupMembersUsecase";
+import {updateParticipantStatus_Usecase} from "./updateParticipantStatusUsecase"
 export{
 
     createChat_Usecase,
@@ -24,5 +25,6 @@ export{
     createGroupChat_Usecase,
     sendGroupMessage_Usecase,
     getGroupMessages_Usecase,
-    getGroupMembers_Usecase
+    getGroupMembers_Usecase,
+    updateParticipantStatus_Usecase
 }

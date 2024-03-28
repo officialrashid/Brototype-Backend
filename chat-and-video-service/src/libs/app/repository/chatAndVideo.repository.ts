@@ -382,12 +382,43 @@ export default {
             }
         ]);
     
-        return response[0].participantDetails;
+        return {participants:response[0].participantDetails,admins:response[0].admins};
 
     } catch (error) {
        return {status:false,message:"Error in the Get Group Members"} 
     }
- }
-    
+ },
+ 
+  updateParticipantStatus : async (groupId: string, chaterId: string, action: string) => {
+    try {
+        console.log(groupId, chaterId, action);
+
+        const group = await schema.GroupChat.findOne({ _id: new ObjectId(groupId) });
+        if (!group) {
+            return { status: false, message: "Group Not Found" };
+        }
+
+        if (action === "admin") {
+            group.admins.push(new ObjectId(chaterId));
+            await group.save();
+            console.log("Admin added successfully");
+            return { status: true, message: "Admin added successfully" };
+        } else if (action === "delete") {
+            const index = group.participants.findIndex((participant:any) => participant.participant.toString() === chaterId);
+            if (index === -1) {
+                return { status: false, message: "Participant Not Found" };
+            }
+            group.participants.splice(index, 1);
+            await group.save();
+            console.log("Participant deleted successfully");
+            return { status: true, message: "Participant deleted successfully" };
+        } else {
+            return { status: false, message: "Invalid action" };
+        }
+    } catch (error) {
+        console.error("Error in updating group chat participants status:", error);
+        return { status: false, message: "Error in updating group chat participants status" };
+    }
 }
 
+}
