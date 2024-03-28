@@ -12,13 +12,14 @@ export const getGroupMembers_Usecase = (dependencies: any) => {
             if (!groupId) {
                 return { status: false, message: "Group Memebers Not Found" };
             }
+           console.log(groupId,"groupid in usecadeeee");
            
-            const getGroupMembers = await chatAndVideoRepository.getGroupMembers(groupId);
+            const response = await chatAndVideoRepository.getGroupMembers(groupId);
 
-            if(getGroupMembers.status===true){
-                return {getGroupMembers}
+            if(response.length > 0){
+                return {status:true,response}
             }else{
-                return {status:false,message:"Message Sended not success"}
+                return {status:false,message:"Group Members Not Found"}
             }
 
         } catch (err) {

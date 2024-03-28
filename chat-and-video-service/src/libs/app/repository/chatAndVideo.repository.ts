@@ -359,62 +359,30 @@ export default {
             return { status: false, message: "Error in creating the message" };
         }
     },
- getGroupMembers : async (groupId:string) =>{
+    getGroupMembers : async (groupId:any) =>{
     try {
-        if(groupId){
+        if(!groupId){
             return {status:false,message:"Group Members Not Found"}
         }
+        console.log(groupId,"{}{}{}{}{}*(*************^^^^^^^&&&&&&&&&&&&&&&&&&&&");
+        
         const response = await schema.GroupChat.aggregate([
             {
                 $match: {
-                    "_id": groupId
+                    "_id": new ObjectId(groupId)
                 }
             },
             {
                 $lookup: {
-                    from: "chaters", // Name of the collection to perform the lookup
-                    localField: "participants.participant", // Field in the current collection
-                    foreignField: "chaterId", // Field in the 'chaters' collection
-                    as: "participantDetails" // Name for the output array
+                    from: "chaters",
+                    localField: "participants.participant",
+                    foreignField: "chaterId", // Assuming _id is the field representing participant IDs in the chaters collection
+                    as: "participantDetails"
                 }
-            },
-            // {
-            //     $addFields: {
-            //         "participants": {
-            //             $map: {
-            //                 input: "$participants",
-            //                 as: "participant",
-            //                 in: {
-            //                     $mergeObjects: [
-            //                         "$$participant",
-            //                         {
-            //                             $arrayElemAt: [
-            //                                 {
-            //                                     $filter: {
-            //                                         input: "$participantDetails",
-            //                                         as: "detail",
-            //                                         cond: {
-            //                                             $eq: ["$$detail._id", "$$participant.participant"]
-            //                                         }
-            //                                     }
-            //                                 },
-            //                                 0
-            //                             ]
-            //                         }
-            //                     ]
-            //                 }
-            //             }
-            //         }
-            //     }
-            // },
-            // {
-            //     $project: {
-            //         participantDetails: 0 // Remove the participantDetails array from the output
-            //     }
-            // }
+            }
         ]);
-      
-console.log(response,"respons ein find collection and look up colletion");
+    
+        return response[0].participantDetails;
 
     } catch (error) {
        return {status:false,message:"Error in the Get Group Members"} 
