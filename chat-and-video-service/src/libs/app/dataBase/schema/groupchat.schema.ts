@@ -15,4 +15,5 @@ const groupSchema = new mongoose.Schema({
 
 const GroupChat = mongoose.model('GroupChat', groupSchema);
 
+
 export { GroupChat };
