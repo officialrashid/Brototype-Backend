@@ -138,6 +138,7 @@ export default {
     updateChatersDetails: async (chatersDetails: { firstName: string; lastName: string; phone: string; imageUrl: string; }, recipientId: any) => {
 
 
+
         try {
             if (!chatersDetails) {
                 return { status: false, message: "Chaters details not provided for update." };
@@ -185,10 +186,34 @@ export default {
             if (!initiatorId) {
                 return { status: false, message: "Initiator ID not provided" };
             }
+            
+            const initiatorObjectId = new mongoose.Types.ObjectId(initiatorId);
 
-
-            // Query the Chaters collection to find all entries except the one with the provided initiatorId
-            const recipients = await schema.Chaters.find({ chaterId: { $ne: initiatorId } });
+            const chatRecipients = await schema.Chat.find({
+                "participants": {
+                    $elemMatch: {
+                        $or: [
+                            { "initiatorId": initiatorObjectId },
+                            { "recipientId": initiatorObjectId }
+                        ]
+                    }
+                }
+            });
+    
+            const recipients = [];
+    
+            for (const chat of chatRecipients) {
+                for (const participant of chat.participants) {
+                    // Check if initiatorId matches participant's initiatorId or recipientId
+                    if (participant.initiatorId.equals(initiatorObjectId) || participant.recipientId.equals(initiatorObjectId)) {
+                        const details = await schema.Chaters.findOne({ chaterId: participant.recipientId.equals(initiatorObjectId) ? participant.initiatorId : participant.recipientId });
+                        recipients.push(details);
+                    }
+                }
+            }
+           console.log(recipients,"recipients recipients");
+           
+            // const recipients = await schema.Chaters.find({ chaterId: { $ne: initiatorId } });
             const groups = await schema.GroupChat.find({});
             const initiatorGroups: any = [];
 
