@@ -472,6 +472,19 @@ updateGroupMembers: async (groupChatData: any) => {
     } catch (error) {
         return { status: false, message: "Error in updating group Members: " + error };
     }
+},
+deleteMessage : async (messageId:string,action:string) =>{
+  if(!messageId || !action){
+    return {status:false,message:"message not deleled,some issue please try after some time"}
+  }
+  if(action==="group"){
+    const response = await schema.GroupMessages.deleteOne({_id:new ObjectId(messageId)})
+    console.log(response);
+    
+    // if(response)
+  }
+ 
+
 }
 
 
