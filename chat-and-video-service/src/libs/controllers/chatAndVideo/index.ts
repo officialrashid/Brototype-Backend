@@ -12,6 +12,7 @@ import createGroupChat_Controller from "./createGroupChatController"
 import getGroupMessages_Controller from "./getGroupMessagesController"
 import getGroupMembers_Controller from "./getGroupMembersController"
 import updateParticipantStatus_Controller from "./updateParticipantStatusController"
+import updateGroupMembers_Controller from "./updateGroupMembersController"
 export default (dependencies:any)=>{
 
     return{
@@ -27,5 +28,6 @@ export default (dependencies:any)=>{
         getGroupMessagesController: getGroupMessages_Controller(dependencies),
         getGroupMembersController: getGroupMembers_Controller(dependencies),
         updateParticipantStatusController: updateParticipantStatus_Controller(dependencies),
+        updateGroupMembersController: updateGroupMembers_Controller(dependencies),
     }
 }

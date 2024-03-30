@@ -11,7 +11,8 @@ import {storeChatDocument_Usecase} from "./storeChatDocumentUsecase";
 import {createGroupChat_Usecase} from "./createGroupChatUsecase";
 import {getGroupMessages_Usecase} from "./getGroupMessageUsecase";
 import {getGroupMembers_Usecase} from "./getGroupMembersUsecase";
-import {updateParticipantStatus_Usecase} from "./updateParticipantStatusUsecase"
+import {updateParticipantStatus_Usecase} from "./updateParticipantStatusUsecase";
+import {updateGroupMembers_Usecase} from "./updateGroupMembersUsecase"
 export{
 
     createChat_Usecase,
@@ -26,5 +27,6 @@ export{
     sendGroupMessage_Usecase,
     getGroupMessages_Usecase,
     getGroupMembers_Usecase,
-    updateParticipantStatus_Usecase
+    updateParticipantStatus_Usecase,
+    updateGroupMembers_Usecase
 }

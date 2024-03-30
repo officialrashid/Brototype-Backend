@@ -441,9 +441,38 @@ export default {
             return { status: false, message: "Invalid action" };
         }
     } catch (error) {
-        console.error("Error in updating group chat participants status:", error);
+
         return { status: false, message: "Error in updating group chat participants status" };
     }
+},
+updateGroupMembers: async (groupChatData: any) => {
+    try {
+        if (!groupChatData) {
+            return { status: false, message: "Not Updated Group Members" };
+        }
+
+        // Iterate over the participants array and construct an array of objects
+        const participants = groupChatData.participants.map((participant: string) => ({
+            participant: new mongoose.Types.ObjectId(participant),
+            unreadMessagesCount: 0 // Set the unreadMessagesCount to 0 or any default value
+        }));
+       console.log(participants,"::::::");
+       
+        // Perform the update operation
+        const response = await schema.GroupChat.updateOne(
+            { _id: new ObjectId(groupChatData.groupId) }, // Query to find the document by _id
+            { $push: { participants: { $each: participants } } } // Use $push to add new participants
+        );
+
+        if (response) {
+            return { status: true, message: "Group Members Updated Successfully" };
+        } else {
+            return { status: false, message: "Group Members Not Updated" };
+        }
+    } catch (error) {
+        return { status: false, message: "Error in updating group Members: " + error };
+    }
 }
+
 
 }
