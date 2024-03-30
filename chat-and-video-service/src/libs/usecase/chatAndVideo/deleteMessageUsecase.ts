@@ -1,22 +1,21 @@
 
-
-export const deleteMessage_Usecase = (dependencies: any) => {
+import dependencies from "../../../config/dependencies";
+export const deleteMessage_Usecase = async (messageId:string,action:string) => {
     const { repository: { chatAndVideoRepository } } = dependencies;
 
     if (!chatAndVideoRepository) {
         throw new Error("Error: chatAndVideo Repository not found");
     }
-
-    const executeFunction = async (messageId:string,action:string) => {
         try {
             if (!messageId || !action) {
                 return { status: false, message: "message not found" };
             }
            
-            const getMessages = await chatAndVideoRepository.deleteMessage(messageId,action);
-
-            if(getMessages.status===true){
-                return {getMessages}
+            const deleteMessage = await chatAndVideoRepository.deleteMessage(messageId,action);
+              console.log(deleteMessage,"deleteMessage deleteMessage");
+              
+            if(deleteMessage.status===true){
+                return {deleteMessage}
             }else{
                 return {status:false,message:"Messages not found"}
             }
@@ -24,7 +23,5 @@ export const deleteMessage_Usecase = (dependencies: any) => {
         } catch (err) {
             return { status: false, message: "Error creating chat: " + err };
         }
-    };
-
-    return { executeFunction };
 };
+export default deleteMessage_Usecase

@@ -480,8 +480,19 @@ deleteMessage : async (messageId:string,action:string) =>{
   if(action==="group"){
     const response = await schema.GroupMessages.deleteOne({_id:new ObjectId(messageId)})
     console.log(response);
-    
-    // if(response)
+    if(response){
+        console.log("kerii delte il keriii kkunu");
+        
+        return {status:true,response}
+    }
+  }else if(action==="oneToOne"){
+    const response = await schema.Messages.deleteOne({_id:new ObjectId(messageId)})
+    console.log(response);
+    if(response){
+        console.log("kerii delte il keriii kkunu");
+        
+        return {status:true,response}
+    }
   }
  
 

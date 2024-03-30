@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { sendMessage_Usecase } from "../libs/usecase/chatAndVideo/sendMessageUsecase";
 import { sendGroupMessage_Usecase } from "../libs/usecase/chatAndVideo/sendGroupMessageUsecase";
+import {deleteMessage_Usecase} from "../libs/usecase/chatAndVideo/deleteMessageUsecase"
 const socketConnection = async (server: any) => {
     const io = new Server(server, { cors: { origin: "*" } });
 
@@ -53,8 +54,30 @@ const socketConnection = async (server: any) => {
                 socket.emit("messageResponse", { status: false, message: error });
             }
         });
-
-
+        socket.on('deleteMessage', async (data) => {
+            try {
+                const { chatId,messageId, action} = data;
+                console.log(chatId,"chatId coming delete sectionsss");
+                
+                const response = await deleteMessage_Usecase(messageId,action);
+                  console.log(response,"delete Message response coming  sockettt");
+                  
+                if (response?.deleteMessage?.status === true) {
+                    console.log("status true il keriyannuuuuuuuuuuuuuuuu");
+                    
+                    const roomId = chatId;
+                    const payload = {
+                        status:true,
+                        message:"message deleted successfullt"
+                    }
+                    io.to(roomId).emit("messageDeleted",payload);
+                }
+            } catch (error) {
+                console.error("Error processing message:", error);
+                socket.emit("messageResponse", { status: false, message: error });
+            }
+        });
+        
     
 
         socket.on('joinRoom', async (chatId) => {
