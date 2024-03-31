@@ -77,22 +77,40 @@ const socketConnection = async (server: any) => {
                 socket.emit("messageResponse", { status: false, message: error });
             }
         });
-        
-    
-
+        let onlineUsers:any = [];
+        socket.on("addOnlineUser", (newUserId) => {
+            if (!onlineUsers.some((user: { userId: any; }) => user.userId === newUserId)) {  
+              // if user is not added before
+              onlineUsers.push({ userId: newUserId, socketId: socket.id });
+              console.log("new user is here!", onlineUsers);
+            }
+            // send all active users to new user
+            io.emit("getOnlineUser", onlineUsers);
+          });
+        //   socket.on("offline", (newUserId) => {
+        //     // remove user from active users
+        //     onlineUsers = onlineUsers.filter((user:any) => user.socketId !== socket.id)
+        //     console.log("user is offline", onlineUsers);
+        //     // send all online users to all users
+        //     io.emit("getOnlineUser", onlineUsers);
+        //   });
         socket.on('joinRoom', async (chatId) => {
             console.log('receive join room event');
             console.log(`joined a particular room ${chatId}`);
             socket.join(chatId);
         });
-        socket.on('error', (error: any) => {
-            console.error(`Socket error for client ${socket.id}:`, error);
-        });
+     
 
         socket.on('disconnect', () => {
             console.log("socket disconnected", socket.id)
+            // onlineUsers = onlineUsers.filter((user: { socketId: string; }) => user.socketId !== socket.id)
+            // console.log("user disconnected", onlineUsers);
+            // // send all online users to all users
+            // io.emit("getOnlineUser", onlineUsers);
         })
-
+        socket.on('error', (error: any) => {
+            console.error(`Socket error for client ${socket.id}:`, error);
+        });
     });
     io.on('error', (error) => {
         console.log('error occure while connection socker', error)

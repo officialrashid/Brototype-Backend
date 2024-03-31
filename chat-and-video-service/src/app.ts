@@ -7,14 +7,15 @@ import config from "./config/config";
 import expressConfig from "./express";
 import express from 'express';
 import dependencies from "./config/dependencies";
-import socketConnection from "./socket.io/socket.io";
+import socketConnection from "../src/socket.io/socket.io";
+import { Server } from "socket.io";
 // import {consumeAuthentication} from "./events/authenticationConsumer"
 // Create an Express app instance
 const app = express();
 const router = express.Router()
 // Create an HTTP server instance using the Express app
 const server = http.createServer(app);
-
+const io = new Server(server, { cors: { origin: "*" } });
 // Connect to the database using the configuration from "config.js"
 getDb(config);
 
@@ -26,8 +27,10 @@ app.use("/api", routes(dependencies));
 
 // Start the server
 
-serverConfig(server, config).startServer();
+const socketServer = serverConfig(server, config).startServer();
 
 // setInterval(async() => {
 //     await consumeAuthentication();
 // }, 10000);
+socketConnection(io);
+  
