@@ -87,13 +87,15 @@ const socketConnection = async (server: any) => {
             // send all active users to new user
             io.emit("getOnlineUser", onlineUsers);
           });
-        //   socket.on("offline", (newUserId) => {
-        //     // remove user from active users
-        //     onlineUsers = onlineUsers.filter((user:any) => user.socketId !== socket.id)
-        //     console.log("user is offline", onlineUsers);
-        //     // send all online users to all users
-        //     io.emit("getOnlineUser", onlineUsers);
-        //   });
+          socket.on("offline", (newUserId) => {
+            console.log("caliiingg offlineeeeeeeee");
+            
+            // remove user from active users
+            onlineUsers = onlineUsers.filter((user:any) => user.socketId !== socket.id)
+            console.log("user is offline", onlineUsers);
+            // send all online users to all users
+            io.emit("getOnlineUser", onlineUsers);
+          });
         socket.on('joinRoom', async (chatId) => {
             console.log('receive join room event');
             console.log(`joined a particular room ${chatId}`);
@@ -102,6 +104,7 @@ const socketConnection = async (server: any) => {
      
 
         socket.on('disconnect', () => {
+            console.log("caliiingg disconnecteeeeeeee");
             console.log("socket disconnected", socket.id)
             // onlineUsers = onlineUsers.filter((user: { socketId: string; }) => user.socketId !== socket.id)
             // console.log("user disconnected", onlineUsers);
