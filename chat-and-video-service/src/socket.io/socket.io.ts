@@ -1,7 +1,9 @@
 import { Server } from "socket.io";
 import { sendMessage_Usecase } from "../libs/usecase/chatAndVideo/sendMessageUsecase";
 import { sendGroupMessage_Usecase } from "../libs/usecase/chatAndVideo/sendGroupMessageUsecase";
-import {deleteMessage_Usecase} from "../libs/usecase/chatAndVideo/deleteMessageUsecase"
+import { deleteMessage_Usecase } from "../libs/usecase/chatAndVideo/deleteMessageUsecase";
+import { updateOnlineOrOffline_Usecase } from "../libs/usecase/chatAndVideo/updateOnlineOrOfflineUsecase";
+import {updateOfflineUser_Usecase} from "../libs/usecase/chatAndVideo/updateOfflineUserUsecase"
 const socketConnection = async (server: any) => {
     const io = new Server(server, { cors: { origin: "*" } });
 
@@ -10,7 +12,7 @@ const socketConnection = async (server: any) => {
 
         socket.on('message', async (data) => {
             try {
-                const { senderId, receiverId, content , type} = data;
+                const { senderId, receiverId, content, type } = data;
                 const response = await sendMessage_Usecase(senderId, receiverId, content, type);
 
                 if (response?.status === true && response?.sendMessage?.chatId) {
@@ -33,10 +35,10 @@ const socketConnection = async (server: any) => {
 
         socket.on('groupMessage', async (data) => {
             try {
-                const { groupId, senderId, content , type} = data;
+                const { groupId, senderId, content, type } = data;
                 const response = await sendGroupMessage_Usecase(groupId, senderId, content, type);
-                  console.log(response,"group message response coming  sockettt");
-                  
+                console.log(response, "group message response coming  sockettt");
+
                 if (response?.status === true && response?.sendMessage?.chatId) {
                     const roomId = response.sendMessage.chatId.toString();
                     const payload = {
@@ -56,52 +58,58 @@ const socketConnection = async (server: any) => {
         });
         socket.on('deleteMessage', async (data) => {
             try {
-                const { chatId,messageId, action} = data;
-                console.log(chatId,"chatId coming delete sectionsss");
-                
-                const response = await deleteMessage_Usecase(messageId,action);
-                  console.log(response,"delete Message response coming  sockettt");
-                  
+                const { chatId, messageId, action } = data;
+                console.log(chatId, "chatId coming delete sectionsss");
+
+                const response = await deleteMessage_Usecase(messageId, action);
+                console.log(response, "delete Message response coming  sockettt");
+
                 if (response?.deleteMessage?.status === true) {
                     console.log("status true il keriyannuuuuuuuuuuuuuuuu");
-                    
+
                     const roomId = chatId;
                     const payload = {
-                        status:true,
-                        message:"message deleted successfullt"
+                        status: true,
+                        message: "message deleted successfullt"
                     }
-                    io.to(roomId).emit("messageDeleted",payload);
+                    io.to(roomId).emit("messageDeleted", payload);
                 }
             } catch (error) {
                 console.error("Error processing message:", error);
                 socket.emit("messageResponse", { status: false, message: error });
             }
         });
-        let onlineUsers:any = [];
-        socket.on("addOnlineUser", (newUserId) => {
-            if (!onlineUsers.some((user: { userId: any; }) => user.userId === newUserId)) {  
-              // if user is not added before
-              onlineUsers.push({ userId: newUserId, socketId: socket.id });
-              console.log("new user is here!", onlineUsers);
+
+
+        socket.on("addOnlineUser", async (newUserId) => {
+            if (!newUserId) {
+                return
             }
-            // send all active users to new user
-            io.emit("getOnlineUser", onlineUsers);
-          });
-          socket.on("offline", (newUserId) => {
-            console.log("caliiingg offlineeeeeeeee");
-            
-            // remove user from active users
-            onlineUsers = onlineUsers.filter((user:any) => user.socketId !== socket.id)
-            console.log("user is offline", onlineUsers);
-            // send all online users to all users
-            io.emit("getOnlineUser", onlineUsers);
-          });
+            const response = await updateOnlineOrOffline_Usecase(newUserId);
+            if (response?.getOnlineUsers?.status === true) {
+
+                io.emit('getOnlineUser', response?.getOnlineUsers?.onlineUsers);
+            }
+            // Send all active users to the new user
+
+        });
+
+        socket.on('setOfflineUser', async (userId) => {
+            if (!userId) {
+                return
+            }
+         const response = await updateOfflineUser_Usecase(userId)
+         if (response?.getOnlineUsers?.status === true) {
+
+            io.emit('getOnlineUser', response?.getOnlineUsers?.onlineUsers);
+        }
+        });
         socket.on('joinRoom', async (chatId) => {
             console.log('receive join room event');
             console.log(`joined a particular room ${chatId}`);
             socket.join(chatId);
         });
-     
+
 
         socket.on('disconnect', () => {
             console.log("caliiingg disconnecteeeeeeee");

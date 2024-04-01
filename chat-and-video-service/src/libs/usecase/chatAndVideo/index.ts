@@ -13,7 +13,9 @@ import {getGroupMessages_Usecase} from "./getGroupMessageUsecase";
 import {getGroupMembers_Usecase} from "./getGroupMembersUsecase";
 import {updateParticipantStatus_Usecase} from "./updateParticipantStatusUsecase";
 import {updateGroupMembers_Usecase} from "./updateGroupMembersUsecase";
-import {deleteMessage_Usecase} from "./deleteMessageUsecase"
+import {deleteMessage_Usecase} from "./deleteMessageUsecase";
+import {updateOnlineOrOffline_Usecase} from "./updateOnlineOrOfflineUsecase";
+import {updateOfflineUser_Usecase} from "./updateOfflineUserUsecase"
 export{
 
     createChat_Usecase,
@@ -30,5 +32,7 @@ export{
     getGroupMembers_Usecase,
     updateParticipantStatus_Usecase,
     updateGroupMembers_Usecase,
-    deleteMessage_Usecase
+    deleteMessage_Usecase,
+    updateOnlineOrOffline_Usecase,
+    updateOfflineUser_Usecase
 }

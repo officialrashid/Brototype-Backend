@@ -6,6 +6,7 @@ const superleadSchema = new mongoose.Schema({
     phone: String,
     hubLocation: String,
     uniqueId: String,
+   
 });
 
 const Superleads = mongoose.model("Superleads", superleadSchema);

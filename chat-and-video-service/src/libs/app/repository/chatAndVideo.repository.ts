@@ -496,6 +496,52 @@ deleteMessage : async (messageId:string,action:string) =>{
   }
  
 
+},
+updateOnlineOrOffline : async (chaterId:string) =>{
+    try {
+        if(!chaterId){
+            return {status:false,message:"status online or offline not updated"}
+        }
+        const response = await schema.Chaters.updateOne({chaterId:new ObjectId(chaterId)},{$set:{isOnline:true}})
+        console.log(response);
+        
+        if(!response){
+          return {status:false,message:"status online or offline not updated"}
+        }else{
+            const onlineUsers = await schema.Chaters.find({isOnline:true})
+            console.log(onlineUsers,"llllllllllOnline Usersss");
+            if(onlineUsers.length > 0){
+                return {status:true,onlineUsers}
+            }else{
+                return {status:false,message:"No Online Users Found"} 
+            }
+        }
+    } catch (error) {
+        return {status:false,message:"Erro in the update user online or offline"} 
+    }
+},
+updateOfflineUser : async (chaterId:string) =>{
+    try {
+        if(!chaterId){
+            return {status:false,message:"status online or offline not updated"}
+        }
+        const response = await schema.Chaters.updateOne({chaterId:new ObjectId(chaterId)},{$set:{isOnline:false}})
+        console.log(response);
+        
+        if(!response){
+          return {status:false,message:"status online or offline not updated"}
+        }else{
+            const onlineUsers = await schema.Chaters.find({isOnline:true})
+            console.log(onlineUsers,"llllllllllOnline Usersss");
+            if(onlineUsers.length > 0){
+                return {status:true,onlineUsers}
+            }else{
+                return {status:false,message:"No Online Users Found"} 
+            }
+        }
+    } catch (error) {
+        return {status:false,message:"Erro in the update user online or offline"} 
+    }
 }
 
 
