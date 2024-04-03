@@ -3,7 +3,8 @@ import { sendMessage_Usecase } from "../libs/usecase/chatAndVideo/sendMessageUse
 import { sendGroupMessage_Usecase } from "../libs/usecase/chatAndVideo/sendGroupMessageUsecase";
 import { deleteMessage_Usecase } from "../libs/usecase/chatAndVideo/deleteMessageUsecase";
 import { updateOnlineOrOffline_Usecase } from "../libs/usecase/chatAndVideo/updateOnlineOrOfflineUsecase";
-import {updateOfflineUser_Usecase} from "../libs/usecase/chatAndVideo/updateOfflineUserUsecase"
+import {updateOfflineUser_Usecase} from "../libs/usecase/chatAndVideo/updateOfflineUserUsecase";
+import {getCurrentOnlineUsers_Usecase} from "../libs/usecase/chatAndVideo/getCurrentOnlineUsers"
 const socketConnection = async (server: any) => {
     const io = new Server(server, { cors: { origin: "*" } });
 
@@ -87,7 +88,8 @@ const socketConnection = async (server: any) => {
             }
             const response = await updateOnlineOrOffline_Usecase(newUserId);
             if (response?.getOnlineUsers?.status === true) {
-
+                 console.log(response?.getOnlineUsers?.onlineUsers,"resposne in socket get onoine userssssss");
+                 
                 io.emit('getOnlineUser', response?.getOnlineUsers?.onlineUsers);
             }
             // Send all active users to the new user
@@ -100,8 +102,15 @@ const socketConnection = async (server: any) => {
             }
          const response = await updateOfflineUser_Usecase(userId)
          if (response?.getOnlineUsers?.status === true) {
-
+            
+               
             io.emit('getOnlineUser', response?.getOnlineUsers?.onlineUsers);
+        }
+        });
+        socket.on('getCurrentOnlineUser', async () => {
+         const response = await getCurrentOnlineUsers_Usecase()
+         if (response?.getOnlineUsers?.status === true) { 
+            io.emit('currentOnlineUser', response?.getOnlineUsers?.onlineUsers);
         }
         });
         socket.on('joinRoom', async (chatId) => {

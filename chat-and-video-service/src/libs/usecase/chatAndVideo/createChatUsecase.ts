@@ -27,6 +27,8 @@ export const createChat_Usecase = (dependencies: any) => {
                 if (response.status === true) {
 
                     const updateChatersExit = await chatAndVideoRepository.updateChatersExit(recipientId) // check chat user update or not
+                    console.log(updateChatersExit,"updateChatersExit updateChatersExit updateChatersExit");
+                    
                     if (updateChatersExit.status === true && updateChatersExit.message === "chater details not created") {
                         const updateChaters = await chatAndVideoRepository.updateChatersDetails(chaters, recipientId)
                     }

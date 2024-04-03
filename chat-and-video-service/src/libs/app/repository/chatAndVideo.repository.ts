@@ -508,7 +508,7 @@ updateOnlineOrOffline : async (chaterId:string) =>{
         if(!response){
           return {status:false,message:"status online or offline not updated"}
         }else{
-            const onlineUsers = await schema.Chaters.find({isOnline:true})
+            const onlineUsers = await schema.Chaters.find({})
             console.log(onlineUsers,"llllllllllOnline Usersss");
             if(onlineUsers.length > 0){
                 return {status:true,onlineUsers}
@@ -520,29 +520,69 @@ updateOnlineOrOffline : async (chaterId:string) =>{
         return {status:false,message:"Erro in the update user online or offline"} 
     }
 },
-updateOfflineUser : async (chaterId:string) =>{
+ updateOfflineUser : async (chaterId: string) => {
     try {
-        if(!chaterId){
-            return {status:false,message:"status online or offline not updated"}
+        if (!chaterId) {
+            return { status: false, message: "Chater ID is required" };
         }
-        const response = await schema.Chaters.updateOne({chaterId:new ObjectId(chaterId)},{$set:{isOnline:false}})
+
+        const currentDate = new Date();
+        let hours = currentDate.getHours();
+        let minutes: any = currentDate.getMinutes();
+        const ampm = hours >= 12 ? "pm" : "am";
+
+        // Convert hours to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+        // Add leading zero to minutes if less than 10
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+
+        const lastSeen = hours + ":" + minutes + " " + ampm;
+
+        console.log(lastSeen, "lastSeen lastSeen lastSeen");
+
+        const response = await schema.Chaters.updateOne(
+            { chaterId: new ObjectId(chaterId) },
+            { $set: { isOnline: false, lastSeen: lastSeen } }
+        );
+
         console.log(response);
-        
-        if(!response){
-          return {status:false,message:"status online or offline not updated"}
-        }else{
-            const onlineUsers = await schema.Chaters.find({isOnline:true})
-            console.log(onlineUsers,"llllllllllOnline Usersss");
-            if(onlineUsers.length > 0){
-                return {status:true,onlineUsers}
-            }else{
-                return {status:false,message:"No Online Users Found"} 
+
+        if (!response) {
+            return { status: false, message: "Status (online/offline) not updated" };
+        } else {
+            // Find online users (if any) after updating lastSeen
+            const onlineUsers = await schema.Chaters.find({});
+            console.log(onlineUsers, "Online Users");
+
+            if (onlineUsers.length > 0) {
+                return { status: true, onlineUsers };
+            } else {
+                return { status: false, message: "No online users found" };
             }
         }
     } catch (error) {
-        return {status:false,message:"Erro in the update user online or offline"} 
+        console.error("Error in updating user online or offline:", error);
+        return { status: false, message: "Error in updating user online or offline" };
+    }
+},
+getCurrentOnlineUsers :async () =>{
+    try {
+   
+            // Find online users (if any) after updating lastSeen
+            const onlineUsers = await schema.Chaters.find({});
+            console.log(onlineUsers, "Online Users");
+
+            if (onlineUsers.length > 0) {
+                return { status: true, onlineUsers };
+            } else {
+                return { status: false, message: "No online users found" };
+            }
+    } catch (error) {
+        console.error("Error in updating user online or offline:", error);
+        return { status: false, message: "Error in updating user online or offline" };
     }
 }
-
 
 }

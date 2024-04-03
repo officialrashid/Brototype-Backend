@@ -12,6 +12,10 @@ const chatersSchema =new mongoose.Schema(
             type: Boolean,
             default: false
         },
+        lastSeen: {
+            type: String,
+            default: ""
+        },
     },
     { timestamps: true }
 );
