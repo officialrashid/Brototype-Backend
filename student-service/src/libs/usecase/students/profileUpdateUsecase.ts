@@ -31,7 +31,7 @@ export const profileUpdate_Usecase = (dependencies: any) => {
     // let imageUrl;
     const isGovernmentId = false
     const studentId = data.studentId;
-    if (!file || !studentId || !isGovernmentId) return { message: "Bad Request" };
+    if (!file || !studentId ) return { message: "Bad Request" };
 
    const {imageUrl}= await uploadToS3({ file, studentId,isGovernmentId });
  console.log(imageUrl,"imageUrl in  usecaseeeeeee");
