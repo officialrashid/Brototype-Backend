@@ -16,10 +16,12 @@ const socketConnection = async (server: any) => {
             try {
                 const { senderId, receiverId, content, type } = data;
                 const response = await sendMessage_Usecase(senderId, receiverId, content, type);
+                console.log(senderId, receiverId, content, type,"cominggsocketee");
+                
                 if (response?.status === true && response?.sendMessage?.chatId) {
                     const roomId = response.sendMessage.chatId.toString();
-                    const addUnreadMessageCount = await addUnreadMessageCount_Usecase(senderId,receiverId,roomId)
-                    console.log(addUnreadMessageCount,"ooooooooooooooooooo");
+                    // const addUnreadMessageCount = await addUnreadMessageCount_Usecase(senderId,receiverId,roomId)
+                    // console.log(addUnreadMessageCount,"ooooooooooooooooooo");
                     
                     const payload = {
                         chatId: roomId,

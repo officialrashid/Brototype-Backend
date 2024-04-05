@@ -86,21 +86,21 @@ export default {
         }
     },
 
-    sendMessage: async (initiatorId: string, receiverId: string, content: string, type: string) => {
+    sendMessage: async (senderId: string, receiverId: string, content: string, type: string) => {
         try {
-            if (!initiatorId || !receiverId || !content) {
+            if (!senderId || !receiverId || !content) {
                 return { status: false, message: "message send not success" }
             }
             const data = new schema.Messages({
 
-                initiatorId: initiatorId,
+                senderId: senderId,
                 receiverId: receiverId,
                 content: content,
                 type: type
             })
-            const messageResponse:any = await data.save()
+            const messageResponse = await data.save()
             const filterResponse = {
-                initiatorId: messageResponse?.initiatorId,
+                senderId: messageResponse?.senderId,
                 receiverId: messageResponse?.receiverId,
                 content: messageResponse?.content,
                 type: messageResponse?.type,
@@ -114,8 +114,8 @@ export default {
                             $elemMatch: {
                                 $or:
                                     [
-                                        { initiatorId: initiatorId, recipientId: receiverId },
-                                        { recipientId: initiatorId, initiatorId: receiverId }
+                                        { initiatorId: senderId, recipientId: receiverId },
+                                        { recipientId: senderId, initiatorId: receiverId }
                                     ]
 
                             }
@@ -329,43 +329,43 @@ export default {
         }
     },
 
-    sendGroupMessage: async (groupId: any, initiatorId: any, content: any, type: any) => {
+    sendGroupMessage : async (groupId: any, senderId: any, content: any, type: any) => {
         try {
-            if (!groupId || !initiatorId || !content) {
+            if (!groupId || !senderId || !content) {
                 return { status: false, message: "Message sending failed" };
             }
-
+    
             // Fetch sender's information from the Chaters schema
-            const senderName = await schema.Chaters.findOne({ chaterId: new ObjectId(initiatorId) });
-
+            const senderName = await schema.Chaters.findOne({ chaterId: new ObjectId(senderId) });
+    
             // Extract first name and last name from sender's information
             const firstName = senderName?.firstName ?? "";
             const lastName = senderName?.lastName ?? "";
-
+    
             // Create a new GroupMessages document
             const data = new schema.GroupMessages({
                 groupId: groupId,
-                initiatorId: initiatorId,
-                senderFirstName: firstName,
-                senderLastName: lastName,
+                senderId: senderId,
+                senderFirstName : firstName,
+                senderLastName : lastName,
                 content: content,
                 type: type
             });
-            console.log(data, "data comingg group message the save function woringg");
-
+           console.log(data,"data comingg group message the save function woringg");
+           
             // Save the new GroupMessages document
-            const messageResponse:any = await data.save();
-
+            const messageResponse = await data.save();
+    
             // Prepare the response object
-            const filterResponse:any = {
+            const filterResponse = {
                 groupId: messageResponse?.groupId,
-                initiatorId: messageResponse?.initiatorId,
+                senderId: messageResponse?.senderId,
                 content: messageResponse?.content,
                 type: messageResponse?.type,
                 senderFirstName: firstName,
                 senderLastName: lastName
             };
-
+    
             // Update the GroupChat document with the new message
             if (messageResponse) {
                 const response = await schema.GroupChat.findOneAndUpdate(
@@ -376,8 +376,8 @@ export default {
                     },
                     { new: true }
                 );
-                console.log(response, "group message send response");
-                console.log(filterResponse, "group filterResponse send response");
+               console.log(response,"group message send response");
+               console.log(filterResponse,"group filterResponse send response");
                 return { status: true, message: filterResponse, chatId: response?._id };
             }
         } catch (error) {
@@ -584,105 +584,105 @@ export default {
             return { status: false, message: "Error in updating user online or offline" };
         }
     },
-    addUnreadMessageCount: async (initiatorId: string, receiverId: string, chatId: string) => {
-        try {
-            if (!initiatorId || !receiverId || !chatId) {
-                return { status: false, message: "Not updating unread message count" };
-            }
+    // addUnreadMessageCount: async (initiatorId: string, receiverId: string, chatId: string) => {
+    //     try {
+    //         if (!initiatorId || !receiverId || !chatId) {
+    //             return { status: false, message: "Not updating unread message count" };
+    //         }
 
-            // Find the chat based on chatId and participants
-            const chat = await schema.Chat.findOne({
-                _id: chatId,
-                $or: [
-                    { 'participants.initiatorId': initiatorId, 'participants.recipientId': receiverId },
-                    { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
-                ]
-            });
+    //         // Find the chat based on chatId and participants
+    //         const chat = await schema.Chat.findOne({
+    //             _id: chatId,
+    //             $or: [
+    //                 { 'participants.initiatorId': initiatorId, 'participants.recipientId': receiverId },
+    //                 { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
+    //             ]
+    //         });
 
-            if (!chat) {
-                return { status: false, message: "Chat not found" };
-            }
+    //         if (!chat) {
+    //             return { status: false, message: "Chat not found" };
+    //         }
 
-            // Determine which user is the sender and which one is the receiver
-            const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
+    //         // Determine which user is the sender and which one is the receiver
+    //         const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
 
-            // Increment unread message count for the appropriate user
-            if (isInitiatorSender) {
-                console.log("if il keriiiiii");
+    //         // Increment unread message count for the appropriate user
+    //         if (isInitiatorSender) {
+    //             console.log("if il keriiiiii");
 
-                await schema.Chat.updateOne(
-                    {
-                        _id: chatId,
-                        'participants.initiatorId': initiatorId // Match the initiatorId
-                    },
-                    {
-                        $inc: { 'participants.$.initiatorUnReadMessages': 1 } // Increment initiator's unread count
-                    }
-                );
-            } else {
-                console.log("else il  il keriiiiii");
-                await schema.Chat.updateOne(
-                    {
-                        _id: chatId,
-                        'participants.initiatorId': receiverId // Match the receiverId
-                    },
-                    {
-                        $inc: { 'participants.$.recipientUnReadMessages': 1 } // Increment recipient's unread count
-                    }
-                );
-            }
+    //             await schema.Chat.updateOne(
+    //                 {
+    //                     _id: chatId,
+    //                     'participants.initiatorId': initiatorId // Match the initiatorId
+    //                 },
+    //                 {
+    //                     $inc: { 'participants.$.initiatorUnReadMessages': 1 } // Increment initiator's unread count
+    //                 }
+    //             );
+    //         } else {
+    //             console.log("else il  il keriiiiii");
+    //             await schema.Chat.updateOne(
+    //                 {
+    //                     _id: chatId,
+    //                     'participants.initiatorId': receiverId // Match the receiverId
+    //                 },
+    //                 {
+    //                     $inc: { 'participants.$.recipientUnReadMessages': 1 } // Increment recipient's unread count
+    //                 }
+    //             );
+    //         }
 
-            return { status: true, message: "Unread message count updated successfully" };
-        } catch (error) {
-            console.error(error);
-            return { status: false, message: "Error occurred while updating unread message count" };
-        }
-    },
-    getUserUnreadMessageCounts: async (initiatorId: string) => {
-        try {
-            // Find all chats where the initiatorId matches either initiatorId or recipientId
-            const chats = await schema.Chat.find({
-                $or: [
-                    { 'participants.initiatorId': initiatorId },
-                    { 'participants.recipientId': initiatorId }
-                ]
-            });
+    //         return { status: true, message: "Unread message count updated successfully" };
+    //     } catch (error) {
+    //         console.error(error);
+    //         return { status: false, message: "Error occurred while updating unread message count" };
+    //     }
+    // },
+    // getUserUnreadMessageCounts: async (initiatorId: string) => {
+    //     try {
+    //         // Find all chats where the initiatorId matches either initiatorId or recipientId
+    //         const chats = await schema.Chat.find({
+    //             $or: [
+    //                 { 'participants.initiatorId': initiatorId },
+    //                 { 'participants.recipientId': initiatorId }
+    //             ]
+    //         });
 
-            // Object to store unread message counts for each user
-            const unreadCounts:any = {};
+    //         // Object to store unread message counts for each user
+    //         const unreadCounts:any = {};
 
-            // Iterate over each chat
-            for (const chat of chats) {
-                // Determine the index of the sender in the participants array
-                const senderIndex:any = chat.participants.findIndex(participant => participant.initiatorId.toString() === initiatorId);
+    //         // Iterate over each chat
+    //         for (const chat of chats) {
+    //             // Determine the index of the sender in the participants array
+    //             const senderIndex:any = chat.participants.findIndex(participant => participant.initiatorId.toString() === initiatorId);
 
-                if (senderIndex !== -1) {
-                    // Determine the ID of the other participant
-                    const counterpartId:any = chat.participants[senderIndex].initiatorId.toString() === initiatorId ?
-                        chat.participants[senderIndex].recipientId :
-                        chat.participants[senderIndex].initiatorId;
+    //             if (senderIndex !== -1) {
+    //                 // Determine the ID of the other participant
+    //                 const counterpartId:any = chat.participants[senderIndex].initiatorId.toString() === initiatorId ?
+    //                     chat.participants[senderIndex].recipientId :
+    //                     chat.participants[senderIndex].initiatorId;
 
-                    // Initialize unread count for the counterpart if not already present
-                    if (!unreadCounts[counterpartId]) {
-                        unreadCounts[counterpartId] = 0;
-                    }
+    //                 // Initialize unread count for the counterpart if not already present
+    //                 if (!unreadCounts[counterpartId]) {
+    //                     unreadCounts[counterpartId] = 0;
+    //                 }
 
-                    // Increment the unread count for the counterpart
-                    unreadCounts[counterpartId] += chat.participants[senderIndex].initiatorId.toString() === initiatorId ?
-                        chat.participants[senderIndex].recipientUnReadMessages :
-                        chat.participants[senderIndex].initiatorUnReadMessages;
-                }
-            }
+    //                 // Increment the unread count for the counterpart
+    //                 unreadCounts[counterpartId] += chat.participants[senderIndex].initiatorId.toString() === initiatorId ?
+    //                     chat.participants[senderIndex].recipientUnReadMessages :
+    //                     chat.participants[senderIndex].initiatorUnReadMessages;
+    //             }
+    //         }
 
-            return {
-                status: true,
-                message: "Unread message counts fetched successfully",
-                initiatorId,
-                counterpartUnreadCounts: unreadCounts
-            };
-        } catch (error) {
-            console.error(error);
-            return { status: false, message: "Error occurred while fetching unread message counts" };
-        }
-    }
+    //         return {
+    //             status: true,
+    //             message: "Unread message counts fetched successfully",
+    //             initiatorId,
+    //             counterpartUnreadCounts: unreadCounts
+    //         };
+    //     } catch (error) {
+    //         console.error(error);
+    //         return { status: false, message: "Error occurred while fetching unread message counts" };
+    //     }
+    // }
 }
