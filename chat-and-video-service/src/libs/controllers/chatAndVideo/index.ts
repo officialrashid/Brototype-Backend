@@ -1,5 +1,4 @@
 
-
 import createChat_Controller from "./createChatController"
 import sendMessage_Controller from "./sendMessageController"
 import getAllChatRecipients_Controller from "./getAllChatRecipientsController"
@@ -14,6 +13,8 @@ import getGroupMembers_Controller from "./getGroupMembersController"
 import updateParticipantStatus_Controller from "./updateParticipantStatusController"
 import updateGroupMembers_Controller from "./updateGroupMembersController"
 import deleteMessage_Controller from "./deleteMessageController"
+import getUnreadMsgCount_Controller from "./getUnreadMsgCountController"
+
 export default (dependencies:any)=>{
 
     return{
@@ -31,5 +32,6 @@ export default (dependencies:any)=>{
         updateParticipantStatusController: updateParticipantStatus_Controller(dependencies),
         updateGroupMembersController: updateGroupMembers_Controller(dependencies),
         deleteMessageController: deleteMessage_Controller(dependencies),
+        getUnreadMsgCountController: getUnreadMsgCount_Controller(dependencies),
     }
 }

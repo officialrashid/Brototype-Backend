@@ -16,7 +16,8 @@ import {updateGroupMembers_Usecase} from "./updateGroupMembersUsecase";
 import {deleteMessage_Usecase} from "./deleteMessageUsecase";
 import {updateOnlineOrOffline_Usecase} from "./updateOnlineOrOfflineUsecase";
 import {updateOfflineUser_Usecase} from "./updateOfflineUserUsecase"
-import {getCurrentOnlineUsers_Usecase} from "./getCurrentOnlineUsers"
+import {getCurrentOnlineUsers_Usecase} from "./getCurrentOnlineUsers";
+import {getUnreadMsgCount_Usecase} from "./getUnreadMsgCountUsecase"
 export{
 
     createChat_Usecase,
@@ -36,5 +37,6 @@ export{
     deleteMessage_Usecase,
     updateOnlineOrOffline_Usecase,
     updateOfflineUser_Usecase,
-    getCurrentOnlineUsers_Usecase
+    getCurrentOnlineUsers_Usecase,
+    getUnreadMsgCount_Usecase
 }

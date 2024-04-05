@@ -23,5 +23,6 @@ export default (dependencies: any): Router => {
     router.patch('/update-group-participant-status',updateParticipantStatusController);
     router.patch('/update-group-members',updateGroupMembersController);
     router.delete('/delete-message',deleteMessageController);
+    router.delete('/get-unread-message-count',deleteMessageController);
     return router;
 };

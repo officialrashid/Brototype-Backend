@@ -4,7 +4,8 @@ import { sendGroupMessage_Usecase } from "../libs/usecase/chatAndVideo/sendGroup
 import { deleteMessage_Usecase } from "../libs/usecase/chatAndVideo/deleteMessageUsecase";
 import { updateOnlineOrOffline_Usecase } from "../libs/usecase/chatAndVideo/updateOnlineOrOfflineUsecase";
 import {updateOfflineUser_Usecase} from "../libs/usecase/chatAndVideo/updateOfflineUserUsecase";
-import {getCurrentOnlineUsers_Usecase} from "../libs/usecase/chatAndVideo/getCurrentOnlineUsers"
+import {getCurrentOnlineUsers_Usecase} from "../libs/usecase/chatAndVideo/getCurrentOnlineUsers";
+import {addUnreadMessageCount_Usecase} from "../libs/usecase/chatAndVideo/addUnreadMessageCountUsecase"
 const socketConnection = async (server: any) => {
     const io = new Server(server, { cors: { origin: "*" } });
 
@@ -15,9 +16,11 @@ const socketConnection = async (server: any) => {
             try {
                 const { senderId, receiverId, content, type } = data;
                 const response = await sendMessage_Usecase(senderId, receiverId, content, type);
-
                 if (response?.status === true && response?.sendMessage?.chatId) {
                     const roomId = response.sendMessage.chatId.toString();
+                    const addUnreadMessageCount = await addUnreadMessageCount_Usecase(senderId,receiverId,roomId)
+                    console.log(addUnreadMessageCount,"ooooooooooooooooooo");
+                    
                     const payload = {
                         chatId: roomId,
                         content: response.sendMessage.message
