@@ -13,12 +13,12 @@ export const getUnreadMsgCount_Usecase = (dependencies: any) => {
                 return { status: false, message: "message not found" };
             }
            
-            const getMessages = await chatAndVideoRepository.getUserUnreadMessageCounts(initiatorId);
+            const getUnreadMsgCount = await chatAndVideoRepository.getUserUnreadMessageCounts(initiatorId);
 
-            if(getMessages.status===true){
-                return {getMessages}
+            if(getUnreadMsgCount.status===true){
+                return {getUnreadMsgCount}
             }else{
-                return {status:false,message:"Messages not found"}
+                return {status:false,message:"Not Get Unread Message Count"}
             }
 
         } catch (err) {
