@@ -716,6 +716,69 @@ addGroupUnreadMessageCount: async (groupId: string, senderId: string) => {
         console.error(error);
         return { status: false, message: "Error in updating group unread message count" };
     }
+},
+updateUnreadMsgZero : async (initiatorId:string,receiverId:string,chatId:string,type:string) =>{
+    try {
+        if (!initiatorId || !receiverId || !chatId) {
+            return { status: false, message: "Not updating unread message count" };
+        }
+        console.log("zero settin startedd");
+        
+        // Find the chat based on chatId and participants
+        const chat = await schema.Chat.findOne({
+            _id: chatId,
+            $or: [
+                { 'participants.initiatorId': initiatorId, 'participants.recipientId': receiverId },
+                { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
+            ]
+        });
+
+        if (!chat) {
+            return { status: false, message: "Chat not found" };
+        }
+
+        // Determine which user is the sender and which one is the receiver
+        if(type==="oneToOne"){
+            console.log("keriii oneToOne");
+            
+            const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
+
+            // Increment unread message count for the appropriate user
+            if (isInitiatorSender) {
+                console.log("keriiiiiii");
+                
+                await schema.Chat.updateOne(
+                    {
+                        _id: chatId,
+                        'participants.initiatorId': initiatorId // Match the recipientId
+                    },
+                    {
+                        $set: { 'participants.$.initiatorUnReadMessages': 0 } // Increment recipient's unread count
+                    }
+                );
+            } else {
+                console.log("else il keriii ttaaaa");
+                
+                await schema.Chat.updateOne(
+                    {
+                        _id: chatId,
+                        'participants.recipientId': initiatorId // Match the initiatorId
+                    },
+                    {
+                        $set: { 'participants.$.recipientUnReadMessages': 0 } // Increment initiator's unread count
+                    }
+                );
+            }
+    
+            return { status: true, message: "Unread message count zero updated successfully" };
+        }else{
+
+        }
+       
+    } catch (error) {
+        console.error(error);
+        return { status: false, message: "Error occurred while updating unread message count" };
+    }
 }
 
 }

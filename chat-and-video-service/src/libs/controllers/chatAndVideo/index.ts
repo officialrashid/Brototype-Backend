@@ -14,6 +14,7 @@ import updateParticipantStatus_Controller from "./updateParticipantStatusControl
 import updateGroupMembers_Controller from "./updateGroupMembersController"
 import deleteMessage_Controller from "./deleteMessageController"
 import getUnreadMsgCount_Controller from "./getUnreadMsgCountController"
+import updateUnreadMsgZero_Controller from "./updateUnreadMsgZeroController"
 
 export default (dependencies:any)=>{
 
@@ -33,5 +34,6 @@ export default (dependencies:any)=>{
         updateGroupMembersController: updateGroupMembers_Controller(dependencies),
         deleteMessageController: deleteMessage_Controller(dependencies),
         getUnreadMsgCountController: getUnreadMsgCount_Controller(dependencies),
+        updateUnreadMsgZeroController: updateUnreadMsgZero_Controller(dependencies),
     }
 }
