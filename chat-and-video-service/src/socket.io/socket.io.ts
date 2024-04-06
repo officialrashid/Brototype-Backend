@@ -6,6 +6,7 @@ import { updateOnlineOrOffline_Usecase } from "../libs/usecase/chatAndVideo/upda
 import {updateOfflineUser_Usecase} from "../libs/usecase/chatAndVideo/updateOfflineUserUsecase";
 import {getCurrentOnlineUsers_Usecase} from "../libs/usecase/chatAndVideo/getCurrentOnlineUsers";
 import {addUnreadMessageCount_Usecase} from "../libs/usecase/chatAndVideo/addUnreadMessageCountUsecase"
+import { addGroupUnreadMessageCount_Usecase } from "../libs/usecase";
 const socketConnection = async (server: any) => {
     const io = new Server(server, { cors: { origin: "*" } });
 
@@ -16,13 +17,9 @@ const socketConnection = async (server: any) => {
             try {
                 const { senderId, receiverId, content, type } = data;
                 const response = await sendMessage_Usecase(senderId, receiverId, content, type);
-                console.log(senderId, receiverId, content, type,"cominggsocketee");
-                
                 if (response?.status === true && response?.sendMessage?.chatId) {
-                    const roomId = response.sendMessage.chatId.toString();
-                    // const addUnreadMessageCount = await addUnreadMessageCount_Usecase(senderId,receiverId,roomId)
-                    // console.log(addUnreadMessageCount,"ooooooooooooooooooo");
-                    
+                    const roomId = response.sendMessage.chatId.toString()
+                    const addUnreadMessageCount = await addUnreadMessageCount_Usecase(senderId,receiverId,roomId)
                     const payload = {
                         chatId: roomId,
                         content: response.sendMessage.message
@@ -43,6 +40,7 @@ const socketConnection = async (server: any) => {
             try {
                 const { groupId, senderId, content, type } = data;
                 const response = await sendGroupMessage_Usecase(groupId, senderId, content, type);
+                const addUnreadMessageCount = await addGroupUnreadMessageCount_Usecase(groupId,senderId)
                 console.log(response, "group message response coming  sockettt");
 
                 if (response?.status === true && response?.sendMessage?.chatId) {
@@ -93,7 +91,6 @@ const socketConnection = async (server: any) => {
             }
             const response = await updateOnlineOrOffline_Usecase(newUserId);
             if (response?.getOnlineUsers?.status === true) {
-                 console.log(response?.getOnlineUsers?.onlineUsers,"resposne in socket get onoine userssssss");
                  
                 io.emit('getOnlineUser', response?.getOnlineUsers?.onlineUsers);
             }

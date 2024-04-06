@@ -13,7 +13,7 @@ export const getUnreadMsgCount_Usecase = (dependencies: any) => {
                 return { status: false, message: "message not found" };
             }
            
-            const getMessages = await chatAndVideoRepository.getUnreadMsgCount(initiatorId);
+            const getMessages = await chatAndVideoRepository.getUserUnreadMessageCounts(initiatorId);
 
             if(getMessages.status===true){
                 return {getMessages}

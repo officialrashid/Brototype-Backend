@@ -509,7 +509,7 @@ export default {
                 return { status: false, message: "status online or offline not updated" }
             } else {
                 const onlineUsers = await schema.Chaters.find({})
-                console.log(onlineUsers, "llllllllllOnline Usersss");
+     
                 if (onlineUsers.length > 0) {
                     return { status: true, onlineUsers }
                 } else {
@@ -554,7 +554,7 @@ export default {
             } else {
                 // Find online users (if any) after updating lastSeen
                 const onlineUsers = await schema.Chaters.find({});
-                console.log(onlineUsers, "Online Users");
+              
 
                 if (onlineUsers.length > 0) {
                     return { status: true, onlineUsers };
@@ -572,7 +572,7 @@ export default {
 
             // Find online users (if any) after updating lastSeen
             const onlineUsers = await schema.Chaters.find({});
-            console.log(onlineUsers, "Online Users");
+   
 
             if (onlineUsers.length > 0) {
                 return { status: true, onlineUsers };
@@ -584,105 +584,123 @@ export default {
             return { status: false, message: "Error in updating user online or offline" };
         }
     },
-    // addUnreadMessageCount: async (initiatorId: string, receiverId: string, chatId: string) => {
-    //     try {
-    //         if (!initiatorId || !receiverId || !chatId) {
-    //             return { status: false, message: "Not updating unread message count" };
-    //         }
+    addUnreadMessageCount: async (initiatorId: string, receiverId: any, chatId: any) => {
+        try {
+            if (!initiatorId || !receiverId || !chatId) {
+                return { status: false, message: "Not updating unread message count" };
+            }
+      console.log(receiverId,"receiverId receiverId receiverId receiverId");
+      
+            // Find the chat based on chatId and participants
+            const chat = await schema.Chat.findOne({
+                _id: chatId,
+                $or: [
+                    { 'participants.initiatorId': initiatorId, 'participants.recipientId': receiverId },
+                    { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
+                ]
+            });
+    
+            if (!chat) {
+                return { status: false, message: "Chat not found" };
+            }
+    
+            // Determine which user is the sender and which one is the receiver
+            const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
+    
+            // Increment unread message count for the appropriate user
+            if (isInitiatorSender) {
+                await schema.Chat.updateOne(
+                    {
+                        _id: chatId,
+                        'participants.recipientId': receiverId // Match the recipientId
+                    },
+                    {
+                        $inc: { 'participants.$.recipientUnReadMessages': 1 } // Increment recipient's unread count
+                    }
+                );
+            } else {
+                console.log("else il keriii ttaaaa");
+                
+                await schema.Chat.updateOne(
+                    {
+                        _id: chatId,
+                        'participants.initiatorId': receiverId // Match the initiatorId
+                    },
+                    {
+                        $inc: { 'participants.$.initiatorUnReadMessages': 1 } // Increment initiator's unread count
+                    }
+                );
+            }
+    
+            return { status: true, message: "Unread message count updated successfully" };
+        } catch (error) {
+            console.error(error);
+            return { status: false, message: "Error occurred while updating unread message count" };
+        }
+    },
+    
+   getUserUnreadMessageCounts: async (initiatorId: string | mongoose.Types.ObjectId) => {
+    try {
+        // Find all chats where the initiatorId matches either initiatorId or recipientId
+        const chats = await schema.Chat.find({
+            $or: [
+                { 'participants.initiatorId': initiatorId },
+                { 'participants.recipientId': initiatorId }
+            ]
+        });
+        
+        // Object to store unread message counts for each user
+        const unreadCounts: Record<string, number> = {}; // Explicitly define the type of unreadCounts
 
-    //         // Find the chat based on chatId and participants
-    //         const chat = await schema.Chat.findOne({
-    //             _id: chatId,
-    //             $or: [
-    //                 { 'participants.initiatorId': initiatorId, 'participants.recipientId': receiverId },
-    //                 { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
-    //             ]
-    //         });
+        // Iterate through each chat
+        chats.forEach(chat => {
+            chat.participants.forEach(participant => {
+                // Exclude the initiator from the count
+                if (participant.initiatorId.toString() !== initiatorId.toString()) {
+                    // Update or initialize unread count for the participant
+                    unreadCounts[participant.initiatorId.toString()] = (unreadCounts[participant.initiatorId.toString()] || 0) + participant.initiatorUnReadMessages;
+                }
+                // Exclude the recipient from the count
+                if (participant.recipientId.toString() !== initiatorId.toString()) {
+                    // Update or initialize unread count for the participant
+                    unreadCounts[participant.recipientId.toString()] = (unreadCounts[participant.recipientId.toString()] || 0) + participant.recipientUnReadMessages;
+                }
+            });
+        });
 
-    //         if (!chat) {
-    //             return { status: false, message: "Chat not found" };
-    //         }
+        console.log(unreadCounts); // Output unread message counts for all users
 
-    //         // Determine which user is the sender and which one is the receiver
-    //         const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
+        return { status: true, message: "Unread message counts retrieved successfully", unreadCounts };
+    } catch (error) {
+        console.error(error);
+        return { status: false, message: "Error occurred while fetching unread message counts" };
+    }
+},
+addGroupUnreadMessageCount: async (groupId: string, senderId: string) => {
+    try {
+        if (!groupId || !senderId) {
+            return { status: false, message: "Not updating group unread message count" };
+        }
 
-    //         // Increment unread message count for the appropriate user
-    //         if (isInitiatorSender) {
-    //             console.log("if il keriiiiii");
+        const group:any= await schema.GroupChat.findById(groupId);
 
-    //             await schema.Chat.updateOne(
-    //                 {
-    //                     _id: chatId,
-    //                     'participants.initiatorId': initiatorId // Match the initiatorId
-    //                 },
-    //                 {
-    //                     $inc: { 'participants.$.initiatorUnReadMessages': 1 } // Increment initiator's unread count
-    //                 }
-    //             );
-    //         } else {
-    //             console.log("else il  il keriiiiii");
-    //             await schema.Chat.updateOne(
-    //                 {
-    //                     _id: chatId,
-    //                     'participants.initiatorId': receiverId // Match the receiverId
-    //                 },
-    //                 {
-    //                     $inc: { 'participants.$.recipientUnReadMessages': 1 } // Increment recipient's unread count
-    //                 }
-    //             );
-    //         }
+        if (!group) {
+            return { status: false, message: "Group not found" };
+        }
 
-    //         return { status: true, message: "Unread message count updated successfully" };
-    //     } catch (error) {
-    //         console.error(error);
-    //         return { status: false, message: "Error occurred while updating unread message count" };
-    //     }
-    // },
-    // getUserUnreadMessageCounts: async (initiatorId: string) => {
-    //     try {
-    //         // Find all chats where the initiatorId matches either initiatorId or recipientId
-    //         const chats = await schema.Chat.find({
-    //             $or: [
-    //                 { 'participants.initiatorId': initiatorId },
-    //                 { 'participants.recipientId': initiatorId }
-    //             ]
-    //         });
+        group.participants.forEach((participant: { participant: { toString: () => string; }; unreadMessagesCount: number; }) => {
+            if (participant.participant.toString() !== senderId) {
+                participant.unreadMessagesCount += 1;
+            }
+        });
 
-    //         // Object to store unread message counts for each user
-    //         const unreadCounts:any = {};
+        await group.save();
 
-    //         // Iterate over each chat
-    //         for (const chat of chats) {
-    //             // Determine the index of the sender in the participants array
-    //             const senderIndex:any = chat.participants.findIndex(participant => participant.initiatorId.toString() === initiatorId);
+        return { status: true, message: "Group unread message count updated successfully" };
+    } catch (error) {
+        console.error(error);
+        return { status: false, message: "Error in updating group unread message count" };
+    }
+}
 
-    //             if (senderIndex !== -1) {
-    //                 // Determine the ID of the other participant
-    //                 const counterpartId:any = chat.participants[senderIndex].initiatorId.toString() === initiatorId ?
-    //                     chat.participants[senderIndex].recipientId :
-    //                     chat.participants[senderIndex].initiatorId;
-
-    //                 // Initialize unread count for the counterpart if not already present
-    //                 if (!unreadCounts[counterpartId]) {
-    //                     unreadCounts[counterpartId] = 0;
-    //                 }
-
-    //                 // Increment the unread count for the counterpart
-    //                 unreadCounts[counterpartId] += chat.participants[senderIndex].initiatorId.toString() === initiatorId ?
-    //                     chat.participants[senderIndex].recipientUnReadMessages :
-    //                     chat.participants[senderIndex].initiatorUnReadMessages;
-    //             }
-    //         }
-
-    //         return {
-    //             status: true,
-    //             message: "Unread message counts fetched successfully",
-    //             initiatorId,
-    //             counterpartUnreadCounts: unreadCounts
-    //         };
-    //     } catch (error) {
-    //         console.error(error);
-    //         return { status: false, message: "Error occurred while fetching unread message counts" };
-    //     }
-    // }
 }
