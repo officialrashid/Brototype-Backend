@@ -779,6 +779,16 @@ updateUnreadMsgZero : async (initiatorId:string,receiverId:string,chatId:string,
         console.error(error);
         return { status: false, message: "Error occurred while updating unread message count" };
     }
+},
+updateGroupUnreadMsgZero : async  (groupId:string,senderId:string,type:string) =>{
+     try {
+        if(!groupId || !senderId || !type){
+            return {status:false,message:"not update group member unread message count zero"}
+        }
+        const response = await schema.GroupChat.find({_id:groupId})
+     } catch (error) {
+       return {status:false,message:"Error occurred while updating group memeber unread message count"} 
+     }
 }
 
 }

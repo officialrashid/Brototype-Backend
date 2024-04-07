@@ -26,5 +26,6 @@ export default (dependencies: any): Router => {
     router.delete('/get-unread-message-count',deleteMessageController);
     router.get('/get-unread-message-count/:initiatorId', getUnreadMsgCountController);
     router.patch('/update-unread-msg-zero', updateUnreadMsgZeroController);
+    router.patch('/update-group-unread-msg-zero', updateUnreadMsgZeroController);
     return router;
 };
