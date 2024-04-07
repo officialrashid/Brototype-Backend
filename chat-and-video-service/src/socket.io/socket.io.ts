@@ -26,6 +26,7 @@ const socketConnection = async (server: any) => {
                     };
                     io.to(roomId).emit("received", payload);
                     socket.emit("messageResponse", { status: true });
+                    socket.broadcast.emit("notification", { message: "This is a broadcast message!" });
                 } else {
                     console.error("Failed to send message:", response?.message);
                     socket.emit("messageResponse", { status: false, message: response?.message });
@@ -51,7 +52,7 @@ const socketConnection = async (server: any) => {
                     };
                     io.to(roomId).emit("received", payload);
                     socket.emit("groupMessageResponse", { status: true });
-                    socket.broadcast.emit("notification", {message:"success"});
+                    socket.broadcast.emit("notification", { message: "This is a broadcast message!" });
                 } else {
                     console.error("Failed to send message:", response?.message);
                     socket.emit("messageResponse", { status: false, message: response?.message });
