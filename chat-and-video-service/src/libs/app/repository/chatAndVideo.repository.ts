@@ -1,7 +1,7 @@
 import schema from "../dataBase/schema"
 import config from "../../../config/config";
 import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
 import { ObjectId } from "mongodb";
@@ -18,7 +18,55 @@ interface GroupChatData {
     participants: mongoose.Types.ObjectId[];
     admins: mongoose.Types.ObjectId[];
 }
+interface Participant {
+    initiatorId: Types.ObjectId;
+    recipientId: Types.ObjectId;
+}
 
+interface Message {
+    updatedAt: Date;
+}
+
+interface ChatDetails {
+    lastMessage: Message;
+    _id: Types.ObjectId;
+    profile?: string;
+    groupName?: string;
+    description?: string;
+    participants: Participant[];
+    admins?: Types.ObjectId[];
+    messages: Message[];
+    createdAt: Date;
+    updatedAt: Date;
+    __v: number;
+}
+
+interface GroupChatDetails {
+    lastMessage: Message;
+    _id: Types.ObjectId;
+    chaterId: Types.ObjectId;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    imageUrl: string;
+    isOnline: boolean;
+    lastSeen: string;
+    createdAt: Date;
+    updatedAt: Date;
+    __v: number;
+}
+
+interface ChatRecipient {
+    details: ChatDetails | GroupChatDetails;
+    lastMessage: Message;
+}
+
+interface GetAllChatRecipientsResponse {
+    status: boolean;
+    recipients?: ChatRecipient[];
+    message?: string;
+    error?: any;
+}
 
 export default {
 
@@ -187,66 +235,122 @@ export default {
                 return { status: false, message: "Initiator ID not provided" };
             }
 
-            const initiatorObjectId = new mongoose.Types.ObjectId(initiatorId);
+            const initiatorObjectId = new Types.ObjectId(initiatorId);
 
-            const chatRecipients = await schema.Chat.find({
-                "participants": {
-                    $elemMatch: {
-                        $or: [
-                            { "initiatorId": initiatorObjectId },
-                            { "recipientId": initiatorObjectId }
-                        ]
+            // Get individual chat recipients
+            const individualChats = await schema.Chat.aggregate([
+                {
+                    $match: {
+                        "participants": {
+                            $elemMatch: {
+                                $or: [
+                                    { "initiatorId": initiatorObjectId },
+                                    { "recipientId": initiatorObjectId }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "messages",
+                        let: { lastMessageId: "$lastMessage" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: { $eq: ["$_id", "$$lastMessageId"] }
+                                }
+                            },
+                            {
+                                $project: {
+                                    updatedAt: 1
+                                }
+                            }
+                        ],
+                        as: "lastMessageDetails"
+                    }
+                },
+                {
+                    $project: {
+                        participants: 1,
+                        lastMessage: { $arrayElemAt: ["$lastMessageDetails", 0] }
                     }
                 }
+            ]);
+
+            const individualRecipients = [];
+
+            for (const chat of individualChats) {
+                for (const participant of chat.participants) {
+                    if (
+                        participant.initiatorId.equals(initiatorObjectId) ||
+                        participant.recipientId.equals(initiatorObjectId)
+                    ) {
+                        const details = await schema.Chaters.findOne({
+                            chaterId: participant.recipientId.equals(initiatorObjectId) ? participant.initiatorId : participant.recipientId
+                        });
+
+                        // Check if details and lastMessage exist
+                        if (details && chat.lastMessage) {
+                            // Combine details and lastMessage into newData
+                            const newData = { details, lastMessage: chat.lastMessage };
+
+                            // Push newData into individualRecipients
+                            individualRecipients.push(newData);
+                        }
+
+                        break; // Break after adding the first participant
+                    }
+                }
+            }
+
+            // Get group chat recipients
+            const groupChats = await schema.GroupChat.aggregate([
+                {
+                    $project: {
+                        participants: 1,
+                        lastMessage: { $arrayElemAt: ["$messages", -1] },
+                        updatedAt: 1  // Include updatedAt field
+                    }
+                }
+            ]);
+
+            const groupRecipients = [];
+
+            for (const group of groupChats) {
+                const details = await schema.GroupChat.findOne({ _id: group._id });
+
+                // Check if details and lastMessage exist
+                if (details && group.lastMessage) {
+                    // Combine details and lastMessage into newData
+                    const newData = { details, lastMessage: group.lastMessage };
+
+                    // Push newData into groupRecipients
+                    groupRecipients.push(newData);
+                }
+            }
+
+            // Combine individual and group chat recipients
+            const allRecipients = [...individualRecipients, ...groupRecipients];
+            console.log(allRecipients, "allRecipients allRecipients");
+
+            // Sort all recipients based on last message's updatedAt timestamp
+            // Sort all recipients based on last message's updatedAt timestamp
+            allRecipients.sort((a: any, b: any) => {
+                // Extract the updatedAt timestamps for comparison
+                const aUpdatedAt = a.lastMessage ? new Date(a.lastMessage.updatedAt || a.details.updatedAt).getTime() : 0;
+                const bUpdatedAt = b.lastMessage ? new Date(b.lastMessage.updatedAt || b.details.updatedAt).getTime() : 0;
+
+                // Sort by updatedAt timestamp in descending order
+                return bUpdatedAt - aUpdatedAt;
             });
 
-            const recipients = [];
 
-            for (const chat of chatRecipients) {
-                for (const participant of chat.participants) {
-                    // Check if initiatorId matches participant's initiatorId or recipientId
-                    if (participant.initiatorId.equals(initiatorObjectId) || participant.recipientId.equals(initiatorObjectId)) {
-                        const details = await schema.Chaters.findOne({ chaterId: participant.recipientId.equals(initiatorObjectId) ? participant.initiatorId : participant.recipientId });
-                        recipients.push(details);
-                    }
-                }
-            }
-            console.log(recipients, "recipients recipients");
+            console.log(allRecipients, "Sorted Recipients");
 
-            // const recipients = await schema.Chaters.find({ chaterId: { $ne: initiatorId } });
-            const groups = await schema.GroupChat.find({});
-            const initiatorGroups: any = [];
-
-            // Loop through each group chat document
-            for (const group of groups) {
-
-                for (const participant of group.participants) {
-
-
-                    // Convert initiatorId to ObjectId
-                    const initiatorObjectId = new mongoose.Types.ObjectId(initiatorId);
-
-                    // Check if participant's ID matches initiatorId
-                    if (participant.participant && participant.participant.equals(initiatorObjectId)) {
-                        // If matched, push the participant's ID to initiatorGroups array
-                        initiatorGroups.push(group);
-                        break; // Break the loop since we found a match for this document
-                    }
-                }
-            }
-
-
-
-            if (recipients.length > 0 || initiatorGroups.length > 0) {
-
-
-                return { status: true, recipients, initiatorGroups }
-            } else {
-                return { status: false, message: "your started not chat" }
-            }
-
+            return { status: true, recipients: allRecipients };
         } catch (error) {
-            return { status: false, message: "Error in getting all chat recipients", error: error };
+            return { status: false, message: "Error in getting all chat recipients", error };
         }
     },
     getMessages: async (initiatorId: string, recipientId: string) => {
@@ -329,33 +433,33 @@ export default {
         }
     },
 
-    sendGroupMessage : async (groupId: any, senderId: any, content: any, type: any) => {
+    sendGroupMessage: async (groupId: any, senderId: any, content: any, type: any) => {
         try {
             if (!groupId || !senderId || !content) {
                 return { status: false, message: "Message sending failed" };
             }
-    
+
             // Fetch sender's information from the Chaters schema
             const senderName = await schema.Chaters.findOne({ chaterId: new ObjectId(senderId) });
-    
+
             // Extract first name and last name from sender's information
             const firstName = senderName?.firstName ?? "";
             const lastName = senderName?.lastName ?? "";
-    
+
             // Create a new GroupMessages document
             const data = new schema.GroupMessages({
                 groupId: groupId,
                 senderId: senderId,
-                senderFirstName : firstName,
-                senderLastName : lastName,
+                senderFirstName: firstName,
+                senderLastName: lastName,
                 content: content,
                 type: type
             });
-           console.log(data,"data comingg group message the save function woringg");
-           
+            console.log(data, "data comingg group message the save function woringg");
+
             // Save the new GroupMessages document
             const messageResponse = await data.save();
-    
+
             // Prepare the response object
             const filterResponse = {
                 groupId: messageResponse?.groupId,
@@ -365,7 +469,7 @@ export default {
                 senderFirstName: firstName,
                 senderLastName: lastName
             };
-    
+
             // Update the GroupChat document with the new message
             if (messageResponse) {
                 const response = await schema.GroupChat.findOneAndUpdate(
@@ -376,8 +480,8 @@ export default {
                     },
                     { new: true }
                 );
-               console.log(response,"group message send response");
-               console.log(filterResponse,"group filterResponse send response");
+                console.log(response, "group message send response");
+                console.log(filterResponse, "group filterResponse send response");
                 return { status: true, message: filterResponse, chatId: response?._id };
             }
         } catch (error) {
@@ -509,7 +613,7 @@ export default {
                 return { status: false, message: "status online or offline not updated" }
             } else {
                 const onlineUsers = await schema.Chaters.find({})
-     
+
                 if (onlineUsers.length > 0) {
                     return { status: true, onlineUsers }
                 } else {
@@ -554,7 +658,7 @@ export default {
             } else {
                 // Find online users (if any) after updating lastSeen
                 const onlineUsers = await schema.Chaters.find({});
-              
+
 
                 if (onlineUsers.length > 0) {
                     return { status: true, onlineUsers };
@@ -572,7 +676,7 @@ export default {
 
             // Find online users (if any) after updating lastSeen
             const onlineUsers = await schema.Chaters.find({});
-   
+
 
             if (onlineUsers.length > 0) {
                 return { status: true, onlineUsers };
@@ -589,8 +693,8 @@ export default {
             if (!initiatorId || !receiverId || !chatId) {
                 return { status: false, message: "Not updating unread message count" };
             }
-      console.log(receiverId,"receiverId receiverId receiverId receiverId");
-      
+            console.log(receiverId, "receiverId receiverId receiverId receiverId");
+
             // Find the chat based on chatId and participants
             const chat = await schema.Chat.findOne({
                 _id: chatId,
@@ -599,14 +703,14 @@ export default {
                     { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
                 ]
             });
-    
+
             if (!chat) {
                 return { status: false, message: "Chat not found" };
             }
-    
+
             // Determine which user is the sender and which one is the receiver
             const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
-    
+
             // Increment unread message count for the appropriate user
             if (isInitiatorSender) {
                 await schema.Chat.updateOne(
@@ -620,7 +724,7 @@ export default {
                 );
             } else {
                 console.log("else il keriii ttaaaa");
-                
+
                 await schema.Chat.updateOne(
                     {
                         _id: chatId,
@@ -631,14 +735,14 @@ export default {
                     }
                 );
             }
-    
+
             return { status: true, message: "Unread message count updated successfully" };
         } catch (error) {
             console.error(error);
             return { status: false, message: "Error occurred while updating unread message count" };
         }
     },
-    
+
     getUserUnreadMessageCounts: async (initiatorId: string | mongoose.Types.ObjectId) => {
         try {
             // Find all one-to-one chats where the initiatorId matches either initiatorId or recipientId
@@ -648,15 +752,15 @@ export default {
                     { 'participants.recipientId': initiatorId }
                 ]
             });
-    
+
             // Find all group chats where the initiatorId is a participant
-            const groupChats:any = await schema.GroupChat.find({
+            const groupChats: any = await schema.GroupChat.find({
                 'participants.participant': initiatorId
             });
-    
+
             // Array to store unread message counts for each user
-            const unreadCounts: { chaterId: string, oppositorId:string, unreMsgCount: number }[] = [];
-    
+            const unreadCounts: { chaterId: string, oppositorId: string, unreMsgCount: number }[] = [];
+
             // Process one-to-one chats
             if (oneToOneChats) {
                 oneToOneChats.forEach(chat => {
@@ -670,125 +774,141 @@ export default {
                     });
                 });
             }
-    
+
             // Process group chats
             if (groupChats) {
                 groupChats.forEach((chat: { participants: any[]; _id: { toString: () => any; }; }) => {
                     chat.participants.forEach(participant => {
                         if (participant.participant.toString() === initiatorId.toString()) {
-                            unreadCounts.push({ chaterId: chat._id.toString(),oppositorId:"", unreMsgCount: participant.unreadMessagesCount });
+                            unreadCounts.push({ chaterId: chat._id.toString(), oppositorId: "", unreMsgCount: participant.unreadMessagesCount });
                         }
                     });
                 });
             }
-    
+
             console.log(unreadCounts); // Output unread message counts for all users
-    
+
             return { status: true, message: "Unread message counts retrieved successfully", unreadCounts };
         } catch (error) {
             console.error(error);
             return { status: false, message: "Error occurred while fetching unread message counts" };
         }
     },
-    
-addGroupUnreadMessageCount: async (groupId: string, senderId: string) => {
-    try {
-        if (!groupId || !senderId) {
-            return { status: false, message: "Not updating group unread message count" };
-        }
 
-        const group:any= await schema.GroupChat.findById(groupId);
-
-        if (!group) {
-            return { status: false, message: "Group not found" };
-        }
-
-        group.participants.forEach((participant: { participant: { toString: () => string; }; unreadMessagesCount: number; }) => {
-            if (participant.participant.toString() !== senderId) {
-                participant.unreadMessagesCount += 1;
+    addGroupUnreadMessageCount: async (groupId: string, senderId: string) => {
+        try {
+            if (!groupId || !senderId) {
+                return { status: false, message: "Not updating group unread message count" };
             }
-        });
 
-        await group.save();
+            const group: any = await schema.GroupChat.findById(groupId);
 
-        return { status: true, message: "Group unread message count updated successfully" };
-    } catch (error) {
-        console.error(error);
-        return { status: false, message: "Error in updating group unread message count" };
-    }
-},
-updateUnreadMsgZero : async (initiatorId:string,receiverId:string,chatId:string,type:string) =>{
-    try {
-        if (!initiatorId || !receiverId || !chatId) {
-            return { status: false, message: "Not updating unread message count" };
+            if (!group) {
+                return { status: false, message: "Group not found" };
+            }
+
+            group.participants.forEach((participant: { participant: { toString: () => string; }; unreadMessagesCount: number; }) => {
+                if (participant.participant.toString() !== senderId) {
+                    participant.unreadMessagesCount += 1;
+                }
+            });
+
+            await group.save();
+
+            return { status: true, message: "Group unread message count updated successfully" };
+        } catch (error) {
+            console.error(error);
+            return { status: false, message: "Error in updating group unread message count" };
         }
-        console.log("zero settin startedd");
-        
-        // Find the chat based on chatId and participants
-        const chat = await schema.Chat.findOne({
-            _id: chatId,
-            $or: [
-                { 'participants.initiatorId': initiatorId, 'participants.recipientId': receiverId },
-                { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
-            ]
-        });
+    },
+    updateUnreadMsgZero: async (initiatorId: string, receiverId: string, chatId: string, type: string) => {
+        try {
+            if (!initiatorId || !receiverId || !chatId) {
+                return { status: false, message: "Not updating unread message count" };
+            }
+            console.log("zero settin startedd");
 
-        if (!chat) {
-            return { status: false, message: "Chat not found" };
-        }
+            // Find the chat based on chatId and participants
+            const chat = await schema.Chat.findOne({
+                _id: chatId,
+                $or: [
+                    { 'participants.initiatorId': initiatorId, 'participants.recipientId': receiverId },
+                    { 'participants.initiatorId': receiverId, 'participants.recipientId': initiatorId }
+                ]
+            });
 
-        // Determine which user is the sender and which one is the receiver
-        if(type==="oneToOne"){
-            console.log("keriii oneToOne");
-            
-            const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
+            if (!chat) {
+                return { status: false, message: "Chat not found" };
+            }
 
-            // Increment unread message count for the appropriate user
-            if (isInitiatorSender) {
-                console.log("keriiiiiii");
-                
-                await schema.Chat.updateOne(
-                    {
-                        _id: chatId,
-                        'participants.initiatorId': initiatorId // Match the recipientId
-                    },
-                    {
-                        $set: { 'participants.$.initiatorUnReadMessages': 0 } // Increment recipient's unread count
-                    }
-                );
+            // Determine which user is the sender and which one is the receiver
+            if (type === "oneToOne") {
+                console.log("keriii oneToOne");
+
+                const isInitiatorSender = chat.participants[0].initiatorId.toString() === initiatorId;
+
+                // Increment unread message count for the appropriate user
+                if (isInitiatorSender) {
+                    console.log("keriiiiiii");
+
+                    await schema.Chat.updateOne(
+                        {
+                            _id: chatId,
+                            'participants.initiatorId': initiatorId // Match the recipientId
+                        },
+                        {
+                            $set: { 'participants.$.initiatorUnReadMessages': 0 } // Increment recipient's unread count
+                        }
+                    );
+                } else {
+                    console.log("else il keriii ttaaaa");
+
+                    await schema.Chat.updateOne(
+                        {
+                            _id: chatId,
+                            'participants.recipientId': initiatorId // Match the initiatorId
+                        },
+                        {
+                            $set: { 'participants.$.recipientUnReadMessages': 0 } // Increment initiator's unread count
+                        }
+                    );
+                }
+
+                return { status: true, message: "Unread message count zero updated successfully" };
             } else {
-                console.log("else il keriii ttaaaa");
-                
-                await schema.Chat.updateOne(
-                    {
-                        _id: chatId,
-                        'participants.recipientId': initiatorId // Match the initiatorId
-                    },
-                    {
-                        $set: { 'participants.$.recipientUnReadMessages': 0 } // Increment initiator's unread count
-                    }
-                );
-            }
-    
-            return { status: true, message: "Unread message count zero updated successfully" };
-        }else{
 
+            }
+
+        } catch (error) {
+            console.error(error);
+            return { status: false, message: "Error occurred while updating unread message count" };
         }
-       
-    } catch (error) {
-        console.error(error);
-        return { status: false, message: "Error occurred while updating unread message count" };
+    },
+    updateGroupUnreadMsgZero: async (groupId: string, senderId: string, type: string) => {
+        try {
+            if (!groupId || !senderId || !type) {
+                return { status: false, message: "not update group member unread message count zero" }
+            }
+            if (type === "group") {
+                const group: any = await schema.GroupChat.findById(groupId);
+
+                if (!group) {
+                    return { status: false, message: "Group not found" };
+                }
+
+                group.participants.forEach((participant: { participant: { toString: () => string; }; unreadMessagesCount: number; }) => {
+                    if (participant.participant.toString() === senderId) {
+                        participant.unreadMessagesCount = 0;
+                    }
+                });
+
+                await group.save();
+
+                return { status: true, message: "Group member unread message count zero updated successfully" };
+            }
+        } catch (error) {
+            return { status: false, message: "Error occurred while updating group memeber unread message count" }
+        }
     }
-},
-updateGroupUnreadMsgZero : async  (groupId:string,senderId:string,type:string) =>{
-     try {
-        if(!groupId || !senderId || !type){
-            return {status:false,message:"not update group member unread message count zero"}
-        }
-        const response = await schema.GroupChat.find({_id:groupId})
-     } catch (error) {
-       return {status:false,message:"Error occurred while updating group memeber unread message count"} 
-     }
-}
 
 }

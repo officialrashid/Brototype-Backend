@@ -7,7 +7,7 @@ const upload = multer({ storage });
 
 export default (dependencies: any): Router => {
     const router = express.Router();
-    const { createChatController, sendMessageController, getAllChatRecipientsController, getMessagesController, storeChatAudioController,storeChatImageController,createGroupChatController,getGroupMessagesController,getGroupMembersController,updateParticipantStatusController,updateGroupMembersController,deleteMessageController,getUnreadMsgCountController,updateUnreadMsgZeroController } = chatAndVideo_Controller(dependencies);
+    const { createChatController, sendMessageController, getAllChatRecipientsController, getMessagesController, storeChatAudioController,storeChatImageController,createGroupChatController,getGroupMessagesController,getGroupMembersController,updateParticipantStatusController,updateGroupMembersController,deleteMessageController,getUnreadMsgCountController,updateUnreadMsgZeroController,updateGroupUnreadMsgZeroController } = chatAndVideo_Controller(dependencies);
 
     router.post('/create-chat', createChatController);
     router.post('/send-message', sendMessageController);
@@ -26,6 +26,6 @@ export default (dependencies: any): Router => {
     router.delete('/get-unread-message-count',deleteMessageController);
     router.get('/get-unread-message-count/:initiatorId', getUnreadMsgCountController);
     router.patch('/update-unread-msg-zero', updateUnreadMsgZeroController);
-    router.patch('/update-group-unread-msg-zero', updateUnreadMsgZeroController);
+    router.patch('/update-group-unread-msg-zero', updateGroupUnreadMsgZeroController);
     return router;
 };
