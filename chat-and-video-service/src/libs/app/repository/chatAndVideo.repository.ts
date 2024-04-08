@@ -229,14 +229,14 @@ export default {
             return { status: false, message: "Error in the update Chaters Exist" }
         }
     },
-    getAllChatRecipients: async (initiatorId: string) => {
+     getAllChatRecipients : async (initiatorId: string): Promise<{ status: boolean; recipients?: any[]; message?: string; error?: any }> => {
         try {
             if (!initiatorId) {
                 return { status: false, message: "Initiator ID not provided" };
             }
-
+    
             const initiatorObjectId = new Types.ObjectId(initiatorId);
-
+    
             // Get individual chat recipients
             const individualChats = await schema.Chat.aggregate([
                 {
@@ -277,9 +277,9 @@ export default {
                     }
                 }
             ]);
-
-            const individualRecipients = [];
-
+    
+            const individualRecipients: any[] = [];
+    
             for (const chat of individualChats) {
                 for (const participant of chat.participants) {
                     if (
@@ -289,65 +289,51 @@ export default {
                         const details = await schema.Chaters.findOne({
                             chaterId: participant.recipientId.equals(initiatorObjectId) ? participant.initiatorId : participant.recipientId
                         });
-
+    
                         // Check if details and lastMessage exist
                         if (details && chat.lastMessage) {
                             // Combine details and lastMessage into newData
                             const newData = { details, lastMessage: chat.lastMessage };
-
+    
                             // Push newData into individualRecipients
                             individualRecipients.push(newData);
                         }
-
+    
                         break; // Break after adding the first participant
                     }
                 }
             }
-
-            // Get group chat recipients
+    
+            // Get group chat recipients where the initiator is a participant
             const groupChats = await schema.GroupChat.aggregate([
                 {
-                    $project: {
-                        participants: 1,
-                        lastMessage: { $arrayElemAt: ["$messages", -1] },
-                        updatedAt: 1  // Include updatedAt field
+                    $match: {
+                        "participants.participant": initiatorObjectId
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "chaters",
+                        localField: "participants.participant",
+                        foreignField: "chaterId",
+                        as: "groupParticipants"
                     }
                 }
             ]);
-
-            const groupRecipients = [];
-
-            for (const group of groupChats) {
-                const details = await schema.GroupChat.findOne({ _id: group._id });
-
-                // Check if details and lastMessage exist
-                if (details && group.lastMessage) {
-                    // Combine details and lastMessage into newData
-                    const newData = { details, lastMessage: group.lastMessage };
-
-                    // Push newData into groupRecipients
-                    groupRecipients.push(newData);
-                }
-            }
-
+    
             // Combine individual and group chat recipients
-            const allRecipients = [...individualRecipients, ...groupRecipients];
-            console.log(allRecipients, "allRecipients allRecipients");
-
-            // Sort all recipients based on last message's updatedAt timestamp
+            const allRecipients = [...individualRecipients, ...groupChats];
+    
             // Sort all recipients based on last message's updatedAt timestamp
             allRecipients.sort((a: any, b: any) => {
                 // Extract the updatedAt timestamps for comparison
                 const aUpdatedAt = a.lastMessage ? new Date(a.lastMessage.updatedAt || a.details.updatedAt).getTime() : 0;
                 const bUpdatedAt = b.lastMessage ? new Date(b.lastMessage.updatedAt || b.details.updatedAt).getTime() : 0;
-
+    
                 // Sort by updatedAt timestamp in descending order
                 return bUpdatedAt - aUpdatedAt;
             });
-
-
-            console.log(allRecipients, "Sorted Recipients");
-
+    
             return { status: true, recipients: allRecipients };
         } catch (error) {
             return { status: false, message: "Error in getting all chat recipients", error };
