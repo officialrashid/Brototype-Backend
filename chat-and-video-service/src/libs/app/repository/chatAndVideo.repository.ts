@@ -323,17 +323,21 @@ export default {
     
             // Combine individual and group chat recipients
             const allRecipients = [...individualRecipients, ...groupChats];
-    
+           console.log(allRecipients,"555555555");
+           
             // Sort all recipients based on last message's updatedAt timestamp
             allRecipients.sort((a: any, b: any) => {
+                console.log(a,"llllll88888****");
+                console.log(b,"llllll88888866666****");
                 // Extract the updatedAt timestamps for comparison
-                const aUpdatedAt = a.lastMessage ? new Date(a.lastMessage.updatedAt || a.details.updatedAt).getTime() : 0;
-                const bUpdatedAt = b.lastMessage ? new Date(b.lastMessage.updatedAt || b.details.updatedAt).getTime() : 0;
+                const aUpdatedAt = a.lastMessage ? new Date(a?.lastMessage?.updatedAt || a?.details?.updatedAt).getTime() : 0;
+                const bUpdatedAt = b.lastMessage ? new Date(b?.lastMessage.updatedAt || b?.details?.updatedAt).getTime() : 0;
     
                 // Sort by updatedAt timestamp in descending order
                 return bUpdatedAt - aUpdatedAt;
             });
-    
+            console.log(allRecipients,":::::::::::::");
+            
             return { status: true, recipients: allRecipients };
         } catch (error) {
             return { status: false, message: "Error in getting all chat recipients", error };

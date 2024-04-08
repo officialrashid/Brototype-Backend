@@ -8,6 +8,8 @@ export default (dependencies: any) => {
         try {
             const { initiatorId } = req.params;
             const response = await getAllChatRecipients_Usecase(dependencies).executeFunction(initiatorId);
+            console.log(response,"response in controllerrrrr");
+            
             res.status(201).json(response);
         } catch (error) {
             res.status(500).json({ status: false, message: "Internal server error" });
