@@ -14,9 +14,9 @@ export const getAllChatRecipients_Usecase = (dependencies: any) => {
             }
            
             const getAllChatRecipients = await chatAndVideoRepository.getAllChatRecipients(initiatorId);
-            console.log(getAllChatRecipients,":;;;;;;;;;;;");
+            
             if(getAllChatRecipients.status===true){
-                console.log(getAllChatRecipients,":;;;;;;;;;;;");
+      
                 
                 return {getAllChatRecipients}
             }else{
