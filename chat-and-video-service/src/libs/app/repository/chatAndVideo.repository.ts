@@ -320,17 +320,20 @@ export default {
                     }
                 }
             ]);
-    
+            console.log(groupChats,"group chatsss");
+            
             // Combine individual and group chat recipients
             const allRecipients = [...individualRecipients, ...groupChats];
          
-           
+            console.log(allRecipients,"lllllll");
+            
             // Sort all recipients based on last message's updatedAt timestamp
             allRecipients.sort((a: any, b: any) => {
-          
+                 console.log(a,"this is aaaaaa");
+                 console.log(b,"this is bbbbbbb");
                 // Extract the updatedAt timestamps for comparison
-                const aUpdatedAt = a.lastMessage ? new Date(a?.lastMessage?.updatedAt || a?.details?.updatedAt).getTime() : 0;
-                const bUpdatedAt = b.lastMessage ? new Date(b?.lastMessage.updatedAt || b?.details?.updatedAt).getTime() : 0;
+                const aUpdatedAt = a.lastMessage ? new Date(a?.lastMessage?.updatedAt || a?.updatedAt).getTime() : 0;
+                const bUpdatedAt = b.lastMessage ? new Date(b?.lastMessage.updatedAt || b?.updatedAt).getTime() : 0;
     
                 // Sort by updatedAt timestamp in descending order
                 return bUpdatedAt - aUpdatedAt;
