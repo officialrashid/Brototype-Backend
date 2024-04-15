@@ -30,6 +30,8 @@ export const createChat_Usecase = (dependencies: any) => {
                     console.log(updateChatersExit,"updateChatersExit updateChatersExit updateChatersExit");
                     
                     if (updateChatersExit.status === true && updateChatersExit.message === "chater details not created") {
+                        console.log(chaters,"chaters chaters chaters");
+                        
                         const updateChaters = await chatAndVideoRepository.updateChatersDetails(chaters, recipientId)
                     }
 

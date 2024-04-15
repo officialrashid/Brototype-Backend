@@ -12,6 +12,7 @@ import getAllReviewersProfile_Controller from "./getAllReviewersProfileControlle
 import getBestReviewers_Controller from "./getBestReviewersController";
 import getReviewCountAnalyze_Controller from "./getReviewCountAnalyzeController";
 import getPerPageReviewers_Controller from "./getPerPageReviewersController";
+import getAllChatReviewers_Controller from "./getAllChatReviewersController";
 export default (dependencies:any)=>{
     return{
         scheduleTimeController: scheduleTime_Controller(dependencies),
@@ -28,5 +29,6 @@ export default (dependencies:any)=>{
         getBestReviewersController: getBestReviewers_Controller(dependencies),
         getReviewCountAnalyzeController: getReviewCountAnalyze_Controller(dependencies),
         getPerPageReviewersController: getPerPageReviewers_Controller(dependencies),
+        getAllChatReviewersController: getAllChatReviewers_Controller(dependencies),
     }
 }

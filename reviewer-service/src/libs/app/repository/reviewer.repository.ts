@@ -496,6 +496,28 @@ scheduleEvents: async (data: any) => {
      } catch (error) {
        return {status:false,message:"Error in the get ask count reviewers"}
      }
-  }
+  },
+ getAllChatReviewers : async () => {
+    try {
+        // Find all profiles in the database
+        const profiles = await schema.Profile.find({});
+        
+        // Extract the required fields from each profile
+        const reviewersData = profiles.map(profile => {
+            return {
+                reviewerId: profile?.reviewerId,
+                imageUrl: profile?.imageUrl,
+                firstName: profile?.firstName,
+                lastName: profile?.lastName,
+                phone : profile?.phone
+            };
+        });
 
+        return reviewersData;
+    } catch (error) {
+        // Handle errors
+        console.error("Error fetching reviewers:", error);
+        throw error;
+    }
+},
 }

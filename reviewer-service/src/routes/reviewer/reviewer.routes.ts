@@ -10,7 +10,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController,getAllReviewersProfileController,getBestReviewersController,getReviewCountAnalyzeController,getPerPageReviewersController} = reviewer_Controller(dependencies) 
+  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController,getAllReviewersProfileController,getBestReviewersController,getReviewCountAnalyzeController,getPerPageReviewersController,getAllChatReviewersController} = reviewer_Controller(dependencies) 
 
   router.post('/schedule-event',scheduleTimeController)
   router.get('/get-schedule-events/:reviewerId',getScheduleEventsController)
@@ -26,5 +26,6 @@ export default (dependencies:any)=>{
   router.get('/get-best-reviewers',getBestReviewersController)
   router.get('/get-review-count-analyze',getReviewCountAnalyzeController)
   router.get('/get-per-page-reviewers/:perPage',getPerPageReviewersController)
+  router.get('/get-all-chat-reviewers',getAllChatReviewersController)
   return router
 }
