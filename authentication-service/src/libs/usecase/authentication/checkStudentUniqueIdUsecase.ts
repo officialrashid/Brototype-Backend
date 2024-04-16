@@ -24,6 +24,8 @@ export const checkStudentUniqueId_Usecase = (dependencies: any) => {
 
     try {
       for (const studentData of dataArray) {
+        console.log(studentData,"studentataaaa coming daaaaaaaaa");
+        
         const lastResponse = await authenticationRepository.createUniqueId();
         let lastNumber = 0;
 

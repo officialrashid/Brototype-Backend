@@ -49,7 +49,7 @@ export default {
 
 
   createStudents: async (data: any, uniqueId: string) => {
-    console.log(data, "++++++6666666");
+    console.log(data, "++++++6666666999999999999");
     try {
       let studentId;
       if (!data.studentId) {

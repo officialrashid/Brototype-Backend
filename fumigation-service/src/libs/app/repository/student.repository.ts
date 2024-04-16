@@ -134,39 +134,45 @@ export default {
     mark: number,
     fumigationType: string
   ) => {
-
+    console.log("update mark section il keriii ttaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",batchId);
+    
     try {
       // Find the batch with the given batchId and studentId
-      const batch = await schema.Batches.findOne({
-        _id: batchId,
-        "fumigationStudents.studentId": studentId,
-      });
+      const batch:any = await schema.Batches.findOne({ _id: batchId});
+console.log(batch,"batchhhhh geteeeeeeeee");
 
       if (!batch) {
+        console.log("! batch il keriii ttaaaaaaaa");
+        
         return { status: false, message: "Batch not found" }
       }
 
       // Find the student's fumigationStudents record
-      const fumigationStudent = batch.fumigationStudents.find(
-        (student) => student?.studentId?.toString() === studentId
+      const fumigationStudent:any = batch.fumigationStudents.find(
+        (student: { studentId: { toString: () => string; }; }) => student?.studentId?.toString() === studentId
       );
 
       if (!fumigationStudent) {
         return { status: false, message: "students not found in the batch" }
       }
+console.log(fumigationStudent,"fumihgation studentseeeee");
 
       // Find the appropriate array within the student object based on fumigationType
       let targetArray;
       if (fumigationType === "mock") {
         targetArray = fumigationStudent.mock;
       } else if (fumigationType === "final") {
+        console.log("keriyannuuuuuuuuuuu taaaaaaaaaa");
+        
         targetArray = fumigationStudent.final;
       } else {
+        console.log("erorr ilannn kerunnathhhhh");
+        
         return { status: false, message: "only accept mock and final" }
       }
       // Find the index of the existing object if it exists
       const existingObjectIndex = targetArray.findIndex(
-        (item) => item.examType === type
+        (item: { examType: string; }) => item.examType === type
       );
 
       if (existingObjectIndex !== -1) {
