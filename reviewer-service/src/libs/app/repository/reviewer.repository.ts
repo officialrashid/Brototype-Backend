@@ -520,4 +520,53 @@ scheduleEvents: async (data: any) => {
         throw error;
     }
 },
+ getParticularEvents : async (reviewerId: any) => {
+  try {
+      if (!reviewerId) {
+          return { status: false, message: "Not get Particular Events" };
+      }
+
+      // Fetch events from the database
+      const eventData = await schema.Events.findOne({ reviewerId });
+
+      if (!eventData) {
+          return { status: false, message: "No events found for the given reviewerId" };
+      }
+
+      const events: any = eventData.events;
+
+      // Get current date
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set hours to midnight for accurate comparison
+
+      // Filter events based on dates after the current date
+      const filteredEvents: any = events.filter((event: { date: any[] }) => {
+          // Convert event dates to Date objects for comparison
+          const eventDates: any = event.date.map((dateString: string) => {
+              const [day, month, year] = dateString.split('-').map(Number);
+              return new Date(year, month - 1, day); // Month is 0-based
+          });
+
+          // Check if any event date is after or equal to the current date
+          return eventDates.some((date: Date) => date >= currentDate);
+      });
+
+      // Modify the filtered events to remove dates before the current date
+      const filteredEventsWithCurrentDate = filteredEvents.map((event: any) => {
+          event.date = event.date.filter((dateString: string) => {
+              const [day, month, year] = dateString.split('-').map(Number);
+              const eventDate = new Date(year, month - 1, day); // Month is 0-based
+              return eventDate >= currentDate;
+          });
+          return event;
+      });
+      return { status: true, events: filteredEventsWithCurrentDate };
+  } catch (error) {
+      return { status: false, message: "Error in getting particular Events" };
+  }
+},
+
+
+
+
 }

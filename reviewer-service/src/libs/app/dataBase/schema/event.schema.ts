@@ -6,13 +6,22 @@ interface Event {
   startTime: string;
   endTime: string;
   label: string;
-  customType :String;
+  customType: String;
   day: [];
   date: [];
-  weekly : [];
-  monthly : [];
-  specifDays : []
-  bookedEvents: {}[]; // Specify the type as an array of empty objects
+  weekly: [];
+  monthly: [];
+  specifDays: [];
+  bookedEvents: {
+    _id: mongoose.Types.ObjectId; // Include ObjectId inside bookedEvents object
+    date: string;
+    startTime: string;
+    endTime: string;
+    advisorId: string;
+    studentId: string;
+    booked: boolean;
+    status: boolean;
+  }[]; // Specify the type as an array of objects
 }
 
 // Define the document interface
@@ -21,18 +30,29 @@ interface EventsDocument extends Document {
   events: Event[];
 }
 
+const bookedEventsSchema = new Schema({
+  _id: Schema.Types.ObjectId, // Define ObjectId type
+  date: String,
+  startTime: String,
+  endTime: String,
+  advisorId: String,
+  studentId: String,
+  booked: Boolean,
+  status: Boolean,
+});
+
 const eventSchema = new Schema({
   id: String,
   startTime: String,
   endTime: String,
   label: String,
   customType: String,
-  weekly : [],
-  monthly : [],
-  specifDays : [],
+  weekly: [],
+  monthly: [],
+  specifDays: [],
   day: [],
   date: [],
-  bookedEvents: [{}] // Specify the type as an array of empty objects
+  bookedEvents: [bookedEventsSchema], // Use the bookedEvents schema
 });
 
 const eventsSchema = new Schema({
