@@ -501,34 +501,15 @@ console.log(fumigationStudent,"fumihgation studentseeeee");
   },
     sendAllDataToAuth : async (data: Array<object>): Promise<any> => {
     console.log(data, 'fghghsgsh');
-  
-    return new Promise(async (resolve, reject) => {
-      // Listen for the 'authDataResponse' event
-      const authDataResponseHandler = (response: any) => {
-        // Remove the listener after receiving the response
-        eventEmitter.off('authDataResponse', authDataResponseHandler);
-  
-        if (response) {
-          console.log(response, 'Response received in sendAllDataToAuth');
-          resolve(response);
-        } else {
-          reject(new Error('No response received'));
-        }
-      };
-  
-      // Register the event listener
-      eventEmitter.on('authDataResponse', authDataResponseHandler);
-  
       try {
         // Send data to authentication service
         const response = await fumigationProducer(data, 'authentication', 'addStudents');
         return {status:true,message:"confirm passed students updated successfully"}
       } catch (error) {
         // Remove the listener in case of an error
-        eventEmitter.off('authDataResponse', authDataResponseHandler);
-        reject(error);
+         return {status:false,message:"Error in the send all data to auth"}
       }
-    });
+    
   },
   getAllFumigationStudents: async (hubLocation: string, currentPage: number) => {
     try {
@@ -654,6 +635,24 @@ console.log(perPage,"dfdbfdfdfdperp pageeeee");
       console.error("Error occurred while fetching all fumigation students:", error);
       return { status: false, message: "An error occurred while getting all fumigation students" };
   }
+},
+getBatchId : async (batch:string) =>{
+   try {
+       if(!batch){
+        return {status:false,message:"student not added"}
+       }
+       const response:any = await schema.Batches.find({batchName:batch})
+       if(response){
+        console.log(response[0]._id,"batchId respone cominggg");
+        
+        const batchId:any = response[0]._id.toString()
+        return {status:true,batchId}
+       }else{
+        return {status:false,message:"batch not found"}
+       }
+   } catch (error) {
+     return {status:false,message:"Error in the get batch"}
+   }
 }
 
 

@@ -25,6 +25,7 @@ import confirmPassedStudents_Controller from "./studentsController/confirmPassed
 import getAllFumigationStudents_Controller from "./studentsController/getAllFumigationStudentsController"
 import updateStudentStatus_Controller from "./studentsController/updateStudentStatusController"
 import getPerPageStudent_Controller from "./studentsController/getPerPageStudentController"
+import superleadAddStudent_Controller from "./studentsController/superleadAddStudentController"
 export default (dependencies:any)=>{
 
     return{
@@ -53,7 +54,8 @@ export default (dependencies:any)=>{
         confirmPassedStudentsController: confirmPassedStudents_Controller(dependencies),
         getAllFumigationStudentsController: getAllFumigationStudents_Controller(dependencies),
         updateStudentStatusController: updateStudentStatus_Controller(dependencies),
-        getPerPageStudentController: getPerPageStudent_Controller(dependencies)
+        getPerPageStudentController: getPerPageStudent_Controller(dependencies),
+        superleadAddStudentController: superleadAddStudent_Controller(dependencies)
 
     }  
 }
