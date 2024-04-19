@@ -457,6 +457,25 @@ export default {
     } catch (err) {
       return { status: false, message: "An Error occur whilte creating advisor" }
     }
+  },
+  checkStudentActive : async(studentId:string) =>{
+     try {
+        if(!studentId){
+          return {status:false,message:"student not found"}
+        }
+        const response = await schema.Students.find({studentId:studentId})
+        console.log(response,"student active or not check");
+        
+        if(response){
+          return {status:false,message:"student not found"}
+        }else{
+          // if(response.isStatus==="Active"){
+
+          // }
+        }
+     } catch (error) {
+       return {status:false,message:"Error in the check student active or not"}
+     }
   }
 
 }

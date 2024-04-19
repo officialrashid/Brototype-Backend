@@ -3,6 +3,7 @@ import schema from "../dataBase/schema"
 import reviewer from "../../controllers/reviewer";
 import moment from "moment";
 import { String } from "aws-sdk/clients/acm";
+import mongoose from "mongoose";
 
 
 
@@ -10,108 +11,171 @@ export default {
 
   scheduleEventExist: async (reviewerId: any, startTime: moment.MomentInput, endTime: moment.MomentInput, day: any, date: string[]) => {
     try {
-        // Parse the incoming start and end times into moment objects
-        const start = moment(startTime, 'hh:mma');
-        const end = moment(endTime, 'hh:mma');
+      // Parse the incoming start and end times into moment objects
+      const start = moment(startTime, 'hh:mma');
+      const end = moment(endTime, 'hh:mma');
 
-        // Query to find overlapping events
-        const existingEvents: any = await schema.Events.find({
-            reviewerId: reviewerId,
-        });
+      // Query to find overlapping events
+      const existingEvents: any = await schema.Events.find({
+        reviewerId: reviewerId,
+      });
 
-        // Loop through existing events to check for overlaps
-        if (existingEvents.length > 0) {
-            for (const eventData of existingEvents[0].events) {
-                // Check if any of the dates in the date array are included in eventData.date
-                if (date.some(d => eventData.date.includes(d))) {
-                    console.log("matcheddd");
+      // Loop through existing events to check for overlaps
+      if (existingEvents.length > 0) {
+        for (const eventData of existingEvents[0].events) {
+          // Check if any of the dates in the date array are included in eventData.date
+          if (date.some(d => eventData.date.includes(d))) {
+            console.log("matcheddd");
 
-                    // Parse existing event start and end times into moment objects
-                    const existingStart = moment(eventData.startTime, 'hh:mma');
-                    const existingEnd = moment(eventData.endTime, 'hh:mma');
+            // Parse existing event start and end times into moment objects
+            const existingStart = moment(eventData.startTime, 'hh:mma');
+            const existingEnd = moment(eventData.endTime, 'hh:mma');
 
-                    // Check for overlap
-                    if (
-                        (start.isSameOrBefore(existingEnd) && end.isSameOrAfter(existingStart)) ||
-                        (existingStart.isSameOrBefore(end) && existingEnd.isSameOrAfter(start))
-                    ) {
-                        // There is an overlap, return false
-                        return { status: false };
-                    }
-                }
+            // Check for overlap
+            if (
+              (start.isSameOrBefore(existingEnd) && end.isSameOrAfter(existingStart)) ||
+              (existingStart.isSameOrBefore(end) && existingEnd.isSameOrAfter(start))
+            ) {
+              // There is an overlap, return false
+              return { status: false };
             }
-
-            // No overlaps found, return true
-            return { status: true };
-        } else {
-            return { status: true };
+          }
         }
+
+        // No overlaps found, return true
+        return { status: true };
+      } else {
+        return { status: true };
+      }
     } catch (err) {
-        console.log(err, "error in the scheduleEventExist check function");
-        throw err;
+      console.log(err, "error in the scheduleEventExist check function");
+      throw err;
     }
-},
+  },
 
-scheduleEvents: async (data: any) => {
-    if (!data) {
-      return { status: false, message: "Data is missing" };
-    }
+  scheduleEvents: async (data: any) => {
+    const addThirtyMinutes = (timeString: any) => {
+      // Parse the time string into hours, minutes, and am/pm
+      const [hours, minutes, meridiem] = timeString.match(/(\d+):(\d+)([ap]m)/i).slice(1);
+  
+      // Convert hours to 24-hour format
+      let hours24 = parseInt(hours, 10);
+      if (meridiem.toLowerCase() === 'pm' && hours24 !== 12) {
+        hours24 += 12;
+      } else if (meridiem.toLowerCase() === 'am' && hours24 === 12) {
+        hours24 = 0;
+      }
+  
+      // Add 30 minutes
+      const date = new Date();
+      date.setHours(hours24);
+      date.setMinutes(parseInt(minutes, 10) + 30);
+  
+      // Format the result back to AM/PM time with leading zeros if needed
+      const resultHours = date.getHours();
+      const resultMinutes = date.getMinutes();
+      const resultMeridiem = resultHours < 12 ? 'am' : 'pm';
+      const formattedHours = (resultHours % 12 || 12).toString().padStart(2, '0');
+      const formattedMinutes = resultMinutes.toString().padStart(2, '0');
+  
+      return `${formattedHours}:${formattedMinutes}${resultMeridiem}`;
+    };
 
-    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status, date,customType } = data;
-
+    const splitTime = (startTime: any, endTime: number, interval: number) => {
+      const result = [];
+      let currentTime = startTime;
+    
+      while (currentTime < endTime) { // Stop if the current time is equal to or after the end time
+        result.push(currentTime);
+        currentTime = addThirtyMinutes(currentTime);
+    
+        // If the current time exceeds the end time, break the loop
+        if (currentTime >= endTime) {
+          break;
+        }
+      }
+    
+      return result;
+    };
+    
+    const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status, date, customType } = data;
+  
     try {
       // Check if a document with the given reviewerId exists
-      const existingDocument = await schema.Events.findOne({ reviewerId });
-
+      let existingDocument: any = await schema.Events.findOne({ reviewerId });
+  
       if (existingDocument) {
-        existingDocument.events.push({
-          id,
-          startTime,
-          endTime,
-          label,
-          day,
-          date,
-          customType,
-          bookedEvents: [],
-          weekly: [],
-          monthly: [],
-          specifDays: []
+        // If the document exists, push the new event data
+        date.forEach((dateString: any) => {
+          const bookedEvents = splitTime(startTime, endTime, 30).map(interval => ({
+            _id: new mongoose.Types.ObjectId(), // Generate ObjectId for the event
+            startTime: interval,
+            endTime: addThirtyMinutes(interval),
+            advisorId: "",
+            studentId: "",
+            booked: false,
+            status: false,
+            date: dateString // Add the date to each booked event
+          }));
+  
+          existingDocument.events.push({
+            _id:new mongoose.Types.ObjectId(),
+            id,
+            startTime,
+            endTime,
+            label,
+            day,
+            date: dateString,
+            customType,
+            bookedEvents,
+            weekly: [],
+            monthly: [],
+            specifDays: []
+          });
         });
-
+  
         // Save the updated document
         const response = await existingDocument.save();
         return response;
-
+  
       } else {
         // If the document doesn't exist, create a new one with the reviewerId and the new event
-        const newDocument = await schema.Events.create({
+        existingDocument = await schema.Events.create({
           reviewerId,
-          events: [
-            {
-              id,
-              startTime,
-              endTime,
-              label,
-              day,
-              date,
-              customType,
-              bookedEvents: [
-
-              ],
-              weekly: [],
-              monthly: [],
-              specifDays: []
-            },
-          ],
+          events: date.map((dateString: any) => ({
+            _id:new mongoose.Types.ObjectId(),
+            id,
+            startTime,
+            endTime,
+            label,
+            day,
+            date: dateString,
+            customType,
+            bookedEvents: splitTime(startTime, endTime, 30).map(interval => ({
+              _id: new mongoose.Types.ObjectId(), // Generate ObjectId for the event
+              startTime: interval,
+              endTime: addThirtyMinutes(interval),
+              advisorId: "",
+              studentId: "",
+              booked: false,
+              status: false,
+              date: dateString // Add the date to each booked event
+            })),
+            weekly: [],
+            monthly: [],
+            specifDays: []
+          })),
         });
-
-        return newDocument;
+  
+        return existingDocument;
       }
     } catch (err) {
       console.error(err, "Error in creating/updating events");
       throw err;
     }
   },
+  
+  
   getScheduleEvents: async (reviewerId: string) => {
     try {
       const response = await schema.Events.find({ reviewerId: reviewerId })
@@ -274,21 +338,21 @@ scheduleEvents: async (data: any) => {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
       const currentMonth = currentDate.getMonth() + 1;
-  
+
       // Find the reviewer document by reviewerId
       const reviewer = await schema.Events.findOne({ reviewerId });
-  
+
       if (!reviewer) {
         return { status: false, message: "Reviewer not found" };
       }
-  
+
       const monthCounts: { [key: string]: number } = {};
-  
+
       // Initialize monthCounts with counts for all months set to 0
       for (let month = 1; month <= 12; month++) {
         monthCounts[month.toString().padStart(2, '0')] = 0;
       }
-  
+
       // Iterate through each event
       reviewer.events.forEach((event: any) => {
         // Iterate through each booked event
@@ -297,46 +361,46 @@ scheduleEvents: async (data: any) => {
           const dateParts = bookedEvent.date.split("-");
           const year = parseInt(dateParts[2]);
           const month = parseInt(dateParts[1]);
-  
+
           // Check if the event is from the current year
           if (year === currentYear) {
             // Count booked events with status=true for each month
             const count = bookedEvent.booked === true && bookedEvent.status === true ? 1 : 0;
-  
+
             // Add the count to the respective month in monthCounts
             monthCounts[month.toString().padStart(2, '0')] += count;
           }
         });
       });
-  
+
       // Convert monthCounts to an array of objects [{ month, count }]
       const countsArray = Object.entries(monthCounts).map(([month, count]) => ({ month, count }));
-  
+
       // Sort the countsArray based on the month
       countsArray.sort((a, b) => parseInt(a.month) - parseInt(b.month));
-  
+
       // Extract only the counts from the sorted array
-      const sortedCounts   = await countsArray.map(({ count }) => count);
-      console.log(sortedCounts,"await await");
-      
+      const sortedCounts = await countsArray.map(({ count }) => count);
+      console.log(sortedCounts, "await await");
+
       return { status: true, sortedCounts };
     } catch (err) {
       console.error(err);
       return { status: false, message: err };
     }
-    
+
   },
-  
+
   getAllReviewersProfile: async (currentPage: number) => {
     try {
       const pageSize = 10; // Number of reviewers per page
       const skip = (currentPage - 1) * pageSize;
-  
+
       // Fetch reviewers' profiles with pagination
       const response = await schema.Profile.find({})
         .skip(skip)
         .limit(pageSize);
-  
+
       if (response && response.length > 0) {
         return { status: true, response };
       } else {
@@ -346,27 +410,27 @@ scheduleEvents: async (data: any) => {
       return { status: false, message: "Error in fetching all reviewers' profiles" };
     }
   },
-  
-  getBestReviewers : async () =>{
-     try {
+
+  getBestReviewers: async () => {
+    try {
       const currentDate = new Date();
       const day = currentDate.getDate().toString().padStart(2, '0'); // Get the day and pad with leading zero if needed
       const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Get the month (1-indexed) and pad with leading zero if needed
       const year = currentDate.getFullYear();
       console.log(`${day}-${month}-${year}`);
-      
-     const response = await schema.Events.aggregate([
+
+      const response = await schema.Events.aggregate([
 
         { $unwind: "$events" },
 
         {
-            $match: {
-                "events.date": {
-                    $regex: `^\\d{2}-${month}-${year}$`
-                }
+          $match: {
+            "events.date": {
+              $regex: `^\\d{2}-${month}-${year}$`
             }
+          }
         },
-     
+
         {
           $project: {
             "reviewerId": 1,
@@ -383,54 +447,54 @@ scheduleEvents: async (data: any) => {
           }
         },
         // // Group by reviewerId and count the matching events
-        { 
-          $group: { 
+        {
+          $group: {
             _id: "$reviewerId",
             count: { $sum: 1 }
           }
         },
         // Sort by count in descending order
         { $sort: { count: -1 } },
-    
+
         { $limit: 5 }
       ])
-    if(response.length > 0){
-      console.log(response,";;;;;;;;;;;;;;;;;;;;;;;;");
-      return {status:true,response}
-    }
-      
-     } catch (error) {
-      return {status:false,message:"Erron in the get best reviewers"}
-     }
-  },
-  getBestReviewersDetails : async (reviewerId:string) =>{
-      try {
-        if(!reviewerId){
-          return {status:false,message:"reviewer not found"}
-        }
-        const response = await schema.Profile.findOne({reviewerId:reviewerId})
-        if(!response){
-           return {status:false,message:"reviewer not found"}
-        }
-        const reviewerDetails:any = {
-           reviewerId: response?.reviewerId,
-           firstName : response?.firstName,
-           lastName: response?.lastName,
-           profile : response?.imageUrl
-        }
-        if(!reviewerDetails){
-          return {status:false,message:"reviewer profile not updated"}
-        }else{
-           return {reviewerDetails}
-        }
-        
-      } catch (error) {
-        return {status:false,message:"Error in the get best reviewer details"}
+      if (response.length > 0) {
+        console.log(response, ";;;;;;;;;;;;;;;;;;;;;;;;");
+        return { status: true, response }
       }
+
+    } catch (error) {
+      return { status: false, message: "Erron in the get best reviewers" }
+    }
   },
-  getReviewCountAnalyze : async () =>{
-     try {
-          const currentDate = new Date();
+  getBestReviewersDetails: async (reviewerId: string) => {
+    try {
+      if (!reviewerId) {
+        return { status: false, message: "reviewer not found" }
+      }
+      const response = await schema.Profile.findOne({ reviewerId: reviewerId })
+      if (!response) {
+        return { status: false, message: "reviewer not found" }
+      }
+      const reviewerDetails: any = {
+        reviewerId: response?.reviewerId,
+        firstName: response?.firstName,
+        lastName: response?.lastName,
+        profile: response?.imageUrl
+      }
+      if (!reviewerDetails) {
+        return { status: false, message: "reviewer profile not updated" }
+      } else {
+        return { reviewerDetails }
+      }
+
+    } catch (error) {
+      return { status: false, message: "Error in the get best reviewer details" }
+    }
+  },
+  getReviewCountAnalyze: async () => {
+    try {
+      const currentDate = new Date();
       const day = currentDate.getDate().toString().padStart(2, '0'); // Get the day and pad with leading zero if needed
       const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Get the month (1-indexed) and pad with leading zero if needed
       const year = currentDate.getFullYear();
@@ -439,13 +503,13 @@ scheduleEvents: async (data: any) => {
         { $unwind: "$events" },
 
         {
-            $match: {
-                "events.date": {
-                    $regex: `^\\d{2}-${month}-${year}$`
-                }
+          $match: {
+            "events.date": {
+              $regex: `^\\d{2}-${month}-${year}$`
             }
+          }
         },
-     
+
         {
           $project: {
             "reviewerId": 1,
@@ -462,75 +526,75 @@ scheduleEvents: async (data: any) => {
           }
         },
         // // Group by reviewerId and count the matching events
-        { 
-          $group: { 
+        {
+          $group: {
             _id: "$reviewerId",
             count: { $sum: 1 }
           }
         },
         // Sort by count in descending order
         { $sort: { count: -1 } },
-    
+
         // { $limit: 5 }
       ])
-    if(response.length > 0){
-      console.log(response,";;;;;;;;;;;;;;;;;;;;;;;; in review count analyzeeee");
-      return {status:true,response}
-    }
-
-     } catch (error) {
-      return {status:false,message:"Erro in get review count analyze"}
-     }
-  },
-  getPerPageReviewers : async (perPage:number)=>{
-     try {
- 
-      const response = await schema.Profile.find({}).limit(parseInt(perPage.toString())).exec()
-      if(response && response.length > 0){
-        return {status:true,response}
-      }else{
-        return {status:false,message:"per page reviewers details not found"}
+      if (response.length > 0) {
+        console.log(response, ";;;;;;;;;;;;;;;;;;;;;;;; in review count analyzeeee");
+        return { status: true, response }
       }
 
-      
-     } catch (error) {
-       return {status:false,message:"Error in the get ask count reviewers"}
-     }
-  },
- getAllChatReviewers : async () => {
-    try {
-        // Find all profiles in the database
-        const profiles = await schema.Profile.find({});
-        
-        // Extract the required fields from each profile
-        const reviewersData = profiles.map(profile => {
-            return {
-                reviewerId: profile?.reviewerId,
-                imageUrl: profile?.imageUrl,
-                firstName: profile?.firstName,
-                lastName: profile?.lastName,
-                phone : profile?.phone
-            };
-        });
-
-        return reviewersData;
     } catch (error) {
-        // Handle errors
-        console.error("Error fetching reviewers:", error);
-        throw error;
+      return { status: false, message: "Erro in get review count analyze" }
     }
-},
- getParticularEvents : async (reviewerId: any) => {
-  try {
+  },
+  getPerPageReviewers: async (perPage: number) => {
+    try {
+
+      const response = await schema.Profile.find({}).limit(parseInt(perPage.toString())).exec()
+      if (response && response.length > 0) {
+        return { status: true, response }
+      } else {
+        return { status: false, message: "per page reviewers details not found" }
+      }
+
+
+    } catch (error) {
+      return { status: false, message: "Error in the get ask count reviewers" }
+    }
+  },
+  getAllChatReviewers: async () => {
+    try {
+      // Find all profiles in the database
+      const profiles = await schema.Profile.find({});
+
+      // Extract the required fields from each profile
+      const reviewersData = profiles.map(profile => {
+        return {
+          reviewerId: profile?.reviewerId,
+          imageUrl: profile?.imageUrl,
+          firstName: profile?.firstName,
+          lastName: profile?.lastName,
+          phone: profile?.phone
+        };
+      });
+
+      return reviewersData;
+    } catch (error) {
+      // Handle errors
+      console.error("Error fetching reviewers:", error);
+      throw error;
+    }
+  },
+  getParticularEvents: async (reviewerId: any) => {
+    try {
       if (!reviewerId) {
-          return { status: false, message: "Not get Particular Events" };
+        return { status: false, message: "Not get Particular Events" };
       }
 
       // Fetch events from the database
       const eventData = await schema.Events.findOne({ reviewerId });
 
       if (!eventData) {
-          return { status: false, message: "No events found for the given reviewerId" };
+        return { status: false, message: "No events found for the given reviewerId" };
       }
 
       const events: any = eventData.events;
@@ -541,30 +605,30 @@ scheduleEvents: async (data: any) => {
 
       // Filter events based on dates after the current date
       const filteredEvents: any = events.filter((event: { date: any[] }) => {
-          // Convert event dates to Date objects for comparison
-          const eventDates: any = event.date.map((dateString: string) => {
-              const [day, month, year] = dateString.split('-').map(Number);
-              return new Date(year, month - 1, day); // Month is 0-based
-          });
+        // Convert event dates to Date objects for comparison
+        const eventDates: any = event.date.map((dateString: string) => {
+          const [day, month, year] = dateString.split('-').map(Number);
+          return new Date(year, month - 1, day); // Month is 0-based
+        });
 
-          // Check if any event date is after or equal to the current date
-          return eventDates.some((date: Date) => date >= currentDate);
+        // Check if any event date is after or equal to the current date
+        return eventDates.some((date: Date) => date >= currentDate);
       });
 
       // Modify the filtered events to remove dates before the current date
       const filteredEventsWithCurrentDate = filteredEvents.map((event: any) => {
-          event.date = event.date.filter((dateString: string) => {
-              const [day, month, year] = dateString.split('-').map(Number);
-              const eventDate = new Date(year, month - 1, day); // Month is 0-based
-              return eventDate >= currentDate;
-          });
-          return event;
+        event.date = event.date.filter((dateString: string) => {
+          const [day, month, year] = dateString.split('-').map(Number);
+          const eventDate = new Date(year, month - 1, day); // Month is 0-based
+          return eventDate >= currentDate;
+        });
+        return event;
       });
       return { status: true, events: filteredEventsWithCurrentDate };
-  } catch (error) {
+    } catch (error) {
       return { status: false, message: "Error in getting particular Events" };
-  }
-},
+    }
+  },
 
 
 
