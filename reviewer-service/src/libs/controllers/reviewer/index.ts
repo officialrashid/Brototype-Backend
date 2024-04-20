@@ -15,6 +15,8 @@ import getPerPageReviewers_Controller from "./getPerPageReviewersController";
 import getAllChatReviewers_Controller from "./getAllChatReviewersController";
 import getParticularEvents_Controller from "./getParticularEventsController";
 import updateParticularEvents_Controller from "./updateParticularEventsController";
+import cancelParticularEvents_Controller from "./cancelParticularEventsController";
+import getDomainWiseReviewers_Controller from "./getDomainWiseReviewersController";
 export default (dependencies:any)=>{
     return{
         scheduleTimeController: scheduleTime_Controller(dependencies),
@@ -34,5 +36,7 @@ export default (dependencies:any)=>{
         getAllChatReviewersController: getAllChatReviewers_Controller(dependencies),
         getParticularEventsController: getParticularEvents_Controller(dependencies),
         updateParticularEventsController: updateParticularEvents_Controller(dependencies),
+        cancelParticularEventsController: cancelParticularEvents_Controller(dependencies),
+        getDomainWiseReviewersController: getDomainWiseReviewers_Controller(dependencies),
     }
 }

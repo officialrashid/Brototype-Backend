@@ -710,8 +710,12 @@ export default {
                             bookedEvt.booked = bookStatus;
                             bookedEvt.advisorId = advisorId;
                             bookedEvt.studentId = studentId;
+                        }else{
+                          return {status:false,message:"booked event not found"}
                         }
                     });
+                }else{
+                  return {status:false,message:"event not found"}
                 }
             });
 
@@ -719,11 +723,77 @@ export default {
 
             // Optional: Return the updated response if needed
             return { status: true, message: "Successfully updated particular events", response };
+        }else{
+          return { status:false, message:"reviewer not found"}
         }
     } catch (error) {
         return { status: false, message: "Error in updating particular events: " + error};
     }
+},
+cancelParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string,advisorId:string,studentId:string,bookStatus:boolean) => {
+  try {
+      if (!reviewerId || !eventId || !bookedEventId) {
+          return { status: false, message: "Not update particular events" };
+      }
+      console.log(eventId, "this is particular events iddssss",bookStatus);
+
+      const response = await schema.Events.findOne({ reviewerId });
+      console.log(response, "update eevents responseeeee");
+
+      if (response) {
+          const eventIdObj:any = new mongoose.Types.ObjectId(eventId);
+          response.events.forEach((evt:any) => {
+              console.log(evt._id, "this is eventidssss");
+              if (evt._id.equals(eventIdObj)) {
+                  const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
+                  evt.bookedEvents.forEach((bookedEvt:any) => {
+                      if (bookedEvt._id.equals(bookedEventIdObj)) {
+                        if(bookedEvt.advisorId===advisorId){
+                          bookedEvt.booked = bookStatus;
+                          bookedEvt.advisorId = "";
+                          bookedEvt.studentId = "";
+                        }else{
+                          return {status:false,message:"not cancelled already booked anothor advisor"}
+                        }
+                       
+                      }else{
+                        return {status:false,message:"booked events not found"}
+                      }
+                  });
+              }else{
+                return {status:false,message:"event not found"}
+              }
+          });
+
+          await response.save(); // Save changes to the database
+
+          // Optional: Return the updated response if needed
+          return { status: true, message: "Successfully cancelled particular events", response };
+      }else{
+        return { status:false, message:"reviewer not found"}
+      }
+  } catch (error) {
+      return { status: false, message: "Error in updating particular events: " + error};
+  }
+},
+getDomainWiseReviewers: async (domains:string) => {
+  try {
+      if (!domains ) {
+          return { status: false, message: "Domains array is invalid or empty" };
+      }
+
+      const response = await schema.Profile.find({ "PrefferedDomainsForReview": { $in: domains } });
+
+      if (response.length === 0) {
+          return { status: false, message: "No reviewers found for the specified domains" };
+      }
+
+      return { status: true, message: "Successfully retrieved domain-wise reviewers", reviewers: response };
+  } catch (error) {
+      return { status: false, message: "Error in getting domain-wise reviewers: " + error };
+  }
 }
+
 
 
 }
