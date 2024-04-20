@@ -10,7 +10,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController,getAllReviewersProfileController,getBestReviewersController,getReviewCountAnalyzeController,getPerPageReviewersController,getAllChatReviewersController,getParticularEventsController} = reviewer_Controller(dependencies) 
+  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController,getAllReviewersProfileController,getBestReviewersController,getReviewCountAnalyzeController,getPerPageReviewersController,getAllChatReviewersController,getParticularEventsController,updateParticularEventsController} = reviewer_Controller(dependencies) 
 
   router.post('/schedule-event',scheduleTimeController)
   router.get('/get-schedule-events/:reviewerId',getScheduleEventsController)
@@ -28,6 +28,7 @@ export default (dependencies:any)=>{
   router.get('/get-per-page-reviewers/:perPage',getPerPageReviewersController)
   router.get('/get-all-chat-reviewers',getAllChatReviewersController)
   router.get('/get-particular-date-events/:reviewerId',getParticularEventsController)
-  router.patch('/update-particular-date-events/:reviewerId',getParticularEventsController)
+  router.patch('/update-particular-date-events',updateParticularEventsController)
+
   return router
 }

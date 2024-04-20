@@ -4,6 +4,7 @@ import reviewer from "../../controllers/reviewer";
 import moment from "moment";
 import { String } from "aws-sdk/clients/acm";
 import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
 
 
 
@@ -688,8 +689,39 @@ export default {
       return { status: false, message: "Error in getting particular Events" };
     }
   },
+  updateParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string, bookStatus:boolean) => {
+    try {
+        if (!reviewerId || !eventId || !bookedEventId || !bookStatus) {
+            return { status: false, message: "Not update particular events" };
+        }
+        console.log(eventId, "this is particular events iddssss");
 
+        const response = await schema.Events.findOne({ reviewerId });
+        console.log(response, "update eevents responseeeee");
 
+        if (response) {
+            const eventIdObj:any = new mongoose.Types.ObjectId(eventId);
+            response.events.forEach((evt:any) => {
+                console.log(evt._id, "this is eventidssss");
+                if (evt._id.equals(eventIdObj)) {
+                    const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
+                    evt.bookedEvents.forEach((bookedEvt:any) => {
+                        if (bookedEvt._id.equals(bookedEventIdObj)) {
+                            bookedEvt.booked = bookStatus;
+                        }
+                    });
+                }
+            });
+
+            await response.save(); // Save changes to the database
+
+            // Optional: Return the updated response if needed
+            return { status: true, message: "Successfully updated particular events", response };
+        }
+    } catch (error) {
+        return { status: false, message: "Error in updating particular events: " + error};
+    }
+}
 
 
 }

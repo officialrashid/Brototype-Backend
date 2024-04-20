@@ -2,6 +2,7 @@ import mongoose, { Document, Schema, Model } from "mongoose";
 
 // Define the event interface
 interface Event {
+  _id: unknown;
   id: string;
   startTime: string;
   endTime: string;
@@ -42,6 +43,7 @@ const bookedEventsSchema = new Schema({
 });
 
 const eventSchema = new Schema({
+  _id:Schema.Types.ObjectId,
   id: String,
   startTime: String,
   endTime: String,

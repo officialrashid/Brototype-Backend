@@ -13,7 +13,8 @@ import {getBestReviewers_Usecase} from "./getBestReviewersUsecase";
 import {getReviewCountAnalyze_Usecase} from "./getReviewCountAnalyzeUsecase";
 import {getPerPageReviewers_Usecase} from "./getPerPageReviewersUsecase";
 import {getAllChatReviewers_Usecase} from "./getAllChatReviewersUsecase";
-import {getParticularEvents_Usecase} from "./getParticularEventsUsecase"
+import {getParticularEvents_Usecase} from "./getParticularEventsUsecase";
+import {updateParticularEvents_Usecase} from "./updateParticularEventsUsecase"
 export{
     scheduleTime_Usecase,
     getScheduleEvents_Usecase,
@@ -30,6 +31,7 @@ export{
     getReviewCountAnalyze_Usecase,
     getPerPageReviewers_Usecase,
     getAllChatReviewers_Usecase,
-    getParticularEvents_Usecase
+    getParticularEvents_Usecase,
+    updateParticularEvents_Usecase
 
 }

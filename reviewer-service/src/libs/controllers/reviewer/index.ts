@@ -14,6 +14,7 @@ import getReviewCountAnalyze_Controller from "./getReviewCountAnalyzeController"
 import getPerPageReviewers_Controller from "./getPerPageReviewersController";
 import getAllChatReviewers_Controller from "./getAllChatReviewersController";
 import getParticularEvents_Controller from "./getParticularEventsController";
+import updateParticularEvents_Controller from "./updateParticularEventsController";
 export default (dependencies:any)=>{
     return{
         scheduleTimeController: scheduleTime_Controller(dependencies),
@@ -32,5 +33,6 @@ export default (dependencies:any)=>{
         getPerPageReviewersController: getPerPageReviewers_Controller(dependencies),
         getAllChatReviewersController: getAllChatReviewers_Controller(dependencies),
         getParticularEventsController: getParticularEvents_Controller(dependencies),
+        updateParticularEventsController: updateParticularEvents_Controller(dependencies),
     }
 }

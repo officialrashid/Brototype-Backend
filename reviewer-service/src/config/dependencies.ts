@@ -1,5 +1,5 @@
 import { reviewerRepository} from '../libs/app/repository/index'
-import {scheduleTime_Usecase,getScheduleEvents_Usecase,updateScheduleEvents_Usecase,deleteScheduleEvents_Usecase,getDayTimeLineup_Usecase,getAllDetails_Usecase,profileUpdate_Usecase,reviewerWrokDetails_Usecase,getProfile_Usecase,reviewTakeCount_Usecase,getAllReviewersProfile_Usecase,getBestReviewers_Usecase,getReviewCountAnalyze_Usecase,getPerPageReviewers_Usecase,getAllChatReviewers_Usecase,getParticularEvents_Usecase} from '../libs/usecase';
+import {scheduleTime_Usecase,getScheduleEvents_Usecase,updateScheduleEvents_Usecase,deleteScheduleEvents_Usecase,getDayTimeLineup_Usecase,getAllDetails_Usecase,profileUpdate_Usecase,reviewerWrokDetails_Usecase,getProfile_Usecase,reviewTakeCount_Usecase,getAllReviewersProfile_Usecase,getBestReviewers_Usecase,getReviewCountAnalyze_Usecase,getPerPageReviewers_Usecase,getAllChatReviewers_Usecase,getParticularEvents_Usecase,updateParticularEvents_Usecase} from '../libs/usecase';
 
 const useCase:any = {
    scheduleTime_Usecase,
@@ -17,7 +17,8 @@ const useCase:any = {
    getReviewCountAnalyze_Usecase,
    getPerPageReviewers_Usecase,
    getAllChatReviewers_Usecase,
-   getParticularEvents_Usecase
+   getParticularEvents_Usecase,
+   updateParticularEvents_Usecase
   
 };
 const repository:any={reviewerRepository}
