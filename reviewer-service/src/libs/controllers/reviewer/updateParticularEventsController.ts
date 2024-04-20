@@ -7,8 +7,8 @@ export default (dependencies: any) => {
         useCase: { updateParticularEvents_Usecase }
     } = dependencies
     const updateParticularEventsController = async (req: Request, res: Response) => {
-        const {reviewerId,eventId,bookedEventId,bookStatus} = req.body
-        const response = await updateParticularEvents_Usecase(dependencies).executeFunction(reviewerId,eventId,bookedEventId,bookStatus)
+        const {reviewerId,eventId,bookedEventId,advisorId,studentId,bookStatus} = req.body
+        const response = await updateParticularEvents_Usecase(dependencies).executeFunction(reviewerId,eventId,bookedEventId,advisorId,studentId,bookStatus)
         res.status(201).json(response);
     }
     return updateParticularEventsController;

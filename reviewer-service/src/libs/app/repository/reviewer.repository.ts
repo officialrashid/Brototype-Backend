@@ -689,7 +689,7 @@ export default {
       return { status: false, message: "Error in getting particular Events" };
     }
   },
-  updateParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string, bookStatus:boolean) => {
+  updateParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string,advisorId:string,studentId:string,bookStatus:boolean) => {
     try {
         if (!reviewerId || !eventId || !bookedEventId || !bookStatus) {
             return { status: false, message: "Not update particular events" };
@@ -708,6 +708,8 @@ export default {
                     evt.bookedEvents.forEach((bookedEvt:any) => {
                         if (bookedEvt._id.equals(bookedEventIdObj)) {
                             bookedEvt.booked = bookStatus;
+                            bookedEvt.advisorId = advisorId;
+                            bookedEvt.studentId = studentId;
                         }
                     });
                 }
