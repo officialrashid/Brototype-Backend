@@ -17,15 +17,17 @@ export const updateScheduleEvents_Usecase = (dependencies: any) => {
       if (!data) {
         return { status: false, message: "evet data not found" }
       }
-      const res = await reviewerRepository.scheduleEventExist(data.reviewerId, data.startTime, data.endTime, data.day,data.date)
-
-      console.log(res,"statstuusss");
+       console.log(data,"data cominggg update schedule eventssss");
       
-      if (res.status==false) {
+      // const res = await reviewerRepository.scheduleEventExist(data.reviewerId, data.startTime, data.endTime, data.day,data.date)
+
+      // console.log(res,"statstuusss");
+      
+      // if (res.status==false) {
   
          
-        return { status: false, message:"Event already scheduled for the specified time and date." }
-      }
+      //   return { status: false, message:"Event already scheduled for the specified time and date." }
+      // }
       const response = await reviewerRepository.updateScheduleEvents(data)
       if(response){
         return {status:true,response}

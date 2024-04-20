@@ -187,27 +187,86 @@ export default {
   },
   updateScheduleEvents: async (data: any) => {
 
+    const addThirtyMinutes = (timeString: any) => {
+      // Parse the time string into hours, minutes, and am/pm
+      const [hours, minutes, meridiem] = timeString.match(/(\d+):(\d+)([ap]m)/i).slice(1);
+  
+      // Convert hours to 24-hour format
+      let hours24 = parseInt(hours, 10);
+      if (meridiem.toLowerCase() === 'pm' && hours24 !== 12) {
+        hours24 += 12;
+      } else if (meridiem.toLowerCase() === 'am' && hours24 === 12) {
+        hours24 = 0;
+      }
+  
+      // Add 30 minutes
+      const date = new Date();
+      date.setHours(hours24);
+      date.setMinutes(parseInt(minutes, 10) + 30);
+  
+      // Format the result back to AM/PM time with leading zeros if needed
+      const resultHours = date.getHours();
+      const resultMinutes = date.getMinutes();
+      const resultMeridiem = resultHours < 12 ? 'am' : 'pm';
+      const formattedHours = (resultHours % 12 || 12).toString().padStart(2, '0');
+      const formattedMinutes = resultMinutes.toString().padStart(2, '0');
+  
+      return `${formattedHours}:${formattedMinutes}${resultMeridiem}`;
+    };
 
-    const { reviewerId, startTime, endTime, label, day, id } = data;
-
-    try {
-      // Assuming you are using MongoDB, use the appropriate method to update the document based on both reviewerId and event ID
-      const response = await schema.Events.updateMany(
-        { reviewerId, "events.id": id }, // Match based on both reviewerId and event ID
-        {
-          $set: {
-            "events.$.startTime": startTime,
-            "events.$.endTime": endTime,
-            "events.$.label": label,
-            "events.$.day": day
-          }
+    const splitTime = (startTime: any, endTime: number, interval: number) => {
+      const result = [];
+      let currentTime = startTime;
+    
+      while (currentTime < endTime) { // Stop if the current time is equal to or after the end time
+        result.push(currentTime);
+        currentTime = addThirtyMinutes(currentTime);
+    
+        // If the current time exceeds the end time, break the loop
+        if (currentTime >= endTime) {
+          break;
         }
-      );
-
-      // Handle the response accordingly
-
-
-      return { status: true, message: "Event updated successfully" };
+      }
+    
+      return result;
+    };
+    
+    const { reviewerId, startTime, endTime, label, day, id } = data;
+  
+    try {
+      // Find the document that matches the reviewerId and contains the event with the specified ID
+      let existingDocument = await schema.Events.findOne({ reviewerId, "events.id": id });
+  
+      if (existingDocument) {
+        // Find the index of the event within the events array
+        const eventIndex = existingDocument.events.findIndex(event => event.id === id);
+  
+        // Update the event details
+        existingDocument.events[eventIndex].startTime = startTime;
+        existingDocument.events[eventIndex].endTime = endTime;
+        existingDocument.events[eventIndex].label = label;
+        existingDocument.events[eventIndex].day = day;
+  
+        // Recalculate booked events based on the updated start and end times
+        const updatedEvent:any = existingDocument.events[eventIndex];
+        const bookedEvents:any = splitTime(updatedEvent.startTime, updatedEvent.endTime, 30).map(interval => ({
+          _id: new mongoose.Types.ObjectId(), // Generate ObjectId for the booked event
+          startTime: interval,
+          endTime: addThirtyMinutes(interval),
+          advisorId: "",
+          studentId: "",
+          booked: false,
+          status: false
+        }));
+  
+        existingDocument.events[eventIndex].bookedEvents = bookedEvents;
+  
+        // Save the updated document
+        const response = await existingDocument.save();
+        return { status: true, message: "Event updated successfully" };
+      } else {
+        return { status: false, message: "Event not found" };
+      }
     } catch (error) {
       console.error("Error updating event:", error);
       return { status: false, message: error };

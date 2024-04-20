@@ -28,5 +28,6 @@ export default (dependencies:any)=>{
   router.get('/get-per-page-reviewers/:perPage',getPerPageReviewersController)
   router.get('/get-all-chat-reviewers',getAllChatReviewersController)
   router.get('/get-particular-date-events/:reviewerId',getParticularEventsController)
+  router.patch('/update-particular-date-events/:reviewerId',getParticularEventsController)
   return router
 }
