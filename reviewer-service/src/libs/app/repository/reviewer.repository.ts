@@ -691,10 +691,10 @@ export default {
   },
   updateParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string,advisorId:string,studentId:string,bookStatus:boolean) => {
     try {
-        if (!reviewerId || !eventId || !bookedEventId || !bookStatus) {
+        if (!reviewerId || !eventId || !bookedEventId) {
             return { status: false, message: "Not update particular events" };
         }
-        console.log(eventId, "this is particular events iddssss");
+        console.log(eventId, "this is particular events iddssss",bookStatus);
 
         const response = await schema.Events.findOne({ reviewerId });
         console.log(response, "update eevents responseeeee");
