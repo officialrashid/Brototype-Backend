@@ -790,8 +790,42 @@ getDomainWiseReviewers: async (domains:string) => {
 
       return { status: true, message: "Successfully retrieved domain-wise reviewers", reviewers: response };
   } catch (error) {
-      return { status: false, message: "Error in getting domain-wise reviewers: " + error };
+      return { status: false, message: "Error getting domain-wise reviewers: " + error };
   }
+},
+updateReviewCompleted : async  (reviewerId:string,eventId:string,bookedEventId:string,status:boolean) =>{
+   try {
+       if(!reviewerId || !eventId || !bookedEventId){
+        return {status:false,message:"Not update review completed status"}
+       }
+       const response = await schema.Events.findOne({ reviewerId });
+      if (response) {
+          const eventIdObj:any = new mongoose.Types.ObjectId(eventId);
+          response.events.forEach((evt:any) => {
+              if (evt._id.equals(eventIdObj)) {
+                  const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
+                  evt.bookedEvents.forEach((bookedEvt:any) => {
+                      if (bookedEvt._id.equals(bookedEventIdObj)) {
+                          bookedEvt.status = status;
+                      }else{
+                        return {status:false,message:"booked event not found"}
+                      }
+                  });
+              }else{
+                return {status:false,message:"event not found"}
+              }
+          });
+
+          await response.save(); // Save changes to the database
+
+          // Optional: Return the updated response if needed
+          return { status: true, message: "Successfully updated review completed status", response };
+      }else{
+        return { status:false, message:"reviewer not found"}
+      }
+   } catch (error) {
+     return {status:false,message:"Error getting update review completed status"}
+   }
 }
 
 

@@ -17,6 +17,7 @@ import getParticularEvents_Controller from "./getParticularEventsController";
 import updateParticularEvents_Controller from "./updateParticularEventsController";
 import cancelParticularEvents_Controller from "./cancelParticularEventsController";
 import getDomainWiseReviewers_Controller from "./getDomainWiseReviewersController";
+import updateReviewCompleted_Controller from "./updateReviewCompletedController";
 export default (dependencies:any)=>{
     return{
         scheduleTimeController: scheduleTime_Controller(dependencies),
@@ -38,5 +39,6 @@ export default (dependencies:any)=>{
         updateParticularEventsController: updateParticularEvents_Controller(dependencies),
         cancelParticularEventsController: cancelParticularEvents_Controller(dependencies),
         getDomainWiseReviewersController: getDomainWiseReviewers_Controller(dependencies),
+        updateReviewCompletedController: updateReviewCompleted_Controller(dependencies),
     }
 }

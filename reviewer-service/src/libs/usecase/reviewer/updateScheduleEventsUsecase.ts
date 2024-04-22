@@ -19,15 +19,15 @@ export const updateScheduleEvents_Usecase = (dependencies: any) => {
       }
        console.log(data,"data cominggg update schedule eventssss");
       
-      // const res = await reviewerRepository.scheduleEventExist(data.reviewerId, data.startTime, data.endTime, data.day,data.date)
+      const res = await reviewerRepository.scheduleEventExist(data.reviewerId, data.startTime, data.endTime, data.day,data.date)
 
-      // console.log(res,"statstuusss");
+      console.log(res,"statstuusss");
       
-      // if (res.status==false) {
+      if (res.status==false) {
   
          
-      //   return { status: false, message:"Event already scheduled for the specified time and date." }
-      // }
+        return { status: false, message:"Event already scheduled for the specified time and date." }
+      }
       const response = await reviewerRepository.updateScheduleEvents(data)
       if(response){
         return {status:true,response}

@@ -16,7 +16,8 @@ import {getAllChatReviewers_Usecase} from "./getAllChatReviewersUsecase";
 import {getParticularEvents_Usecase} from "./getParticularEventsUsecase";
 import {updateParticularEvents_Usecase} from "./updateParticularEventsUsecase";
 import {cancelParticularEvents_Usecase} from "./cancelParticularEventsUsecase";
-import {getDomainWiseReviewers_Usecase} from "./getDomainWiseReviewersUsecase"
+import {getDomainWiseReviewers_Usecase} from "./getDomainWiseReviewersUsecase";
+import {updateReviewCompleted_Usecase} from "./updateReviewCompletedUsecase"
 export{
     scheduleTime_Usecase,
     getScheduleEvents_Usecase,
@@ -36,6 +37,7 @@ export{
     getParticularEvents_Usecase,
     updateParticularEvents_Usecase,
     cancelParticularEvents_Usecase,
-    getDomainWiseReviewers_Usecase
+    getDomainWiseReviewers_Usecase,
+    updateReviewCompleted_Usecase
 
 }
