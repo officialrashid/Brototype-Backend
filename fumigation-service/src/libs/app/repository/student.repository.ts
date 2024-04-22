@@ -653,6 +653,22 @@ getBatchId : async (batch:string) =>{
    } catch (error) {
      return {status:false,message:"Error in the get batch"}
    }
+},
+getPendingStudents : async (uniqueId:string) =>{
+   try {
+     if(!uniqueId){
+      return {status:false,message:"pending students not get successfully"}
+     }
+     const response = await schema.Enqueries.find({})
+     if(response.length > 0){
+      const pendingStudentCount = response.length
+      return {status:true,pendingStudentCount}
+     }else{
+       return {status:false,message:"No Pending Students Available"}
+     }
+   } catch (error) {
+     return {status:false,message:"Error getting from get pending students"}
+   }
 }
 
 

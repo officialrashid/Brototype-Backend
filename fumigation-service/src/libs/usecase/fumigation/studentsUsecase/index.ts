@@ -10,7 +10,8 @@ import {confirmPassedStudents_Usecase} from "./confirmPassedStudentsUsecase";
 import {getAllFumigationStudents_Usecase} from "./getAllFumigationStudentsUsecase";
 import {updateStudentStatus_Usecase} from "./updateStudentStatusUsecase";
 import {getPerPageStudent_Usecase} from "./getPerPageStudentUsecase";
-import {superleadAddStudent_Usecase} from "./superleadAddStudentUsecase"
+import {superleadAddStudent_Usecase} from "./superleadAddStudentUsecase";
+import {getPendingStudents_Usecase} from "./getPendingStudentsUsecase"
 export{
     fumigation_Usecase,
     getAllPendingStudents_Usecase,
@@ -24,5 +25,6 @@ export{
     getAllFumigationStudents_Usecase,
     updateStudentStatus_Usecase,
     getPerPageStudent_Usecase,
-    superleadAddStudent_Usecase
+    superleadAddStudent_Usecase,
+    getPendingStudents_Usecase
 }

@@ -431,7 +431,7 @@ export default {
       console.log(uniqueLetters, "uniqueLetters");
 
       // Calculate the number of documents to skip based on the currentPage
-      const pageSize = 3; // Number of students per page
+      const pageSize = 10; // Number of students per page
       const skip = (currentPage - 1) * pageSize;
 
       // Match documents where uniqueId starts with the extracted prefix
