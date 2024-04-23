@@ -15,7 +15,9 @@ import {secondExtendRequest_Usecase } from "./secondExtendRequestUsecase";
 import { governmentIdUpdate_Usecase } from "./governmentIdUpdateUsecase";
 import {getAllStudents_Usecase} from "./getAllStudentsUsecase";
 import {getPerPageStudent_Usecase} from "./getPerPageStudentUsecase";
-import {getAllChatStudents_Usecase} from "./getAllChatStudentsUsecase"
+import {getAllChatStudents_Usecase} from "./getAllChatStudentsUsecase";
+import {getReviewStudents_Usecase} from "./getReviewStudentsUsecase";
+import {addReviewResult_Usecase} from "./addReviewResultUsecase"
 export{
     profileUpdate_Usecase,
     getProfile_Usecase,
@@ -34,5 +36,7 @@ export{
     governmentIdUpdate_Usecase,
     getAllStudents_Usecase,
     getPerPageStudent_Usecase,
-    getAllChatStudents_Usecase
+    getAllChatStudents_Usecase,
+    getReviewStudents_Usecase,
+    addReviewResult_Usecase
 }

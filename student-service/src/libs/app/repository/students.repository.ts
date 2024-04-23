@@ -1,6 +1,6 @@
 import { response } from "express";
 import schema from "../dataBase/schema"
-
+import { studentProducer } from "../../../events/studentProducer";
 
 export default {
 
@@ -232,13 +232,13 @@ export default {
         return { status: false, message: "Batch not found" };
       }
 
-      const student = batch.students.find((s) => s.studentId === studentId);
+      const student: any = batch.students.find((s) => s.studentId === studentId);
       if (!student) {
         return { status: false, message: "Student not found in this batch" };
       }
 
       // Count the number of completed weeks
-      const completedWeeks = student.weeks.reduce((count, week) => (week.status ? count + 1 : count), 0);
+      const completedWeeks = student.weeks.reduce((count: any, week: any) => (week.status ? count + 1 : count), 0);
       console.log(student.totalWeeks, "||||||||||||||||||||||||");
 
       // Calculate the percentage of completed weeks
@@ -532,27 +532,27 @@ export default {
         },
 
       ]);
-      console.log(result,"nxsbcmsdbfsdfjsdhfsdhfdsjfsdjhfsdhdsdshysdufysud");
+      console.log(result, "nxsbcmsdbfsdfjsdhfsdhfdsjfsdjhfsdhdsdshysdufysud");
       if (result.length > 0 && response.length > 0) {
-        console.log(result,"nxsbcmsdbfsdfjsdhfsdhfdsjfsdjhfsdhdsdshysdufysud");
-        
+        console.log(result, "nxsbcmsdbfsdfjsdhfsdhfdsjfsdjhfsdhdsdshysdufysud");
+
         return { students: result, studentCurrentWeek: response }
-    } else{
-      return {status:false,message:"per page student not found"}
-    }
-  } catch (error) {
+      } else {
+        return { status: false, message: "per page student not found" }
+      }
+    } catch (error) {
       console.error(error);
       return { status: false, message: "Error in fetching per page students" };
     }
   },
-  getAllChatStudents: async (uniqueId:string) => {
+  getAllChatStudents: async (uniqueId: string) => {
     try {
       const indexM = uniqueId.indexOf('M');
-  
+
       // Extract the prefix (all characters before 'M')
       const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
       console.log(uniqueLetters, "uniqueLetters");
-      
+
       const result = await schema.Manifest.aggregate([
         {
           $match: {
@@ -561,7 +561,7 @@ export default {
         },
         {
           $project: {
-            studentId:1,
+            studentId: 1,
             imageUrl: 1,
             firstName: 1,
             lastName: 1,
@@ -569,12 +569,126 @@ export default {
           }
         }
       ]);
-      
+
       // Return the result
       return result;
     } catch (error) {
       return { status: false, message: "students not get chat section" };
     }
+  },
+  getReviewStudents: async () => {
+    try {
+      // Aggregate to get last week's data for each student
+      const reviewStudents: any = []
+      const reviewStudnet = await schema.Manifest.find({lastWeekReviewStatus:true})
+      reviewStudnet.map((student:any,index:number)=>{
+        const studentId = student?.studentId
+          reviewStudents.push({studentId})
+      })
+      if(reviewStudents.length > 0){
+        const response = await studentProducer(reviewStudents, 'student-data', 'reviewStudents');
+      }
+    } catch (error: any) {
+      return { status: false, message: "Error getting review students: " + error.message };
+    }
+  },
+
+  // Function to add review result
+  addReviewResult: async (
+    batchId: any,
+    studentId: string | null | undefined,
+    week: any,
+    repeat: any,
+    reviewScore: any,
+    communicationScore: any,
+    personalWorkoutsScore: any,
+    miscellaneousWorkouts: any,
+    totalScore: number,
+    status: any,
+    advisorId: any,
+    reviewerId: any,
+    date: any,
+    pendingTopics: any,
+    nextWeekUpdation: any,
+    personalWorkoutReview: any,
+    MiscellaneousWorkoutsReview: any,
+    CommunicationReview: any,
+    totalWeeks: any
+  ) => {
+    try {
+      if (
+        !batchId ||
+        !studentId ||
+        !week ||
+        !reviewerId ||
+        !advisorId ||
+        !date ||
+        !totalWeeks
+      ) {
+        return {
+          status: false,
+          message:
+            'Required fields are missing. Please provide all required information.',
+        };
+      }
+
+      let batch = await schema.WeekRecord.findOne({ batchId });
+
+      if (!batch) {
+        batch = await schema.WeekRecord.create({ batchId, students: [] });
+      }
+
+      let student: any = batch.students.find((s) => s.studentId === studentId);
+
+      if (!student) {
+        student = { studentId, totalWeeks, weeks: [] };
+        batch.students.push(student);
+      }
+
+      const weekIndex = student.weeks.findIndex((w: any) => w.week === week);
+
+      const formattedWeek = totalScore / 100 * 2
+      console.log(formattedWeek, "lllllllll33333333");
+
+      const newWeek = {
+        week,
+        repeat,
+        reviewScore,
+        communicationScore,
+        personalWorkoutsScore,
+        miscellaneousWorkouts,
+        totalScore: formattedWeek, // Store totalScore as string in the format "34"
+        status,
+        advisorId,
+        reviewerId,
+        date,
+        pendingTopics,
+        nextWeekUpdation,
+        personalWorkoutReview,
+        MiscellaneousWorkoutsReview,
+        CommunicationReview,
+      };
+
+      if (weekIndex === -1) {
+        console.log("keriyanuuuuuuu");
+        console.log(student.weeks, "stdenyssss");
+        student.weeks.push(newWeek);
+      } else {
+        student.weeks[weekIndex] = newWeek;
+      }
+      await batch.save();
+      const weekString = week;
+      const weekNumber = weekString.match(/\d+/)[0];
+      const response = await schema.Manifest.updateOne({ studentId: studentId }, { $set: { lastWeek:weekNumber,lastWeekReviewStatus:status} })
+      return {
+        status: true,
+        message: 'Review result added/updated successfully.',
+      };
+    } catch (error) {
+      return { status: false, message: 'Error adding review result: ' + error };
+    }
   }
-  
+
+
+
 }

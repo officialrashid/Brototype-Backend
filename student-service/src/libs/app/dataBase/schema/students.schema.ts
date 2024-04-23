@@ -30,7 +30,9 @@ const manifestSchema = new mongoose.Schema({
   passPercentage:String,
   schoolOrCollegeOrInstituteName:String,
   imageUrl: String,
-  governmentIdImageUrl: String
+  governmentIdImageUrl: String,
+  lastWeek: {type:String,default:0},
+   lastWeekReviewStatus: {type:Boolean,default:true}
 });
 
 const Manifest = mongoose.model('Manifest', manifestSchema);

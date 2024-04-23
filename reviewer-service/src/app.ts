@@ -7,7 +7,7 @@ import config from "./config/config";
 import expressConfig from "./express";
 import express from 'express';
 import dependencies from "./config/dependencies";
-import {consumeAuthentication} from "./events/reviewerConsumer"
+import {consumeReviewer} from "./events/reviewerConsumer"
 // Create an Express app instance
 const app = express();
 const router = express.Router()

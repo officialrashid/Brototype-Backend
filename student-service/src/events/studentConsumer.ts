@@ -1,11 +1,10 @@
 
 
 import { kafka } from "../config/kafkaClient";
+import handleKafkaMessage from "./handleKafkaMessages"
 
-// imposrt { handleMessage } from "../event/handleMessages.js";
-// import {orderProducer} from "../event/orderProducer.js"
 const consumer = kafka.consumer({
-    groupId: 'student-service'
+    groupId: 'review-events'
 });
 
 export const consumeStudent = async () => {
@@ -14,11 +13,9 @@ export const consumeStudent = async () => {
         await consumer.connect();
         console.log('Consumer connected');
 
-        await consumer.subscribe({ topic: 'student', fromBeginning: true });
+        await consumer.subscribe({ topic: 'review-events', fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ message }) => {
-                console.log(message, "ooooooooooooooooooooo");
-                console.log(message.value, "ooooooooooooooooooooo1111111111111");
                 const binaryData:any = message.value;
                 const jsonString = binaryData?.toString(); // Convert binary data to a string
                 console.log(jsonString, "after convert to string");
@@ -27,16 +24,9 @@ export const consumeStudent = async () => {
 
                 const messageType = jsonData.type;
                 console.log("Received message type:", messageType);
-
-                // Call handleMessage and wait for it to complete
-                // const response = await handleMessage(jsonData.data, messageType);
-
-                // console.log("response in handle message", response);
-
-                // Further processing or logging based on the response
-                // if (response) {
-                //     await orderProducer(response, 'product','successOrdered')
-                // }
+                if(messageType==="review-scheduler-data"){
+                    handleKafkaMessage("getReviewStudents",messageType)
+                }
               
             }
         });

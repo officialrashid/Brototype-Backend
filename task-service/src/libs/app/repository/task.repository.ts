@@ -384,26 +384,37 @@ export default {
 
 
     try {
-      let query: any = {
-        studentId: studentId,
-      };
-
-      // Set the dynamic field based on the taskType
-      query[`${taskType}Workouts.week`] = weekName;
-      query[`${taskType}Workouts.mainQuestionNumber`] = mainQuestionNumber;
-
-      const response = await schema.WeeklyTaskUpdation.find(query, {
-        _id: 0,
-        [`${taskType}Workouts.$`]: 1, // Project only the matched element from the array
-      });
-
+    
+      // // Set the dynamic field based on the taskType
+      const response: any = await schema.WeeklyTaskUpdation.find({ studentId: studentId });
+      console.log(response, "Response");
+      
       if (response && response.length > 0) {
-        const result = response.map(entry => (entry as any)[`${taskType}Workouts`][0].questionNumbersAndAnswers);
-
-        return { status: true, message: "Data fetched successfully", data: result };
+        const tskType = response[0][`${taskType}Workouts`];
+        console.log(tskType, "Workouts for Task Type");
+      
+        if (tskType) {
+          // Filter based on week and mainQuestionNumber
+          const filteredWorkouts = tskType.filter((workout: { week: any; mainQuestionNumber: number; }) => workout.week === weekName && workout.mainQuestionNumber === parseInt(mainQuestionNumber, 10));
+      
+          if (filteredWorkouts.length > 0) {
+            // Extract questionNumbersAndAnswers
+            const questionNumbersAndAnswers = filteredWorkouts.map((workout: { questionNumbersAndAnswers: any; }) => workout.questionNumbersAndAnswers);
+      
+            console.log(questionNumbersAndAnswers, "Question Numbers And Answers");
+      
+            return { status: true, message: "Data fetched successfully", data: questionNumbersAndAnswers };
+          } else {
+            return { status: false, message: "No matching data found for the specified week and mainQuestionNumber" };
+          }
+        } else {
+          return { status: false, message: "No matching data found for the specified task type" };
+        }
       } else {
-        return { status: false, message: "No matching data found" };
+        return { status: false, message: "No data found for the specified student ID" };
       }
+      
+      
     } catch (error) {
       console.error("Error fetching task details:", error);
       return { status: false, message: "Some issues in fetching data" };
@@ -548,6 +559,7 @@ export default {
 
       const response = await schema.TechnicalWorkouts.find(query);
 
+console.log(response,"responseee in technical workoutsssssss");
 
       if (!response || response.length === 0) {
         return { status: false, message: 'No documents found for the specified domain and week' };

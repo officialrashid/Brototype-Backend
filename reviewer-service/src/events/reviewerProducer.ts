@@ -4,7 +4,7 @@ import {kafka} from "../config/kafkaClient"
 
 const producer = kafka.producer()
 
-export const authenticationProducer = async (sendData:any,topic:any,type:any)=>{
+export const reviewerProducer = async (sendData:any,topic:any,type:any)=>{
   
     try{
         if(!sendData){

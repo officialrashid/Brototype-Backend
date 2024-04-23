@@ -1,6 +1,6 @@
 import {Kafka} from "kafkajs"
 
 export const kafka = new Kafka({
-    clientId: 'reviewer',
+    clientId: 'review-book',
     brokers: ['demo-kafka:9092']
 })

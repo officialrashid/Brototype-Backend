@@ -18,5 +18,6 @@ export default (dependencies:any)=>{
   router.get('/get-personalWorkout-task/:week',getPersonalWorkoutTaskController)
   router.get('/get-miscellaneousWorkout-task/:week',getMiscellaneousWorkoutTaskController)
   router.get('/get-technicalWorkout-task',getTechnicalWorkoutTaskController)
+  
   return router
 }

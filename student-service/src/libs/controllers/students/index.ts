@@ -17,6 +17,8 @@ import governmentIdUpdate_Controller from "./governmentIdUpdateController"
 import getAllStudents_Controller from "./getAllStudentsController"
 import getPerPageStudent_Controller from "./getPerPageStudentController"
 import getAllChatStudents_Controller from "./getAllChatStudentsController"
+import addReviewResult_Controller from "./addReviewResultController"
+import getReviewStudents_Controller from "./getReviewStudentsController"
 export default (dependencies:any)=>{
 
     return{
@@ -37,6 +39,8 @@ export default (dependencies:any)=>{
         governmentIdUpdateController: governmentIdUpdate_Controller(dependencies),
         getAllStudentsController: getAllStudents_Controller(dependencies),
         getPerPageStudentController: getPerPageStudent_Controller(dependencies),
-        getAllChatStudentsController: getAllChatStudents_Controller(dependencies)
+        getAllChatStudentsController: getAllChatStudents_Controller(dependencies),
+        addReviewResultController: addReviewResult_Controller(dependencies),
+        getReviewStudentsController: getReviewStudents_Controller(dependencies)
     }
 }
