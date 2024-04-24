@@ -10,6 +10,7 @@ import addTechnicalWorkoutsTask_Controller from "./addTechnicalWorkoutsTaskContr
 import getTechnicalWorkoutTask_Controller from "./getTechnicalWorkoutTaskController "
 import addMiscellaneousWorkoutsTask_Controller from "./addMiscellaneousWorkoutsTaskController"
 import getMiscellaneousWorkoutTask_Controller from "./getMiscellaneousWorkoutTaskController"
+import getWeekTask_Controller from "./getWeekTaskController"
 export default (dependencies:any)=>{
 
     return{
@@ -24,5 +25,6 @@ export default (dependencies:any)=>{
         getTechnicalWorkoutTaskController: getTechnicalWorkoutTask_Controller(dependencies),
         addMiscellaneousWorkoutsTaskController: addMiscellaneousWorkoutsTask_Controller(dependencies),
         getMiscellaneousWorkoutTaskController: getMiscellaneousWorkoutTask_Controller(dependencies),
+        getWeekTaskController: getWeekTask_Controller(dependencies),
     }
 }

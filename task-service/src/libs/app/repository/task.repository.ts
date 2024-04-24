@@ -571,7 +571,41 @@ console.log(response,"responseee in technical workoutsssssss");
 
       return { status: false, message: 'An error occurred' };
     }
+  },
+  getWeekTask: async (studentId: string, weekName: string) => {
+    try {
+      if (!studentId || !weekName) {
+        return { status: false, message: "Student ID or week name not provided" };
+      }
+  
+      const response = await schema.WeeklyTaskUpdation.findOne({ studentId: studentId });
+  
+      if (!response) {
+        return { status: false, message: "No data found for the specified student ID" };
+      }
+  
+      // Filter the arrays based on the matching week
+      const filteredTasks = response.toJSON(); // Convert Mongoose document to plain JavaScript object
+  
+      const weekTasks = {
+        personalWorkouts: filteredTasks.personalWorkouts.filter(workout => workout.week === weekName),
+        technicalWorkouts: filteredTasks.technicalWorkouts.filter(workout => workout.week === weekName),
+        miscellaneousWorkouts: filteredTasks.miscellaneousWorkouts.filter(workout => workout.week === weekName)
+      };
+  
+      if (Object.values(weekTasks).some(array => array.length > 0)) {
+        console.log(weekTasks, "Week tasks fetched successfully");
+        return { status: true, message: "Week tasks fetched successfully", data: weekTasks };
+      } else {
+        return { status: false, message: "No tasks found for the specified student and week" };
+      }
+    } catch (error) {
+      console.error("Error fetching week tasks:", error);
+      return { status: false, message: "Some error occurred while fetching week tasks" };
+    }
   }
+  
+  
 
 
 
