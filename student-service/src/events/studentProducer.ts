@@ -20,7 +20,7 @@ export const studentProducer = async (sendData:any,topic:any,type:any)=>{
         console.log(messagePayload.data,"message payload cming to the producer");
         const result:any = await producer.send({
             topic: topic,
-            messages: [{ value: JSON.stringify(messagePayload) }]
+            messages: [{ value: JSON.stringify(sendData) }]
         })
         console.log(result, '////////////result');
         if (result && result[0] && result[0]?.error) {

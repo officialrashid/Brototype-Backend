@@ -44,6 +44,5 @@ app.use('/api', routes(dependencies));
 // Start the server
 serverConfig(server, config).startServer();
 
-// setInterval(async()=>{
-//     await consumeStudent()
-// },10000)
+
+ consumeStudent()

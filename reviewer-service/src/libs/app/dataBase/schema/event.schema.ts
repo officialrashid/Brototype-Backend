@@ -22,6 +22,7 @@ interface Event {
     studentId: string;
     booked: boolean;
     status: boolean;
+    meetingUrl:String
   }[]; // Specify the type as an array of objects
 }
 

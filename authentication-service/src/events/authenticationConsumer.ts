@@ -13,19 +13,19 @@ export const consumeAuthentication = async () => {
         console.log('Consumer connected');
 
         await consumer.subscribe({ topic: 'authentication', fromBeginning: true });
+        await consumer.subscribe({ topic: 'review-events', fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ message }) => {
-                console.log(message, "ooooooooooooooooooooo");
-                console.log(message.value, "ooooooooooooooooooooo1111111111111");
                 const binaryData = message?.value;
                 const jsonString:any = binaryData?.toString(); // Convert binary data to a string
                 console.log(jsonString, "after convert to string");
                 const jsonData = JSON.parse(jsonString); // Parse the string as JSON
-                console.log("Received JSON dataaaaaaaaaaaaaaaaaa\\\\\\\\\\////////////////////////////:", jsonData.data);
+
 
                 const messageType = jsonData?.type;
-                console.log("Received message type:", messageType);
-
+                if(messageType==="review-scheduler-data"){
+                    const response = await handleKafkaMessages("getReviewStudents",messageType);
+                   }
                 // Call handleMessage and wait for it to complete
                const response = await handleKafkaMessages(jsonData.data, messageType);
                 
@@ -37,7 +37,6 @@ export const consumeAuthentication = async () => {
                     
                     eventEmitter.emit('authDataResponse', response);
                 }
-              
             }
 
         });

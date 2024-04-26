@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 import admin from 'firebase-admin';
 import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adminsdk-9qeji-41b48a5487.json'
 import mongoose from "mongoose";
+import { response } from "express";
+import { authenticationProducer } from "../../../events/authenticationProducer";
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -476,6 +478,56 @@ export default {
      } catch (error) {
        return {status:false,message:"Error in the check student active or not"}
      }
-  }
+  },
+  getReviewAdvisors : async () =>{
+     try {
+       const response = await schema.Advisors.find({},"_id")
+       const cleanResponse = response.map((adv)=>{
+        return {_id:adv._id.toHexString()}
+       }
+       
+       )
+       console.log(cleanResponse,"llllllll");
+       if(cleanResponse.length > 0){
+        const response = await authenticationProducer(cleanResponse,'coordinator-data','reviewAdvisors');
+       }
+       
+     } catch (error) {
+       return {status:false,message:"Error getting from get review advisors"}
+     }
+  },
+  
+  advisorLogin: async (uniqueId: string) => {
+    try {
 
+      const advisor = await schema.Advisors.findOne({ uniqueId });
+
+      if (advisor) {
+        console.log(advisor);
+
+        const advisors = {
+          _id: advisor._id.toString(),
+          name: advisor.firstName?.toString(),
+          email: advisor.email?.toString()
+        };
+
+        const accessToken = await jwt.sign(advisors, config.secretKey, { expiresIn: '1d' });
+        if (accessToken) {
+          const uid = advisors._id.toString();
+          const customToken = await admin.auth().createCustomToken(uid);
+          if (customToken) {
+            return { advisor, accessToken, customToken };
+          } else {
+            return { status: false, message: "reviewer not found" }
+          }
+        } else {
+          return { status: false, message: "your access denied some time wait" }
+        }
+      } else {
+        return { status: false, message: "reviewer not found" }
+      }
+    } catch (error) {
+      return { error: 'Internal server error' };
+    }
+  },
 }

@@ -11,6 +11,7 @@ export const getDomainWiseReviewers_Usecase = (dependencies: any) => {
 
     const executeFunction = async (domain: string) => {
         try {
+            console.log(domain,"lllllllllllll(*******&&&&& Usecaseeeeee");
             const response = await reviewerRepository.getDomainWiseReviewers(domain);
             if (response.status===true) {
                 return { response }

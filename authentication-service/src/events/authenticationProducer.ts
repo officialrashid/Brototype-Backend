@@ -17,15 +17,28 @@ export const authenticationProducer = async (sendData:any,topic:any,type:any)=>{
             type: type,
             data: sendData // Your actual hjhdata here
         };
-        console.log(messagePayload.data,"message payload cming to the producer");
-        const result:any = await producer.send({
-            topic: topic,
-            messages: [{ value: JSON.stringify(messagePayload) }]
-        })
-        console.log(result, '////////////result');
-        if (result && result[0] && result[0]?.error) {
-            throw new Error('Message production failed')
+        if(type==="reviewAdvisors"){
+            console.log(messagePayload.data,"message payload cming to the producer");
+            const result:any = await producer.send({
+                topic: topic,
+                messages: [{ value: JSON.stringify(sendData) }]
+            })
+            console.log(result, '////////////result');
+            if (result && result[0] && result[0]?.error) {
+                throw new Error('Message production failed')
+            }
+        }else{
+            console.log(messagePayload.data,"message payload cming to the producer");
+            const result:any = await producer.send({
+                topic: topic,
+                messages: [{ value: JSON.stringify(messagePayload) }]
+            })
+            console.log(result, '////////////result');
+            if (result && result[0] && result[0]?.error) {
+                throw new Error('Message production failed')
+            }
         }
+      
 
     } catch(err){
         console.log(err,"err in the product producer");

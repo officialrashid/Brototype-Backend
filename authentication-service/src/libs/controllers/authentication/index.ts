@@ -15,6 +15,7 @@ import updateStudentPlaced_Controller from "./updateStudentPlacedController"
 import getStudentsAndPlacedStudents_Controller from "./getStudentsAndPlacedStudentsController"
 import getPerPageStudentStatus_Controller from "./getPerPageStudentStatusController"
 import addAdvisor_Controller from "./addAdvisorController"
+import advisorLogin_Controller from "./advisorLoginController"
 export default (dependencies:any)=>{
 
     return{
@@ -34,6 +35,7 @@ export default (dependencies:any)=>{
         getStudentsAndPlacedStudentsController: getStudentsAndPlacedStudents_Controller(dependencies),
         getPerPageStudentStatusController: getPerPageStudentStatus_Controller(dependencies),
         addAdvisorController: addAdvisor_Controller(dependencies),
+        advisorLoginController: advisorLogin_Controller(dependencies),
 
     }
 }

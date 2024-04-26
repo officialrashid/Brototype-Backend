@@ -431,7 +431,7 @@ export default {
       console.log(uniqueLetters, "uniqueLetters");
 
       // Calculate the number of documents to skip based on the currentPage
-      const pageSize = 10; // Number of students per page
+      const pageSize = 3; // Number of students per page
       const skip = (currentPage - 1) * pageSize;
 
       // Match documents where uniqueId starts with the extracted prefix
@@ -582,10 +582,12 @@ export default {
       const reviewStudents: any = []
       const reviewStudnet = await schema.Manifest.find({lastWeekReviewStatus:true})
       reviewStudnet.map((student:any,index:number)=>{
-        const studentId = student?.studentId
-          reviewStudents.push({studentId})
+        const _id = student?.studentId.toHexString()
+          reviewStudents.push({_id})
       })
       if(reviewStudents.length > 0){
+        console.log(reviewStudents,"llllllllll999676665");
+        
         const response = await studentProducer(reviewStudents, 'student-data', 'reviewStudents');
       }
     } catch (error: any) {

@@ -1,9 +1,7 @@
-import { callbackPromise } from "nodemailer/lib/shared";
+
 import schema from "../dataBase/schema"
 import moment from "moment";
-import { String } from "aws-sdk/clients/acm";
 import mongoose from "mongoose";
-import { ObjectId } from "mongodb";
 import {reviewerProducer} from "../../../events/reviewerProducer"
 
 export default {
@@ -20,7 +18,7 @@ export default {
       });
 
       // Loop through existing events to check for overlaps
-      if (existingEvents.length > 0) {
+      if (existingEvents?.length > 0) {
         for (const eventData of existingEvents[0].events) {
           // Check if any of the dates in the date array are included in eventData.date
           if (date.some(d => eventData.date.includes(d))) {
@@ -114,7 +112,8 @@ export default {
             studentId: "",
             booked: false,
             status: false,
-            date: dateString // Add the date to each booked event
+            date: dateString, // Add the date to each booked event,
+            meetingUrl:""
           }));
   
           existingDocument.events.push({
@@ -158,7 +157,8 @@ export default {
               studentId: "",
               booked: false,
               status: false,
-              date: dateString // Add the date to each booked event
+              date: dateString, // Add the date to each booked event
+              meetingUrl:""
             })),
             weekly: [],
             monthly: [],
@@ -255,7 +255,8 @@ export default {
           advisorId: "",
           studentId: "",
           booked: false,
-          status: false
+          status: false,
+          meetingUrl:""
         }));
   
         existingDocument.events[eventIndex].bookedEvents = bookedEvents;
@@ -794,7 +795,8 @@ getDomainWiseReviewers: async (domains:string) => {
       }
 
       const response = await schema.Profile.find({ "PrefferedDomainsForReview": { $in: domains } });
-
+      console.log(domains,"domainssssssssss");
+      
       if (response.length === 0) {
           return { status: false, message: "No reviewers found for the specified domains" };
       }
@@ -835,8 +837,8 @@ updateReviewCompleted : async  (reviewerId:string,eventId:string,bookedEventId:s
         return { status:false, message:"reviewer not found"}
       }
    } catch (error) {
-     return {status:false,message:"Error getting update review completed status"}
-   }
+     return { status:false, message:"Error getting update review completed status" }
+   } 
 }
 
 

@@ -14,6 +14,8 @@ import {updateStudentPlaced_Usecase} from "./updateStudentPlacedUsecase";
 import {getStudentsAndPlacedStudents_Usecase} from "./getStudentsAndPlacedStudentsUsecase";
 import {gePerPageStudentStatus_Usecase} from "./getPerPageStudentStatusUsecase";
 import {addAdvisor_Usecase} from "./addAdvisorUsecase";
+import {getReviewAdvisors_Usecase} from "./getReviewAdvisors";
+import {advisorLogin_Usecase} from "./advisorLoginUsecase"
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -30,5 +32,7 @@ export{
     updateStudentPlaced_Usecase,
     getStudentsAndPlacedStudents_Usecase,
     gePerPageStudentStatus_Usecase,
-    addAdvisor_Usecase
+    addAdvisor_Usecase,
+    getReviewAdvisors_Usecase,
+    advisorLogin_Usecase
 }
