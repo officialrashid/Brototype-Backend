@@ -2,8 +2,8 @@ import express from "express"
 import { sendAdvisorData } from "../external-libraries/kafkaService"
 import { returnToken } from "../app"
 import { consumeMeetData } from "../external-libraries/reviewConsumer"
-import { MeetController } from "../conrollers/meetController"
-const meetController=new MeetController()
+// import { MeetController } from "../conrollers/meetController"
+// const meetController=new MeetController()
 
 
 const meetRouter=express.Router()
@@ -24,6 +24,6 @@ export let meetLink=''
 //    res.json({token:meetLinkData.value})
    
 // })
-meetRouter.get('/create-meet/:id',meetController.OnCreateMeet.bind(meetController))
+// meetRouter.get('/create-meet/:id',meetController.OnCreateMeet.bind(meetController))
 
 export {meetRouter}

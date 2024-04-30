@@ -9,8 +9,8 @@ export default (dependencies: any) => {
     } = dependencies
     const getStudentsMarkController = async (req: Request, res: Response) => {
         try{
-            const {studentId,batchId,fumigationType} = req.body // destructuring data
-            console.log(studentId,batchId,fumigationType,"<><>,.");
+            const {studentId,batchId,fumigationType} = req.query // destructuring data
+            console.log(studentId,batchId,fumigationType,"<><>,0000.");
             
             const response = await getStudentsMark_Usecase(dependencies).excutefunction(studentId,batchId,fumigationType)// pass the data to usecase function
             res.status(201).json(response) // return response

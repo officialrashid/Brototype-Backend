@@ -20,6 +20,7 @@ export default (dependencies:any)=>{
   router.post('/invigilator-login',invigilatorLoginController) //
   router.post('/create-invigilator',createInvigilatorController) //
   router.get('/get-all-batches',getAllBatches)
+ 
   router.get('/get-students-mark',getStudentsMarkController)
   router.delete('/remove-batchwise-students',removeBatchwiseStudentsController)
   router.delete('/remove-batch',removeBatchController)

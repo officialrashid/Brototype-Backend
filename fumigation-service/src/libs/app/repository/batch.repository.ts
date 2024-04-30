@@ -98,20 +98,36 @@ export default{
          try {
           const allFumigationStudents: any[] = [];
           const response = (await schema.markRecords.find({ batchId: batchId })) as any;
-        
+          console.log(response,"lll batch mark tecord founf");
+          
           if (!response || response.length === 0) {
             return { status: false, message: "Batch not found" };
           }
         
           if (fumigationType === "mock") {
+            console.log("debuggggg");
+            
             const mockPassedStudentsId = response[0]?.mock[0]?.passed || [];
+            console.log(mockPassedStudentsId,"passed student idssssss");
+            
             const batches = await schema.Batches.find({ _id: batchId });
+            console.log(batches,"batchess in passeddd");
+            
             if (mockPassedStudentsId.length > 0 && batches.length > 0) {
+              console.log("next stepppppp");
+              
               // Loop through the passed students in mock
               mockPassedStudentsId.forEach((studentId: string | undefined) => {
                 // Loop through batches and fumigation students
-                batches[0].fumigationStudents.forEach((student) => {
-                  if (student.studentId === studentId) {
+                batches[0].fumigationStudents.forEach((student:any) => {
+                  console.log(student,"full student");
+                  
+                  console.log(student.studentId,"batch idd std");
+                  console.log(studentId,"student idssss idd std");
+                  const convertStudnetId:any = student.studentId.toString()
+                  if (convertStudnetId === studentId) {
+                    console.log("uliil next stepp");
+                    
                     allFumigationStudents.push({
                       studentId: student.studentId,
                       name: student.name,
@@ -123,6 +139,8 @@ export default{
                   }
                 });
               });
+              console.log(allFumigationStudents,"Llllllllllllll");
+              
               return { status: true, mockPassedStudents: allFumigationStudents };
             } else {
               return { status: false, message: "No passed students in mock or batch not found" };
@@ -134,8 +152,9 @@ export default{
              // Loop through the passed students in mock
              finalPassedStudentsId.forEach((studentId: string | undefined) => {
                // Loop through batches and fumigation students
-               batches[0].fumigationStudents.forEach((student) => {
-                 if (student.studentId === studentId) {
+               batches[0].fumigationStudents.forEach((student:any) => {
+                const convertStudnetId:any = student.studentId.toString()
+                 if (convertStudnetId === studentId) {
                    allFumigationStudents.push({
                      studentId: student.studentId,
                      name: student.name,
@@ -176,8 +195,9 @@ export default{
               // Loop through the passed students in mock
               mockPassedStudentsId.forEach((studentId: string | undefined) => {
                 // Loop through batches and fumigation students
-                batches[0].fumigationStudents.forEach((student) => {
-                  if (student.studentId === studentId) {
+                batches[0].fumigationStudents.forEach((student:any) => {
+                  const convertStudnetId:any = student.studentId.toString()
+                  if (convertStudnetId === studentId) {
                     allFumigationStudents.push({
                       studentId: student.studentId,
                       name: student.name,
@@ -200,8 +220,9 @@ export default{
              // Loop through the passed students in mock
              finalPassedStudentsId.forEach((studentId: string | undefined) => {
                // Loop through batches and fumigation students
-               batches[0].fumigationStudents.forEach((student) => {
-                 if (student.studentId === studentId) {
+               batches[0].fumigationStudents.forEach((student:any) => {
+                const convertStudnetId:any = student.studentId.toString()
+                 if (convertStudnetId === studentId) {
                    allFumigationStudents.push({
                      studentId: student.studentId,
                      name: student.name,

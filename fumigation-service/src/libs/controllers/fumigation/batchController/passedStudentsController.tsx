@@ -10,7 +10,9 @@ export default (dependencies: any) => {
 
     const passedStudentsController = async (req: Request, res: Response) => {
         try {
-            const {batchId,fumigationType} = req.body
+            const {batchId,fumigationType} = req.query
+            console.log("log passed students debugging statgeee",batchId,fumigationType);
+            
             const response = await passedStudents_Usecase(dependencies).excutefunction(batchId,fumigationType) // call the usecase excute function
             res.status(201).json(response) // return response json format
         } catch(err){
