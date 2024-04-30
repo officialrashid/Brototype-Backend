@@ -22,7 +22,8 @@ interface Event {
     studentId: string;
     booked: boolean;
     status: boolean;
-    meetingUrl:String
+    meetingUrl:{type:String,defualt:""};
+    reviewId : {type:mongoose.Types.ObjectId,defualt:""}
   }[]; // Specify the type as an array of objects
 }
 
