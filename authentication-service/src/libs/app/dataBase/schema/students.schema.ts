@@ -21,7 +21,10 @@ const studentsSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-
+    currentWeek: {type:Number,default:1},
+    lastWeekReviewStatus: {type:Boolean,default:true},
+    repeatCount : {type:Number,default:0},
+    isRepeat : {type:Boolean, default:false}
 });
   
 

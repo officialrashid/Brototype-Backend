@@ -3,17 +3,17 @@
 export const getReviewStudents_Usecase = (dependencies: any) => {
 
   const {
-      repository: { studentsRepository },
+      repository: { authenticationRepository },
   } = dependencies;
 
-  if (!studentsRepository) {
+  if (!authenticationRepository) {
       return console.log("Error: student Repository not found");
   }
 
   const executeFunction = async () => {
       try {
           
-          const response = await studentsRepository.getReviewStudents()
+          const response = await authenticationRepository.getReviewStudents()
      
           
           if(response && response.length !=0){

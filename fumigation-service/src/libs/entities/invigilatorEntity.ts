@@ -4,14 +4,14 @@ export class Invigilators {
     
     name: String;
     email: String;
-    phone: Number;
+    contact: Number;
     batch: String;
     uniqueId : String;
   
     constructor(data: InvigilatorsData) {
       this.name = data.name;
       this.email = data.email;
-      this.phone = data.phone;
+      this.contact = data.contact;
       this.batch = data.batch;
       this.uniqueId = data.uniqueId;
   
@@ -22,7 +22,7 @@ export class Invigilators {
   interface InvigilatorsData {
     name: String;
     email: String;
-    phone: Number;
+    contact: Number;
     batch: String;
     uniqueId: String;
 

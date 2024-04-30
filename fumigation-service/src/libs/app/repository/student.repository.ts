@@ -349,17 +349,23 @@ console.log(fumigationStudent,"fumihgation studentseeeee");
         _id: batchId,
         "fumigationStudents.studentId": studentId,
       });
-
+      console.log(studentDetails?.fumigationStudents,"studentDetailsss");
+      
       if (!studentDetails) {
         return { status: false, message: "Batch or student not found" };
       }
 
       // Assuming fumigationStudents is an array, find the student in the array
-      const foundStudentIndex = studentDetails.fumigationStudents.findIndex(
-        (student) => student.studentId === studentId
-      );
+      const foundStudentIndex = studentDetails.fumigationStudents.findIndex((student) =>{
+        console.log(student.studentId?.toString(),'----',studentId);
+        
+return student.studentId == studentId
+      } );
+console.log(foundStudentIndex,"llllllllllll990***");
 
       if (foundStudentIndex === -1) {
+        console.log("errore il keriiii");
+        
         return { status: false, message: "Student not found in the batch" };
       }
 

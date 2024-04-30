@@ -23,8 +23,8 @@ export default{
       },
       invigilatorEmailExist: async (email: string, phone: Number) => {
         try {
-          const response = await schema.Invigilators.find({ $or: [{ email }, { phone }] });
-          console.log(response);
+          const response = await schema.Invigilators.findOne({ $or: [{ email }, { phone }] });
+          console.log(response,"ttgddcvvdcgdgfdd");
     
           return response;
         } catch (err) {
@@ -46,7 +46,7 @@ export default{
           const invigilatorData = {
             name: data.name,
             email: data.email,
-            phone: data.phone,
+            phone: data.contact,
             batch: data.batch,
             uniqueId: data.uniqueId
     

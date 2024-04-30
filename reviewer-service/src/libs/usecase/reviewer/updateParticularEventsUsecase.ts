@@ -9,9 +9,9 @@ export const updateParticularEvents_Usecase = (dependencies: any) => {
         return console.log("Error: student Repository not found");
     }
 
-    const executeFunction = async (reviewerId:string,eventId:string,bookedEventId:string,advisorId:string,studentId:string,bookStatus:boolean) => {
+    const executeFunction = async (reviewerId:string,eventId:string,bookedEventId:string,advisorId:string,studentId:string,bookStatus:boolean,reviewId:string) => {
         try {
-            const response = await reviewerRepository.updateParticularEvents(reviewerId,eventId,bookedEventId,advisorId,studentId,bookStatus);
+            const response = await reviewerRepository.updateParticularEvents(reviewerId,eventId,bookedEventId,advisorId,studentId,bookStatus,reviewId);
             if (response.status==true) {
                 return {response }
             }else{

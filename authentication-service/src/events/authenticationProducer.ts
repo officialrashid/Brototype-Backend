@@ -17,7 +17,7 @@ export const authenticationProducer = async (sendData:any,topic:any,type:any)=>{
             type: type,
             data: sendData // Your actual hjhdata here
         };
-        if(type==="reviewAdvisors"){
+        if(type==="reviewAdvisors" || type ==="reviewStudents"){
             console.log(messagePayload.data,"message payload cming to the producer");
             const result:any = await producer.send({
                 topic: topic,

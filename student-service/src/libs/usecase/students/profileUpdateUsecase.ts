@@ -40,7 +40,7 @@ export const profileUpdate_Usecase = (dependencies: any) => {
       studentId,
       firstName: data.firstName,
       lastName: data.lastName,
-      domain: `${data.domain} developer`,
+      domain: data.domain,
       batch: data.batch,
       imageUrl,
       isGovernmentId: false

@@ -1,6 +1,7 @@
 import dependencies from "../config/dependencies";
 import { checkStudentUniqueId_Usecase } from "../libs/usecase";
 import {getReviewAdvisors_Usecase} from "../libs/usecase"
+import { getReviewStudents_Usecase } from "../libs/usecase";
 const handleKafkaMessages = async (data: string, type: string) => {
   console.log(data,type);
   
@@ -22,10 +23,12 @@ const handleKafkaMessages = async (data: string, type: string) => {
   }
   if(type==="review-scheduler-data"){
     const useCaseInstance = getReviewAdvisors_Usecase(dependencies);
-    if (useCaseInstance) {
+    const reviewStudentsUseCaseInstance = getReviewStudents_Usecase(dependencies)
+    if (useCaseInstance && reviewStudentsUseCaseInstance) {
       const response = await useCaseInstance.executeFunction();
-      return response;
-    } else {
+      const reviewStudentsResponse = await reviewStudentsUseCaseInstance.executeFunction()
+      // return {response,reviewStudentsResponse};
+    }else{
       // Handle the case when checkStudentUniqueId_Usecase is null
       console.error("checkStudentUniqueId_Usecase is null");
       return null; // Or handle the error according to your needs

@@ -452,13 +452,13 @@ export default {
 
   getAllReviewersProfile: async (currentPage: number) => {
     try {
-      const pageSize = 10; // Number of reviewers per page
-      const skip = (currentPage - 1) * pageSize;
+      // const pageSize = 10; // Number of reviewers per page
+      // const skip = (currentPage - 1) * pageSize;
 
       // Fetch reviewers' profiles with pagination
       const response = await schema.Profile.find({})
-        .skip(skip)
-        .limit(pageSize);
+        // .skip(skip)
+        // .limit(pageSize);
 
       if (response && response.length > 0) {
         return { status: true, response };
@@ -688,7 +688,7 @@ export default {
       return { status: false, message: "Error in getting particular Events" };
     }
   },
-  updateParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string, advisorId:string, studentId:string, bookStatus:boolean) => {
+  updateParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string, advisorId:string, studentId:string, bookStatus:boolean,reviewId:string) => {
     try {
         if (!reviewerId || !eventId || !bookedEventId) {
             return { status: false, message: "Not update particular events" };
@@ -700,7 +700,7 @@ export default {
 
         if (response) {
             const eventIdObj:any = new mongoose.Types.ObjectId(eventId);
-            let bookedEventDetails = null; // Initialize variable to store booked event details
+            let bookedEventDetails:any = null; // Initialize variable to store booked event details
 
             response.events.forEach((evt:any) => {
                 console.log(evt._id, "this is eventidssss");
@@ -713,6 +713,7 @@ export default {
                             bookedEvt.studentId = studentId;
                             // Store booked event details
                             bookedEventDetails = bookedEvt;
+                         
                         } else {
                             return { status: false, message: "Booked event not found" }
                         }
@@ -723,10 +724,15 @@ export default {
             });
 
             await response.save(); // Save changes to the database
-            const bookedEventsData = {
+            const bookedEventsData:any = {
                  reviewerId:reviewerId,
                  eventId:eventId,
-                 bookedEventDetails:bookedEventDetails
+                 reviewId :reviewId,
+                 slotId:bookedEventDetails?._id,
+                 startTime : bookedEventDetails.startTime,
+                 endTime : bookedEventDetails.endTime,
+                 scheduledDate : bookedEventDetails.date,
+                 coordinatorId : bookedEventDetails.advisorId
             }
              console.log(bookedEventsData,"bookedEvenst detailssss");
              if(bookedEventsData){

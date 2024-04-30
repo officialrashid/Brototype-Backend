@@ -11,6 +11,8 @@ export default (dependencies: any) => {
     const studentsMarkController = async (req: Request, res: Response) => {
         try {
             const { studentId, batchId, invigilatorId, type, startTime, endTime, mark, fumigationType } = req.body // destructure all data
+            console.log(studentId, batchId, invigilatorId, type, startTime, endTime, mark, fumigationType,"coming body yarrrrrrr");
+            
             const response = await studentsMark_Usecase(dependencies).excutefunction(studentId, batchId, invigilatorId, type, startTime, endTime, mark, fumigationType) // pass all destructuring data to students usecase function
 
             res.status(201).json(response) // return response

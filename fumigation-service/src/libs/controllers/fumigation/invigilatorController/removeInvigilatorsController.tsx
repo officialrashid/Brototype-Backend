@@ -9,7 +9,9 @@ export default (dependencies:any)=>{
     } = dependencies
  const removeInvigilatorsController = async (req:Request,res:Response)=>{
      try{
-        const {invigilatorId} = req.body // destructuring data
+        const {invigilatorId} = req.params 
+        console.log(invigilatorId,"invigilatorIDssssss");
+        
         const response = await  removeInvigilator_Usecase(dependencies).excutefunction(invigilatorId) // pass the data to usecase
         res.status(201).json(response) // return response
      } catch(err){

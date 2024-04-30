@@ -9,7 +9,9 @@ export default (dependencies:any)=>{
     } = dependencies
  const removeBatchwiseStudentsController = async (req:Request,res:Response)=>{
    try{
-    const {studentId,batchId} = req.body
+    const {studentId,batchId} = req.query
+    console.log(studentId,batchId,"{{____----------");
+    
     const response = await  removeBatchwiseStudents_Usecase(dependencies).excutefunction(studentId,batchId)
     res.status(201).json(response)
    } catch(err){

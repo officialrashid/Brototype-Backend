@@ -281,10 +281,10 @@ export default {
         return { status: false, message: "batch not found" }
       }
       const student = await batch.students.find((s) => s.studentId === studentId)
-      if (!response) {
-        return { status: false, message: "student not found in this batch" }
-      }
-      const currentWeeks = student?.weeks
+      // if (!response) {
+      //   return { status: false, message: "student not found in this batch because student started a course" }
+      // }
+      const currentWeeks = student?.weeks || 0
       return currentWeeks;
 
     } catch (err) {
@@ -420,72 +420,78 @@ export default {
     }
   },
   getAllStudents: async (uniqueId: string, currentPage: number) => {
-    console.log(uniqueId, "uniqueId cominggg");
+    console.log(uniqueId, "uniqueId cominggg",currentPage,"curreenteeeeee pageeee");
 
     try {
-      // Find the index of 'M' in the uniqueId
-      const indexM = uniqueId.indexOf('M');
+        // Find the index of 'M' in the uniqueId
+        const indexM = uniqueId.indexOf('M');
 
-      // Extract the prefix (all characters before 'M')
-      const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
-      console.log(uniqueLetters, "uniqueLetters");
+        // Extract the prefix (all characters before 'M')
+        const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+        console.log(uniqueLetters, "uniqueLetters");
 
-      // Calculate the number of documents to skip based on the currentPage
-      const pageSize = 3; // Number of students per page
-      const skip = (currentPage - 1) * pageSize;
+        // Calculate the number of documents to skip based on the currentPage
+        // const pageSize = 5; // Number of students per page
+        // const skip = (currentPage - 1) * pageSize;
 
-      // Match documents where uniqueId starts with the extracted prefix
-      const result = await schema.Manifest.aggregate([
-        {
-          $match: {
-            batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
-          }
-        },
-        // Pagination: Skip and limit the number of documents returned
-        { $skip: skip },
-        { $limit: pageSize }
-      ]);
+        // Aggregation pipeline for fetching students from the Manifest collection
+        const studentsPipeline = [
+            {
+                $match: {
+                    batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Match documents where batch starts with the extracted prefix
+                }
+            },
+            // Pagination: Skip and limit the number of documents returned
+            // { $skip: skip },
+            // { $limit: pageSize }
+        ];
 
-      const response = await schema.WeekRecord.aggregate([
-        // Unwind the students array to deconstruct it into separate documents
-        { $unwind: "$students" },
-        // Match only documents where the status is true and repeat is false
-        {
-          $match: {
-            "students.weeks.status": true,
-            "students.weeks.repeat": false
-          }
-        },
-        // Group by studentId to regroup documents by their original studentId
-        {
-          $group: {
-            _id: "$students.studentId",
-            lastWeek: { $last: "$students.weeks.week" } // Get the last week where repeat is false
-          }
-        },
-        // Project to include only the studentId and current week
-        {
-          $project: {
-            _id: 0,
-            studentId: "$_id",
-            currentWeek: { $arrayElemAt: ["$lastWeek", -1] } // Extract the first (and only) element of the array
-          }
-        },
+        // Aggregation pipeline for fetching student status from the WeekRecord collection
+        const statusPipeline = [
+            // Unwind the students array to deconstruct it into separate documents
+            { $unwind: "$students" },
+            // Match only documents where the status is true and repeat is false
+            {
+                $match: {
+                    "students.weeks.status": true,
+                    "students.weeks.repeat": false
+                }
+            },
+            // Group by studentId to regroup documents by their original studentId
+            {
+                $group: {
+                    _id: "$students.studentId",
+                    lastWeek: { $last: "$students.weeks.week" } // Get the last week where repeat is false
+                }
+            },
+            // Project to include only the studentId and current week
+            {
+                $project: {
+                    _id: 0,
+                    studentId: "$_id",
+                    currentWeek: { $arrayElemAt: ["$lastWeek", -1] } // Extract the first (and only) element of the array
+                }
+            }
+        ];
 
-      ]);
+        // Execute both aggregation pipelines in parallel
+        const [students, studentCurrentWeek] = await Promise.all([
+            schema.Manifest.aggregate(studentsPipeline),
+            schema.WeekRecord.aggregate(statusPipeline)
+        ]);
 
-      if (result.length > 0 && response.length > 0) {
-        console.log("kerriiiiiiii", response);
-
-        return { students: result, studentCurrentWeek: response }
-      } else {
-        return { message: "students not found" }
-      }
+        if (students.length > 0 && studentCurrentWeek.length > 0) {
+            console.log("kerriiiiiiii", studentCurrentWeek);
+            return { students, studentCurrentWeek };
+        } else {
+            return { message: "Students or student current week not found" };
+        }
     } catch (error) {
-      console.error(error);
-      throw error; // Rethrow the error for further handling if needed
+        console.error(error);
+        throw error;
     }
-  },
+},
+
   getPerPageStudents: async (uniqueId: string, perPage: number) => {
     try {
       if (!uniqueId) {
@@ -576,24 +582,6 @@ export default {
       return { status: false, message: "students not get chat section" };
     }
   },
-  getReviewStudents: async () => {
-    try {
-      // Aggregate to get last week's data for each student
-      const reviewStudents: any = []
-      const reviewStudnet = await schema.Manifest.find({lastWeekReviewStatus:true})
-      reviewStudnet.map((student:any,index:number)=>{
-        const _id = student?.studentId.toHexString()
-          reviewStudents.push({_id})
-      })
-      if(reviewStudents.length > 0){
-        console.log(reviewStudents,"llllllllll999676665");
-        
-        const response = await studentProducer(reviewStudents, 'student-data', 'reviewStudents');
-      }
-    } catch (error: any) {
-      return { status: false, message: "Error getting review students: " + error.message };
-    }
-  },
 
   // Function to add review result
   addReviewResult: async (
@@ -681,7 +669,9 @@ export default {
       await batch.save();
       const weekString = week;
       const weekNumber = weekString.match(/\d+/)[0];
-      const response = await schema.Manifest.updateOne({ studentId: studentId }, { $set: { lastWeek:weekNumber,lastWeekReviewStatus:status} })
+     if(weekNumber){
+      //  const update
+     }
       return {
         status: true,
         message: 'Review result added/updated successfully.',

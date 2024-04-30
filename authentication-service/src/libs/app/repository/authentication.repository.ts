@@ -185,37 +185,32 @@ export default {
   
   getAllStudentsStatus: async (uniqueId: string, currentPage: number) => {
     try {
-      // Find the index of 'M' in the uniqueId
-      const indexM = uniqueId.indexOf('M');
-  
-      // Extract the prefix (all characters before 'M')
-      const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
-      console.log(uniqueLetters, "uniqueLetters");
-  
-      // Calculate the number of documents to skip based on the currentPage
-      const pageSize = 3; // Number of students per page
-      const skip = (currentPage - 1) * pageSize;
-  
-      // Match documents where uniqueId starts with the extracted prefix
-      const response = await schema.Students.aggregate([
-        {
-          $match: {
-            batch: { $regex: `^${uniqueLetters}`, $options: 'i' } // Using a regex to match the prefix case-insensitively
-          }
-        },
-        // Pagination: Skip and limit the number of documents returned
-      ]);
-  
-      if (response && response.length > 0) {
-        return { response }
-      } else {
-        return { message: "students not found your hub" }
-      }
+        const indexM = uniqueId.indexOf('M');
+        const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+
+        const pageSize = 5; 
+        const skip = (currentPage-1 ) * pageSize;
+
+        const response = await schema.Students.aggregate([
+            {
+                $match: {
+                    batch: { $regex: `^${uniqueLetters}`, $options: 'i' }
+                }
+            },
+            { $skip: skip },
+            { $limit: pageSize }
+        ]);
+
+        if (response && response.length > 0) {
+            return { response };
+        } else {
+            return { message: "students not found your hub" };
+        }
     } catch (error) {
-      console.error(error);
-      return { error: 'Internal server error' }
+        console.error(error);
+        return { error: 'Internal server error' };
     }
-  },
+},
 
   updateStudentStatus: async (studentId: string, action: string) => {
     console.log("Incoming backend action", studentId, action);
@@ -528,6 +523,54 @@ export default {
       }
     } catch (error) {
       return { error: 'Internal server error' };
+    }
+  },
+  getStdDashboardDetais : async (studentId:string) =>{
+     try {
+         if(!studentId){
+          return {status:false,message:"student not found"}
+         }
+         const response = await schema.Students.find({studentId:studentId})
+         if(!response){
+          return {status:false,message:"student not found"}
+         }else{
+          return {status:true,response}
+         }
+     } catch (error) {
+       return {status:false,message:"Error getting from get student details"}
+     }
+  },
+  getReviewStudents: async () => {
+    console.log("get review studentss repository 888*****");
+    
+    try {
+      // Aggregate to get last week's data for each student
+      const reviewStudents: any = []
+      const reviewStudent = await schema.Students.aggregate([
+        {
+          '$match': {
+            '$and': [
+              {
+                'lastWeekReviewStatus': true
+              }, {
+                'isRepeat': true
+              }
+            ]
+          }
+        }
+      ])
+      console.log(reviewStudent,"revewStudnetsssssssssss1111111");
+      
+      const studentData = reviewStudent.map((student:any,index:number)=>{
+         return {_id:student.studentId}
+      })
+      if(studentData.length > 0){
+        console.log(studentData,"llllllllll999676665");
+        const response = await authenticationProducer(studentData, 'student-data', 'reviewStudents');
+      }
+    //  const updateReviewStatus = await schema.Students.updateMany({},{$set:{lastWeekReviewStatus:true}})
+    } catch (error: any) {
+      return { status: false, message: "Error getting review students: " + error.message };
     }
   },
 }

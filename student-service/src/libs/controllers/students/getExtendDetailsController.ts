@@ -8,7 +8,7 @@ export default (dependencies:any)=>{
         useCase: { getExtendDetails_Usecase }
     } = dependencies
  const getExtendDetailsController = async (req:Request,res:Response)=>{
-    const {  studentId,batchId  } = req.query;
+    const { batchId, studentId  } = req.query;
   
     console.log(studentId,"batchId coming to course completion grap");
     console.log(studentId,batchId,"batchId coming to course completion grap");
@@ -19,7 +19,7 @@ export default (dependencies:any)=>{
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const response = await getExtendDetails_Usecase(dependencies).executeFunction(studentId,batchId)
+    const response = await getExtendDetails_Usecase(dependencies).executeFunction(batchId,studentId)
      if(response){
         res.status(201).json(response)
      }  

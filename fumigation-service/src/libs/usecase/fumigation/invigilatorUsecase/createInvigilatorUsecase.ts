@@ -5,7 +5,7 @@ import { sendEmail }from '../../../../nodemailer/nodemailer';
 interface InvigilatorsData {
   name: string;
   email: string;
-  phone: Number;
+  contact: Number;
   batch: string;
   uniqueId: string;
 }
@@ -21,6 +21,8 @@ export const createInvigilator_Usecase = (dependencies: any) => {
 
   const executeFunction = async (data: InvigilatorsData) => {
     try {
+      console.log(data,"dataaaaaaa");
+      
       // Get the last uniqueId from the repository
       const response = await invigilatorRepository.createUniqueId();
       let lastNumber = 0;
@@ -40,7 +42,7 @@ export const createInvigilator_Usecase = (dependencies: any) => {
       }
 
       // Check if email and phone already exist in the database
-      const res = await invigilatorRepository.invigilatorEmailExist(data.email, data.phone);
+      const res = await invigilatorRepository.invigilatorEmailExist(data.email, data.contact);
       console.log(res, "Email and phone check result");
 
       if (!res || (res && res.length === 0)) {

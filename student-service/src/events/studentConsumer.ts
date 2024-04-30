@@ -13,7 +13,7 @@ export const consumeStudent = async () => {
         await consumer.connect();
         console.log('Consumer connected');
 
-        await consumer.subscribe({ topic: 'review-events', fromBeginning: true });
+        // await consumer.subscribe({ topic: 'review-events', fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ message }) => {
                 const binaryData:any = message.value;
