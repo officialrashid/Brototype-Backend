@@ -7,6 +7,7 @@ import firebaseAccountCredentials from '../../../../brototype-29983-firebase-adm
 import mongoose from "mongoose";
 import { response } from "express";
 import { authenticationProducer } from "../../../events/authenticationProducer";
+import { ObjectId } from "mongodb";
 const serviceAccount = firebaseAccountCredentials as admin.ServiceAccount
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -573,4 +574,23 @@ export default {
       return { status: false, message: "Error getting review students: " + error.message };
     }
   },
+  getAdvisorDetails : async (advisorId:string) =>{
+    try {
+       if(!advisorId){
+        return {status:false,message:"advisor not found"}
+       }
+       console.log(advisorId,"advisorid aget dorm ");
+       
+       const response = await schema.Advisors.find({_id:advisorId})
+       console.log(response,"ressposeeee in get advisor detailssss");
+       
+       if(!response){
+        return {status:false,message:"advisor not found"}
+       }else{
+        return {status:true,response}
+       }
+    } catch (error) {
+      return {status:false,message:"Error getting from get advisor details"}
+    }
+  }
 }

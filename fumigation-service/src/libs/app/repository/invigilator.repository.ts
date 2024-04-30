@@ -99,13 +99,14 @@ export default{
       },
      invigilatorLogin : async (uniqueId: string) => {
         try {
-          console.log(uniqueId);
-          const verifyInvigilator = await schema.Invigilators.findOne({ uniqueId });
-      
+          console.log(uniqueId,";;;;;;;;");
+          const verifyInvigilator:any = await schema.Invigilators.findOne({uniqueId});
+           console.log(verifyInvigilator,"verifyInvigilator verifyInvigilator verifyInvigilator");
+           
           if (verifyInvigilator) {
-            console.log(verifyInvigilator);
+            console.log(verifyInvigilator,"lllllll verifieddddd");
       
-            const user = {
+            const user:any = {
               _id: verifyInvigilator._id.toString(),
               name: verifyInvigilator.name?.toString(),
               email: verifyInvigilator.email?.toString()

@@ -17,6 +17,7 @@ import getPerPageStudentStatus_Controller from "./getPerPageStudentStatusControl
 import addAdvisor_Controller from "./addAdvisorController"
 import advisorLogin_Controller from "./advisorLoginController"
 import getStdDashboardDetails_Controller from "./getStdDashboardDetailsController"
+import getAdvisorDetails_Controller from "./getAdvisorDetailsController"
 export default (dependencies:any)=>{
 
     return{
@@ -38,6 +39,7 @@ export default (dependencies:any)=>{
         addAdvisorController: addAdvisor_Controller(dependencies),
         advisorLoginController: advisorLogin_Controller(dependencies),
         getStdDashboardDetailsController: getStdDashboardDetails_Controller(dependencies),
+        getAdvisorDetailsController: getAdvisorDetails_Controller(dependencies),
 
     }
 }

@@ -1,7 +1,10 @@
 import { Request,Response } from "express";
 
-class MeetController {
+exportclass MeetController {
     async OnCreateMeet(req:Request,res:Response){
+
+
+
 
         
 

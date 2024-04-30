@@ -18,6 +18,7 @@ import {getReviewAdvisors_Usecase} from "./getReviewAdvisors";
 import {advisorLogin_Usecase} from "./advisorLoginUsecase";
 import {getStdDashboardDetails_Usecase} from "./getStdDashboardDetailsUsecase";
 import { getReviewStudents_Usecase } from "./getReviewStudentsUsecase";
+import {getAdvisorDetails_Usecase } from "./getAdvisorDetailsUsecase";
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -38,5 +39,6 @@ export{
     getReviewAdvisors_Usecase,
     advisorLogin_Usecase,
     getStdDashboardDetails_Usecase,
-    getReviewStudents_Usecase
+    getReviewStudents_Usecase,
+    getAdvisorDetails_Usecase,
 }

@@ -10,6 +10,8 @@ export const invigilatorLogin_Usecase = (dependencies: any) => {
     }
     const excutefunction = async (uniqueId:String) => {
      try{
+      console.log(uniqueId,"llll&&^^^%%%%%%%%");
+      
       const response = await invigilatorRepository.invigilatorLogin(uniqueId);
       if (response) {
          return {response};

@@ -10,7 +10,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController,getAllReviewersProfileController,getBestReviewersController,getReviewCountAnalyzeController,getPerPageReviewersController,getAllChatReviewersController,getParticularEventsController,updateParticularEventsController,cancelParticularEventsController,getDomainWiseReviewersController,updateReviewCompletedController} = reviewer_Controller(dependencies) 
+  const {scheduleTimeController,getScheduleEventsController,updateScheduleEventsController,deleteScheduleEventsController,getDayTimeLineupController,getAllDetailsController,profileUpdateController,updateWorkDetailsController,getReviewerProfileController,reviewTakeCountController,getAllReviewersProfileController,getBestReviewersController,getReviewCountAnalyzeController,getPerPageReviewersController,getAllChatReviewersController,getParticularEventsController,updateParticularEventsController,cancelParticularEventsController,getDomainWiseReviewersController,updateReviewCompletedController,getReviewesController} = reviewer_Controller(dependencies) 
 
   router.post('/schedule-event',scheduleTimeController)
   router.get('/get-schedule-events/:reviewerId',getScheduleEventsController)
@@ -32,5 +32,6 @@ export default (dependencies:any)=>{
   router.patch('/cancel-particular-date-events',cancelParticularEventsController)
   router.get('/get-domain-wise-reviewer/:domain',getDomainWiseReviewersController)
   router.patch('/update-review-completed-status',updateReviewCompletedController)
+  router.get('/get-reviewes/:reviewerId',getReviewesController)
   return router
 }

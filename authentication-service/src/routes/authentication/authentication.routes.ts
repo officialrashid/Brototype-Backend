@@ -5,7 +5,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {createInvigilatorController,studentLoginController,reviewerLoginController,superleadLoginController,getAllStudentsStatusController,updateStudentStatusController,getHubwiseStudentsDetailsController,getAllReviewersStatusController,addReviewerController,updateReviewerStatusController,addStudentController,getSuperleadHubController,updateStudentPlacedController,getStudentsAndPlacedStudentsController,addAdvisorController,advisorLoginController,getStdDashboardDetailsController} = authentication_Controller(dependencies) 
+  const {createInvigilatorController,studentLoginController,reviewerLoginController,superleadLoginController,getAllStudentsStatusController,updateStudentStatusController,getHubwiseStudentsDetailsController,getAllReviewersStatusController,addReviewerController,updateReviewerStatusController,addStudentController,getSuperleadHubController,updateStudentPlacedController,getStudentsAndPlacedStudentsController,addAdvisorController,advisorLoginController,getStdDashboardDetailsController,getAdvisorDetailsController} = authentication_Controller(dependencies) 
 
   router.post('/createInvigilator',createInvigilatorController)
   router.post('/student-login',studentLoginController)
@@ -25,5 +25,6 @@ export default (dependencies:any)=>{
   router.post('/add-advisor',addAdvisorController)
   router.post('/advisor-login',advisorLoginController)
   router.get('/get-student-dashboard-details/:studentId',getStdDashboardDetailsController)
+  router.get('/get-advisor-details/:advisorId',getAdvisorDetailsController)
   return router
 }

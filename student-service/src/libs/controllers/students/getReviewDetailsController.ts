@@ -9,7 +9,8 @@ export default (dependencies: any) => {
     } = dependencies
     const getReviewDetailsController = async (req: Request, res: Response) => {
         const { studentId, batchId } = req.query;
-
+        console.log(studentId,batchId,"get review details in controlerrrr");
+        
         await Promise.all(courseCompletionValidationRules.map((rule) => rule.run(req)));
 
         const errors = validationResult(req);

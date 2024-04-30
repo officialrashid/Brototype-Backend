@@ -2,7 +2,7 @@
 import schema from "../dataBase/schema"
 import moment from "moment";
 import mongoose from "mongoose";
-import {reviewerProducer} from "../../../events/reviewerProducer"
+import { reviewerProducer } from "../../../events/reviewerProducer"
 
 export default {
 
@@ -54,7 +54,7 @@ export default {
     const addThirtyMinutes = (timeString: any) => {
       // Parse the time string into hours, minutes, and am/pm
       const [hours, minutes, meridiem] = timeString.match(/(\d+):(\d+)([ap]m)/i).slice(1);
-  
+
       // Convert hours to 24-hour format
       let hours24 = parseInt(hours, 10);
       if (meridiem.toLowerCase() === 'pm' && hours24 !== 12) {
@@ -62,45 +62,45 @@ export default {
       } else if (meridiem.toLowerCase() === 'am' && hours24 === 12) {
         hours24 = 0;
       }
-  
+
       // Add 30 minutes
       const date = new Date();
       date.setHours(hours24);
       date.setMinutes(parseInt(minutes, 10) + 30);
-  
+
       // Format the result back to AM/PM time with leading zeros if needed
       const resultHours = date.getHours();
       const resultMinutes = date.getMinutes();
       const resultMeridiem = resultHours < 12 ? 'am' : 'pm';
       const formattedHours = (resultHours % 12 || 12).toString().padStart(2, '0');
       const formattedMinutes = resultMinutes.toString().padStart(2, '0');
-  
+
       return `${formattedHours}:${formattedMinutes}${resultMeridiem}`;
     };
 
     const splitTime = (startTime: any, endTime: number, interval: number) => {
       const result = [];
       let currentTime = startTime;
-    
+
       while (currentTime < endTime) { // Stop if the current time is equal to or after the end time
         result.push(currentTime);
         currentTime = addThirtyMinutes(currentTime);
-    
+
         // If the current time exceeds the end time, break the loop
         if (currentTime >= endTime) {
           break;
         }
       }
-    
+
       return result;
     };
-    
+
     const { reviewerId, startTime, endTime, label, day, id, studentId, advisorId, booked, status, date, customType } = data;
-  
+
     try {
       // Check if a document with the given reviewerId exists
       let existingDocument: any = await schema.Events.findOne({ reviewerId });
-  
+
       if (existingDocument) {
         // If the document exists, push the new event data
         date.forEach((dateString: any) => {
@@ -113,11 +113,11 @@ export default {
             booked: false,
             status: false,
             date: dateString, // Add the date to each booked event,
-            meetingUrl:""
+            meetingUrl: ""
           }));
-  
+
           existingDocument.events.push({
-            _id:new mongoose.Types.ObjectId(),
+            _id: new mongoose.Types.ObjectId(),
             id,
             startTime,
             endTime,
@@ -131,17 +131,17 @@ export default {
             specifDays: []
           });
         });
-  
+
         // Save the updated document
         const response = await existingDocument.save();
         return response;
-  
+
       } else {
         // If the document doesn't exist, create a new one with the reviewerId and the new event
         existingDocument = await schema.Events.create({
           reviewerId,
           events: date.map((dateString: any) => ({
-            _id:new mongoose.Types.ObjectId(),
+            _id: new mongoose.Types.ObjectId(),
             id,
             startTime,
             endTime,
@@ -158,14 +158,14 @@ export default {
               booked: false,
               status: false,
               date: dateString, // Add the date to each booked event
-              meetingUrl:""
+              meetingUrl: ""
             })),
             weekly: [],
             monthly: [],
             specifDays: []
           })),
         });
-  
+
         return existingDocument;
       }
     } catch (err) {
@@ -173,8 +173,8 @@ export default {
       throw err;
     }
   },
-  
-  
+
+
   getScheduleEvents: async (reviewerId: string) => {
     try {
       const response = await schema.Events.find({ reviewerId: reviewerId })
@@ -189,7 +189,7 @@ export default {
     const addThirtyMinutes = (timeString: any) => {
       // Parse the time string into hours, minutes, and am/pm
       const [hours, minutes, meridiem] = timeString.match(/(\d+):(\d+)([ap]m)/i).slice(1);
-  
+
       // Convert hours to 24-hour format
       let hours24 = parseInt(hours, 10);
       if (meridiem.toLowerCase() === 'pm' && hours24 !== 12) {
@@ -197,58 +197,58 @@ export default {
       } else if (meridiem.toLowerCase() === 'am' && hours24 === 12) {
         hours24 = 0;
       }
-  
+
       // Add 30 minutes
       const date = new Date();
       date.setHours(hours24);
       date.setMinutes(parseInt(minutes, 10) + 30);
-  
+
       // Format the result back to AM/PM time with leading zeros if needed
       const resultHours = date.getHours();
       const resultMinutes = date.getMinutes();
       const resultMeridiem = resultHours < 12 ? 'am' : 'pm';
       const formattedHours = (resultHours % 12 || 12).toString().padStart(2, '0');
       const formattedMinutes = resultMinutes.toString().padStart(2, '0');
-  
+
       return `${formattedHours}:${formattedMinutes}${resultMeridiem}`;
     };
 
     const splitTime = (startTime: any, endTime: number, interval: number) => {
       const result = [];
       let currentTime = startTime;
-    
+
       while (currentTime < endTime) { // Stop if the current time is equal to or after the end time
         result.push(currentTime);
         currentTime = addThirtyMinutes(currentTime);
-    
+
         // If the current time exceeds the end time, break the loop
         if (currentTime >= endTime) {
           break;
         }
       }
-    
+
       return result;
     };
-    
+
     const { reviewerId, startTime, endTime, label, day, id } = data;
-  
+
     try {
       // Find the document that matches the reviewerId and contains the event with the specified ID
       let existingDocument = await schema.Events.findOne({ reviewerId, "events.id": id });
-  
+
       if (existingDocument) {
         // Find the index of the event within the events array
         const eventIndex = existingDocument.events.findIndex(event => event.id === id);
-  
+
         // Update the event details
         existingDocument.events[eventIndex].startTime = startTime;
         existingDocument.events[eventIndex].endTime = endTime;
         existingDocument.events[eventIndex].label = label;
         existingDocument.events[eventIndex].day = day;
-  
+
         // Recalculate booked events based on the updated start and end times
-        const updatedEvent:any = existingDocument.events[eventIndex];
-        const bookedEvents:any = splitTime(updatedEvent.startTime, updatedEvent.endTime, 30).map(interval => ({
+        const updatedEvent: any = existingDocument.events[eventIndex];
+        const bookedEvents: any = splitTime(updatedEvent.startTime, updatedEvent.endTime, 30).map(interval => ({
           _id: new mongoose.Types.ObjectId(), // Generate ObjectId for the booked event
           startTime: interval,
           endTime: addThirtyMinutes(interval),
@@ -256,11 +256,11 @@ export default {
           studentId: "",
           booked: false,
           status: false,
-          meetingUrl:""
+          meetingUrl: ""
         }));
-  
+
         existingDocument.events[eventIndex].bookedEvents = bookedEvents;
-  
+
         // Save the updated document
         const response = await existingDocument.save();
         return { status: true, message: "Event updated successfully" };
@@ -457,8 +457,8 @@ export default {
 
       // Fetch reviewers' profiles with pagination
       const response = await schema.Profile.find({})
-        // .skip(skip)
-        // .limit(pageSize);
+      // .skip(skip)
+      // .limit(pageSize);
 
       if (response && response.length > 0) {
         return { status: true, response };
@@ -688,164 +688,201 @@ export default {
       return { status: false, message: "Error in getting particular Events" };
     }
   },
-  updateParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string, advisorId:string, studentId:string, bookStatus:boolean,reviewId:string) => {
+  updateParticularEvents: async (reviewerId: string, eventId: string, bookedEventId: string, advisorId: string, studentId: string, bookStatus: boolean, reviewId: string) => {
     try {
-        if (!reviewerId || !eventId || !bookedEventId) {
-            return { status: false, message: "Not update particular events" };
-        }
-        console.log(eventId, "this is particular events iddssss",bookStatus);
-
-        const response = await schema.Events.findOne({ reviewerId });
-        console.log(response, "update eevents responseeeee");
-
-        if (response) {
-            const eventIdObj:any = new mongoose.Types.ObjectId(eventId);
-            let bookedEventDetails:any = null; // Initialize variable to store booked event details
-
-            response.events.forEach((evt:any) => {
-                console.log(evt._id, "this is eventidssss");
-                if (evt._id.equals(eventIdObj)) {
-                    const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
-                    evt.bookedEvents.forEach((bookedEvt:any) => {
-                        if (bookedEvt._id.equals(bookedEventIdObj)) {
-                            bookedEvt.booked = bookStatus;
-                            bookedEvt.advisorId = advisorId;
-                            bookedEvt.studentId = studentId;
-                            // Store booked event details
-                            bookedEventDetails = bookedEvt;
-                         
-                        } else {
-                            return { status: false, message: "Booked event not found" }
-                        }
-                    });
-                } else {
-                    return { status: false, message: "Event not found" }
-                }
-            });
-
-            await response.save(); // Save changes to the database
-            const bookedEventsData:any = {
-                 reviewerId:reviewerId,
-                 eventId:eventId,
-                 reviewId :reviewId,
-                 slotId:bookedEventDetails?._id,
-                 startTime : bookedEventDetails.startTime,
-                 endTime : bookedEventDetails.endTime,
-                 scheduledDate : bookedEventDetails.date,
-                 coordinatorId : bookedEventDetails.advisorId
-            }
-             console.log(bookedEventsData,"bookedEvenst detailssss");
-             if(bookedEventsData){
-              const response = await reviewerProducer(bookedEventsData, 'review-booking-updation', 'bookedEvents');
-             }
-            return { status: true, message: "Successfully updated particular events", bookedEventDetails };
-
-        } else {
-            return { status:false, message:"Reviewer not found"}
-        }
-    } catch (error) {
-        return { status: false, message: "Error in updating particular events: " + error};
-    }
-},
-
-cancelParticularEvents: async (reviewerId:string, eventId:string, bookedEventId:string,advisorId:string,studentId:string,bookStatus:boolean) => {
-  try {
       if (!reviewerId || !eventId || !bookedEventId) {
-          return { status: false, message: "Not update particular events" };
+        return { status: false, message: "Not update particular events" };
       }
-      console.log(eventId, "this is particular events iddssss",bookStatus);
+      console.log(eventId, "this is particular events iddssss", bookStatus);
 
       const response = await schema.Events.findOne({ reviewerId });
       console.log(response, "update eevents responseeeee");
 
       if (response) {
-          const eventIdObj:any = new mongoose.Types.ObjectId(eventId);
-          response.events.forEach((evt:any) => {
-              console.log(evt._id, "this is eventidssss");
-              if (evt._id.equals(eventIdObj)) {
-                  const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
-                  evt.bookedEvents.forEach((bookedEvt:any) => {
-                      if (bookedEvt._id.equals(bookedEventIdObj)) {
-                        if(bookedEvt.advisorId===advisorId){
-                          bookedEvt.booked = bookStatus;
-                          bookedEvt.advisorId = "";
-                          bookedEvt.studentId = "";
-                        }else{
-                          return {status:false,message:"not cancelled already booked anothor advisor"}
-                        }
-                       
-                      }else{
-                        return {status:false,message:"booked events not found"}
-                      }
-                  });
-              }else{
-                return {status:false,message:"event not found"}
+        const eventIdObj: any = new mongoose.Types.ObjectId(eventId);
+        let bookedEventDetails: any = null; // Initialize variable to store booked event details
+
+        response.events.forEach((evt: any) => {
+          console.log(evt._id, "this is eventidssss");
+          if (evt._id.equals(eventIdObj)) {
+            const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
+            evt.bookedEvents.forEach((bookedEvt: any) => {
+              if (bookedEvt._id.equals(bookedEventIdObj)) {
+                bookedEvt.booked = bookStatus;
+                bookedEvt.advisorId = advisorId;
+                bookedEvt.studentId = studentId;
+                // Store booked event details
+                bookedEventDetails = bookedEvt;
+
+              } else {
+                return { status: false, message: "Booked event not found" }
               }
-          });
+            });
+          } else {
+            return { status: false, message: "Event not found" }
+          }
+        });
 
-          await response.save(); // Save changes to the database
+        await response.save(); // Save changes to the database
+        const bookedEventsData: any = {
+          reviewerId: reviewerId,
+          eventId: eventId,
+          reviewId: reviewId,
+          slotId: bookedEventDetails?._id,
+          startTime: bookedEventDetails.startTime,
+          endTime: bookedEventDetails.endTime,
+          scheduledDate: bookedEventDetails.date,
+          coordinatorId: bookedEventDetails.advisorId
+        }
+        console.log(bookedEventsData, "bookedEvenst detailssss");
+        if (bookedEventsData) {
+          const response = await reviewerProducer(bookedEventsData, 'review-booking-updation', 'bookedEvents');
+        }
+        return { status: true, message: "Successfully updated particular events", bookedEventDetails };
 
-          // Optional: Return the updated response if needed
-          return { status: true, message: "Successfully cancelled particular events", response };
-      }else{
-        return { status:false, message:"reviewer not found"}
+      } else {
+        return { status: false, message: "Reviewer not found" }
       }
-  } catch (error) {
-      return { status: false, message: "Error in updating particular events: " + error};
-  }
-},
-getDomainWiseReviewers: async (domains:string) => {
-  try {
-      if (!domains ) {
-          return { status: false, message: "Domains array is invalid or empty" };
+    } catch (error) {
+      return { status: false, message: "Error in updating particular events: " + error };
+    }
+  },
+
+  cancelParticularEvents: async (reviewerId: string, eventId: string, bookedEventId: string, advisorId: string, studentId: string, bookStatus: boolean) => {
+    try {
+      if (!reviewerId || !eventId || !bookedEventId) {
+        return { status: false, message: "Not update particular events" };
+      }
+      console.log(eventId, "this is particular events iddssss", bookStatus);
+
+      const response = await schema.Events.findOne({ reviewerId });
+      console.log(response, "update eevents responseeeee");
+
+      if (response) {
+        const eventIdObj: any = new mongoose.Types.ObjectId(eventId);
+        response.events.forEach((evt: any) => {
+          console.log(evt._id, "this is eventidssss");
+          if (evt._id.equals(eventIdObj)) {
+            const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
+            evt.bookedEvents.forEach((bookedEvt: any) => {
+              if (bookedEvt._id.equals(bookedEventIdObj)) {
+                if (bookedEvt.advisorId === advisorId) {
+                  bookedEvt.booked = bookStatus;
+                  bookedEvt.advisorId = "";
+                  bookedEvt.studentId = "";
+                } else {
+                  return { status: false, message: "not cancelled already booked anothor advisor" }
+                }
+
+              } else {
+                return { status: false, message: "booked events not found" }
+              }
+            });
+          } else {
+            return { status: false, message: "event not found" }
+          }
+        });
+
+        await response.save(); // Save changes to the database
+
+        // Optional: Return the updated response if needed
+        return { status: true, message: "Successfully cancelled particular events", response };
+      } else {
+        return { status: false, message: "reviewer not found" }
+      }
+    } catch (error) {
+      return { status: false, message: "Error in updating particular events: " + error };
+    }
+  },
+  getDomainWiseReviewers: async (domains: string) => {
+    try {
+      if (!domains) {
+        return { status: false, message: "Domains array is invalid or empty" };
       }
 
       const response = await schema.Profile.find({ "PrefferedDomainsForReview": { $in: domains } });
-      console.log(domains,"domainssssssssss");
-      
+      console.log(domains, "domainssssssssss");
+
       if (response.length === 0) {
-          return { status: false, message: "No reviewers found for the specified domains" };
+        return { status: false, message: "No reviewers found for the specified domains" };
       }
 
       return { status: true, message: "Successfully retrieved domain-wise reviewers", reviewers: response };
-  } catch (error) {
+    } catch (error) {
       return { status: false, message: "Error getting domain-wise reviewers: " + error };
-  }
-},
-updateReviewCompleted : async  (reviewerId:string,eventId:string,bookedEventId:string,status:boolean) =>{
-   try {
-       if(!reviewerId || !eventId || !bookedEventId){
-        return {status:false,message:"Not update review completed status"}
-       }
-       const response = await schema.Events.findOne({ reviewerId });
-      if (response) {
-          const eventIdObj:any = new mongoose.Types.ObjectId(eventId);
-          response.events.forEach((evt:any) => {
-              if (evt._id.equals(eventIdObj)) {
-                  const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
-                  evt.bookedEvents.forEach((bookedEvt:any) => {
-                      if (bookedEvt._id.equals(bookedEventIdObj)) {
-                          bookedEvt.status = status;
-                      }else{
-                        return {status:false,message:"booked event not found"}
-                      }
-                  });
-              }else{
-                return {status:false,message:"event not found"}
-              }
-          });
-
-          await response.save(); // Save changes to the database
-
-          // Optional: Return the updated response if needed
-          return { status: true, message: "Successfully updated review completed status", response };
-      }else{
-        return { status:false, message:"reviewer not found"}
+    }
+  },
+  updateReviewCompleted: async (reviewerId: string, eventId: string, bookedEventId: string, status: boolean) => {
+    try {
+      if (!reviewerId || !eventId || !bookedEventId) {
+        return { status: false, message: "Not update review completed status" }
       }
-   } catch (error) {
-     return { status:false, message:"Error getting update review completed status" }
-   } 
-}
+      const response = await schema.Events.findOne({ reviewerId });
+      if (response) {
+        const eventIdObj: any = new mongoose.Types.ObjectId(eventId);
+        response.events.forEach((evt: any) => {
+          if (evt._id.equals(eventIdObj)) {
+            const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
+            evt.bookedEvents.forEach((bookedEvt: any) => {
+              if (bookedEvt._id.equals(bookedEventIdObj)) {
+                bookedEvt.status = status;
+              } else {
+                return { status: false, message: "booked event not found" }
+              }
+            });
+          } else {
+            return { status: false, message: "event not found" }
+          }
+        });
+
+        await response.save(); // Save changes to the database
+
+        // Optional: Return the updated response if needed
+        return { status: true, message: "Successfully updated review completed status", response };
+      } else {
+        return { status: false, message: "reviewer not found" }
+      }
+    } catch (error) {
+      return { status: false, message: "Error getting update review completed status" }
+    }
+  },
+  getReviewes: async (reviewerId: string) => {
+    try {
+      if (!reviewerId) {
+        return { status: false, message: "reviewerId not provided" };
+      }
+
+      // Convert the current date to the desired format
+      const currentDate = moment().format("DD-MM-YYYY");
+      const reviewes: any = []
+      const event = await schema.Events.find({ reviewerId: reviewerId });
+      if (!event) {
+        return { status: false, message: "This reviewer has no booked events" }
+      }
+
+
+      const response = event[0].events.map((review, index) => {
+        review.bookedEvents.map((data, index) => {
+          if (data.date >= currentDate && data.booked === true) {
+            console.log(data, "llll");
+            reviewes.push(data)
+
+          }
+        })
+
+      })
+      if (reviewes.length > 0) {
+        return { status: true, reviewes };
+      }else{
+        return { status: false, message:"No Reviewes Scheduled"};
+      }
+
+    } catch (error) {
+      console.error(error); // Log the actual error for debugging
+      return { status: false, message: "Error getting reviews" };
+    }
+  },
+
 
 
 
