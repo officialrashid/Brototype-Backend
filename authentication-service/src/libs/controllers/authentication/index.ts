@@ -18,6 +18,8 @@ import addAdvisor_Controller from "./addAdvisorController"
 import advisorLogin_Controller from "./advisorLoginController"
 import getStdDashboardDetails_Controller from "./getStdDashboardDetailsController"
 import getAdvisorDetails_Controller from "./getAdvisorDetailsController"
+import getAllAdvisors_Controller from "./getAllAdvisorsController"
+import updateAdvisorStatus_Controller from "./updateAdvisorStatusController"
 export default (dependencies:any)=>{
 
     return{
@@ -40,6 +42,8 @@ export default (dependencies:any)=>{
         advisorLoginController: advisorLogin_Controller(dependencies),
         getStdDashboardDetailsController: getStdDashboardDetails_Controller(dependencies),
         getAdvisorDetailsController: getAdvisorDetails_Controller(dependencies),
+        getAllAdvisorsController: getAllAdvisors_Controller(dependencies),
+        updateAdvisorStatusController: updateAdvisorStatus_Controller(dependencies),
 
     }
 }

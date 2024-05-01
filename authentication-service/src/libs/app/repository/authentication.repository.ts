@@ -592,5 +592,32 @@ export default {
     } catch (error) {
       return {status:false,message:"Error getting from get advisor details"}
     }
+  },
+  getAllAdvisors : async () =>{
+     try {
+         const response = await schema.Advisors.find({})
+          if(response.length > 0){
+            return {status:true,response}
+          }else{
+            return {status:false,message:"No Advisors Your Institution"}
+          }
+     } catch (error) {
+       return {status:false,message:"Error grtting from get all advisors"}
+     }
+  },
+  updateAdvisorStatus : async (advisorId:string,action:string)=>{
+    try {
+      if(!advisorId || !action){
+        return {status:false,message:"advisor not found"}
+      }
+      const advisor: any = await schema.Advisors.updateOne({ _id: advisorId }, { $set: { isStatus: action } }, { new: true });
+      if (!advisor) {
+        return { status: false, message: "advisor not found" };
+      }
+      // Return success message or other appropriate response
+      return { status: true, message: "advisor status updated successfully" };
+    } catch (error) {
+      return {status:false,message:"Error getting from update advisor status"}
+    }
   }
 }

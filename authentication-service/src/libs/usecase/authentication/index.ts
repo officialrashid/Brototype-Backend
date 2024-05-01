@@ -19,6 +19,8 @@ import {advisorLogin_Usecase} from "./advisorLoginUsecase";
 import {getStdDashboardDetails_Usecase} from "./getStdDashboardDetailsUsecase";
 import { getReviewStudents_Usecase } from "./getReviewStudentsUsecase";
 import {getAdvisorDetails_Usecase } from "./getAdvisorDetailsUsecase";
+import {getAllAdvisors_Usecase} from "./getAllAdvisorsUsecase";
+import {updateAdvisorStatus_Usecase} from "./updateAdvisorStatusUsecase"
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -41,4 +43,6 @@ export{
     getStdDashboardDetails_Usecase,
     getReviewStudents_Usecase,
     getAdvisorDetails_Usecase,
+    getAllAdvisors_Usecase,
+    updateAdvisorStatus_Usecase
 }
