@@ -23,7 +23,8 @@ import {getAllAdvisors_Usecase} from "./getAllAdvisorsUsecase";
 import {updateAdvisorStatus_Usecase} from "./updateAdvisorStatusUsecase";
 import {getReviewInitiators_Usecase} from "./getReviewInitiatorsUsecase";
 import {updateReviewStatus_Usecase} from "./updateReviewStatusUsecase";
-import {updateManifestDetails_Usecase} from "./updateManfestDetailsUsecase"
+import {updateManifestDetails_Usecase} from "./updateManfestDetailsUsecase";
+import {getStudentProfile_Usecase} from "./getStudentProfileUsecase"
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -50,5 +51,6 @@ export{
     updateAdvisorStatus_Usecase,
     getReviewInitiators_Usecase,
     updateReviewStatus_Usecase,
-    updateManifestDetails_Usecase
+    updateManifestDetails_Usecase,
+    getStudentProfile_Usecase
 }

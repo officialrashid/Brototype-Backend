@@ -693,5 +693,20 @@ export default {
     } catch (error) {
        return {status:false,messsage:"Error grtting update manifest data to auth"}
     }
+  },
+  getStudentProfile : async (studentId:string) =>{
+    try {
+      if(!studentId){
+        return {status:false,message:"student not found"}
+      }
+      const response = await schema.Students.findOne({studentId})
+      if(response){
+        return {status:true,response}
+      }else{
+        return {status:false,messaeg:"student not found"}
+      }
+    } catch (error) {
+       return {status:false,message:"Error gettin from get student profile"}
+    }
   }
 }
