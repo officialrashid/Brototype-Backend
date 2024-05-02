@@ -7,8 +7,10 @@ export default (dependencies:any)=>{
         useCase: { addReviewResult_Usecase }
     } = dependencies
  const addReviewResultController = async (req:Request,res:Response)=>{
-    const { batchId,studentId,week,repeat,reviewScore,communicationScore,personalWorkoutsScore,miscellaneousWorkouts,totalScore,status,advisorId,reviewerId,date,pendingTopics,nextWeekUpdation,personalWorkoutReview,MiscellaneousWorkoutsReview,CommunicationReview,totalWeeks} = req.body
-    const response = await addReviewResult_Usecase(dependencies).executeFunction(batchId,studentId,week,repeat,reviewScore,communicationScore,personalWorkoutsScore,miscellaneousWorkouts,totalScore,status,advisorId,reviewerId,date,pendingTopics,nextWeekUpdation,personalWorkoutReview,MiscellaneousWorkoutsReview,CommunicationReview,totalWeeks)
+    const { batchId,studentId,currentWeek,repeat,reviewScore,communicationScore,personalScore,miscellaneousScore,totalScore,status,advisorName,reviewerName,date,pendingTopics,nextweekUpdation,personalReview,miscellaneousReview,communicationReview,totalWeeks,reviewerId,eventId,slotId} = req.body
+
+    
+    const response = await addReviewResult_Usecase(dependencies).executeFunction(batchId,studentId,currentWeek,repeat,reviewScore,communicationScore,personalScore,miscellaneousScore,totalScore,status,advisorName,reviewerName,date,pendingTopics,nextweekUpdation,personalReview,miscellaneousReview,communicationReview,totalWeeks,reviewerId,eventId,slotId)
      if(response){
         res.status(201).json(response)
      }  

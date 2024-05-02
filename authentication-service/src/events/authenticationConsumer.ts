@@ -23,9 +23,15 @@ export const consumeAuthentication = async () => {
 
 
                 const messageType = jsonData?.type;
+                console.log();
+                
                 if(messageType==="review-scheduler-data"){
                     const response = await handleKafkaMessages("getReviewStudents",messageType);
-                   }
+                }else if(messageType==="updateProfile"){
+                    console.log(jsonData.data,"updateProfile updateProfile updateProfile");
+                    
+                    const response = await handleKafkaMessages(jsonData.data,messageType);
+                }
                 // Call handleMessage and wait for it to complete
                const response = await handleKafkaMessages(jsonData.data, messageType);
                 

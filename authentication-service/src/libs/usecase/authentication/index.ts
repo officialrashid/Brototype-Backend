@@ -20,7 +20,10 @@ import {getStdDashboardDetails_Usecase} from "./getStdDashboardDetailsUsecase";
 import { getReviewStudents_Usecase } from "./getReviewStudentsUsecase";
 import {getAdvisorDetails_Usecase } from "./getAdvisorDetailsUsecase";
 import {getAllAdvisors_Usecase} from "./getAllAdvisorsUsecase";
-import {updateAdvisorStatus_Usecase} from "./updateAdvisorStatusUsecase"
+import {updateAdvisorStatus_Usecase} from "./updateAdvisorStatusUsecase";
+import {getReviewInitiators_Usecase} from "./getReviewInitiatorsUsecase";
+import {updateReviewStatus_Usecase} from "./updateReviewStatusUsecase";
+import {updateManifestDetails_Usecase} from "./updateManfestDetailsUsecase"
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -44,5 +47,8 @@ export{
     getReviewStudents_Usecase,
     getAdvisorDetails_Usecase,
     getAllAdvisors_Usecase,
-    updateAdvisorStatus_Usecase
+    updateAdvisorStatus_Usecase,
+    getReviewInitiators_Usecase,
+    updateReviewStatus_Usecase,
+    updateManifestDetails_Usecase
 }

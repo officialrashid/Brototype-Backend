@@ -10,21 +10,22 @@ export const addReviewResult_Usecase = (dependencies: any) => {
       return console.log("Error: student Repository not found");
   }
 
-  const executeFunction = async (batchId: string,studentId: string,week: string,repeat: boolean,reviewScore: number,communicationScore: number,personalWorkoutsScore: number,miscellaneousWorkouts: number,totalScore: number,status: boolean,advisorId: string,reviewerId: string,date: string,pendingTopics: any,nextWeekUpdation: any,personalWorkoutReview: any,MiscellaneousWorkoutsReview: any,CommunicationReview: any,totalWeeks:number) => {
+  const executeFunction = async (batchId: string,studentId: string,week: string,repeat: boolean,reviewScore: number,communicationScore: number,personalWorkoutsScore: number,miscellaneousWorkouts: number,totalScore: number,status: boolean,advisorName: string,reviewerName: string,date: string,pendingTopics: any,nextWeekUpdation: any,personalWorkoutReview: any,MiscellaneousWorkoutsReview: any,CommunicationReview: any,totalWeeks:number,reviewerId:string,eventId:string,slotId:string) => {
       try {
           
-          const response = await studentsRepository.addReviewResult(batchId,studentId,week,repeat,reviewScore,communicationScore,personalWorkoutsScore,miscellaneousWorkouts,totalScore,status,advisorId,reviewerId,date,pendingTopics,nextWeekUpdation,personalWorkoutReview,MiscellaneousWorkoutsReview,CommunicationReview,totalWeeks)
+          const response = await studentsRepository.addReviewResult(batchId,studentId,week,repeat,reviewScore,communicationScore,personalWorkoutsScore,miscellaneousWorkouts,totalScore,status,advisorName,reviewerName,date,pendingTopics,nextWeekUpdation,personalWorkoutReview,MiscellaneousWorkoutsReview,CommunicationReview,totalWeeks,reviewerId,eventId,slotId)
      
+          console.log(batchId,studentId,week,repeat,reviewScore,communicationScore,personalWorkoutsScore,miscellaneousWorkouts,totalScore,status,advisorName,reviewerName,date,pendingTopics,nextWeekUpdation,personalWorkoutReview,MiscellaneousWorkoutsReview,CommunicationReview,totalWeeks,reviewerId,eventId,slotId,"lllllll");
           
-          if(response && response.length !=0){
+          if(response.status===true){
               console.log("usecaseil kerrrriiiiii");
               
-              return {status:true,response}
+              return {response}
           }else{
-              return {status:false,message:"student not found Your Hub"}
+              return {status:false,message:"student result not updated"}
           }
       } catch (err) {
-          return { status: false, message: "The Some issue in the get Course completion graph" }
+          return { status: false, message: "student result not updated,try after some time" }
       }
 
   }

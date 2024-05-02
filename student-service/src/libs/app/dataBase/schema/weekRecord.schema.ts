@@ -10,8 +10,8 @@ const weekSchema = new mongoose.Schema({
   personalWorkoutsScore: { type: Number },
   miscellaneousWorkouts: { type: Number },
   totalScore: { type: Number }, // Store totalScore as string
-  advisorId: { type: String },
-  reviewerId: { type: String },
+  advisorName: { type: String },
+  reviewerName: { type: String },
   date: { type: String },
   pendingTopics: { type: Array },
   nextWeekUpdation: { type: Array },

@@ -619,5 +619,79 @@ export default {
     } catch (error) {
       return {status:false,message:"Error getting from update advisor status"}
     }
+  },
+  getReviewInitiators : async (advisorId:string,reviewerId:string,studentId:string)=>{
+    try {
+      if(!advisorId || !reviewerId || !studentId){
+          return {status:false,message:"get review initiators details not found"}
+      }
+      console.log(reviewerId,"lll");
+      
+      const advisor = await schema.Advisors.findOne({_id:advisorId})
+      const reviewer = await schema.Reviewers.findOne({ _id: reviewerId });
+
+      const student = await schema.Students.findOne({studentId:studentId})
+      console.log(advisor,"advisor advisor advisor advisor");
+      console.log(reviewer,"reviewer reviewer reviewer reviewer");
+      console.log(student,"student student student student");
+      if(!advisor || !reviewer || !student){
+           return {status:false,message:"get review initiators details not found"}
+      }else{
+        const data = {
+           advisorName : `${advisor.firstName} ${advisor.lastName}`,
+           reviewerName : `${reviewer.firstName} ${reviewer.lastName}`,
+           currentWeek : student.currentWeek,
+           batchId : student.batchId,
+        }
+        return {status:true,data}
+      }
+    } catch (error) {
+      return {status:false,message:"Error getting from get review initiators detaisl"}
+    }
+  },
+  updateReviewStatus :async (studentId:string,currentWeek:string) =>{
+      try {
+         if(!studentId || !currentWeek){
+          return {status:false,message:"Not update review status"}
+         }
+         const response = await schema.Students.updateOne(
+          { studentId: studentId }, // Filter criteria
+          {
+            $set: {
+              currentWeek: currentWeek,
+              lastWeekReviewStatus: true,
+              isRepeat : true
+            }
+          }, // Update operation
+          { new: true } // Options object
+        );
+        if(response){
+          return {status:true,message:"review status updated successfully"}
+        }
+      } catch (error) {
+         return {status:false,message:"Error getting from update review status"}
+      }
+  },
+  updateManifestDetails : async (data:any)=>{
+    try {
+      if(!data){
+        return {status:false,message:"manifest details not updated"}
+      }
+      const response = await schema.Students.updateOne(
+        { studentId: data.studentId }, // Filter criteria
+        {
+          $set: {
+            domain: data.domain,
+            profileUrl: data.imageUrl
+          }
+        }, // Update operation
+        { new: true } // Options object
+      );
+      if(response){
+        return {status:true,message:"update manifest details successfully"}
+      }
+    } catch (error) {
+       return {status:false,messsage:"Error grtting update manifest data to auth"}
+    }
   }
 }

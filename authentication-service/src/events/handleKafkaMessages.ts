@@ -2,6 +2,7 @@ import dependencies from "../config/dependencies";
 import { checkStudentUniqueId_Usecase } from "../libs/usecase";
 import {getReviewAdvisors_Usecase} from "../libs/usecase"
 import { getReviewStudents_Usecase } from "../libs/usecase";
+import {updateManifestDetails_Usecase} from "../libs/usecase"
 const handleKafkaMessages = async (data: string, type: string) => {
   console.log(data,type);
   
@@ -27,6 +28,19 @@ const handleKafkaMessages = async (data: string, type: string) => {
     if (useCaseInstance && reviewStudentsUseCaseInstance) {
       const response = await useCaseInstance.executeFunction();
       const reviewStudentsResponse = await reviewStudentsUseCaseInstance.executeFunction()
+      // return {response,reviewStudentsResponse};
+    }else{
+      // Handle the case when checkStudentUniqueId_Usecase is null
+      console.error("checkStudentUniqueId_Usecase is null");
+      return null; // Or handle the error according to your needs
+    }
+  }
+  if(type==="updateProfile"){
+    console.log("handle kafka message usecaseeee");
+    
+    const useCaseInstance = updateManifestDetails_Usecase(dependencies);
+    if (useCaseInstance) {
+      const response = await useCaseInstance.executeFunction(data);
       // return {response,reviewStudentsResponse};
     }else{
       // Handle the case when checkStudentUniqueId_Usecase is null

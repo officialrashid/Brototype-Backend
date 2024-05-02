@@ -5,7 +5,7 @@ export default (dependencies:any)=>{
 
   const router = express.Router();
   
-  const {createInvigilatorController,studentLoginController,reviewerLoginController,superleadLoginController,getAllStudentsStatusController,updateStudentStatusController,getHubwiseStudentsDetailsController,getAllReviewersStatusController,addReviewerController,updateReviewerStatusController,addStudentController,getSuperleadHubController,updateStudentPlacedController,getStudentsAndPlacedStudentsController,addAdvisorController,advisorLoginController,getStdDashboardDetailsController,getAdvisorDetailsController,getAllAdvisorsController,updateAdvisorStatusController} = authentication_Controller(dependencies) 
+  const {createInvigilatorController,studentLoginController,reviewerLoginController,superleadLoginController,getAllStudentsStatusController,updateStudentStatusController,getHubwiseStudentsDetailsController,getAllReviewersStatusController,addReviewerController,updateReviewerStatusController,addStudentController,getSuperleadHubController,updateStudentPlacedController,getStudentsAndPlacedStudentsController,addAdvisorController,advisorLoginController,getStdDashboardDetailsController,getAdvisorDetailsController,getAllAdvisorsController,updateAdvisorStatusController,getReviewInitiatorsController,updateReviewStatusController} = authentication_Controller(dependencies) 
 
   router.post('/createInvigilator',createInvigilatorController)
   router.post('/student-login',studentLoginController)
@@ -28,5 +28,7 @@ export default (dependencies:any)=>{
   router.get('/get-advisor-details/:advisorId',getAdvisorDetailsController)
   router.get('/get-all-advisors',getAllAdvisorsController)
   router.patch('/update-advisor-status',updateAdvisorStatusController)
+  router.get('/get-initiator-details',getReviewInitiatorsController)
+  router.patch('/update-review-status',updateReviewStatusController)
   return router
 }
