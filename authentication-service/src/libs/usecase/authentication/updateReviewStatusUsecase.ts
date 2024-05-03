@@ -8,12 +8,12 @@ export const updateReviewStatus_Usecase = (dependencies: any) => {
         return console.log("Error: Fumigation Repository not found");
     }
 
-    const executeFunction = async (studentId: string,currentWeek:string) => {
+    const executeFunction = async (studentId: string,currentWeek:string,status:boolean) => {
 
         if (!studentId || !currentWeek) {
             return { status: false, message: "reviewer not found" }
         }
-        const response = await authenticationRepository.updateReviewStatus(studentId,currentWeek)
+        const response = await authenticationRepository.updateReviewStatus(studentId,currentWeek,status)
         if (response.status===true) {
             return { response }
         } else {

@@ -183,35 +183,35 @@ export default {
       return { error: 'Internal server error' };
     }
   },
-  
+
   getAllStudentsStatus: async (uniqueId: string, currentPage: number) => {
     try {
-        const indexM = uniqueId.indexOf('M');
-        const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
+      const indexM = uniqueId.indexOf('M');
+      const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
 
-        const pageSize = 5; 
-        const skip = (currentPage-1 ) * pageSize;
+      const pageSize = 5;
+      const skip = (currentPage - 1) * pageSize;
 
-        const response = await schema.Students.aggregate([
-            {
-                $match: {
-                    batch: { $regex: `^${uniqueLetters}`, $options: 'i' }
-                }
-            },
-            { $skip: skip },
-            { $limit: pageSize }
-        ]);
+      const response = await schema.Students.aggregate([
+        {
+          $match: {
+            batch: { $regex: `^${uniqueLetters}`, $options: 'i' }
+          }
+        },
+        { $skip: skip },
+        { $limit: pageSize }
+      ]);
 
-        if (response && response.length > 0) {
-            return { response };
-        } else {
-            return { message: "students not found your hub" };
-        }
+      if (response && response.length > 0) {
+        return { response };
+      } else {
+        return { message: "students not found your hub" };
+      }
     } catch (error) {
-        console.error(error);
-        return { error: 'Internal server error' };
+      console.error(error);
+      return { error: 'Internal server error' };
     }
-},
+  },
 
   updateStudentStatus: async (studentId: string, action: string) => {
     console.log("Incoming backend action", studentId, action);
@@ -405,26 +405,26 @@ export default {
         },
 
       ]);
-   if(response && response.length > 0){
-     return {response}
-   }else{
-    return { satus:false, message:"current year no study students and placed students"};
-   }
+      if (response && response.length > 0) {
+        return { response }
+      } else {
+        return { satus: false, message: "current year no study students and placed students" };
+      }
 
     } catch (error) {
       return { status: false, message: "Error in getting placed students and current students" };
     }
   },
 
-  createAdvisorsUniqueId :async () =>{
-     try {
+  createAdvisorsUniqueId: async () => {
+    try {
       const response = await schema.Advisors.find().sort({ _id: -1 }).limit(1).exec()
       return response;
-     } catch (error) {
-       return {status:false,message:"Error in the craete advisors uniqueId"}
-     }
+    } catch (error) {
+      return { status: false, message: "Error in the craete advisors uniqueId" }
+    }
   },
-  advisorEmailExist : async (email:string,phone:string) =>{
+  advisorEmailExist: async (email: string, phone: string) => {
     try {
       const response = await schema.Advisors.find({ $or: [{ email }, { phone }] });
       return response;
@@ -432,7 +432,7 @@ export default {
       return { status: false, message: "An Error occur whilte creating Advisor" }
     }
   },
-  advisorUniqueIdExist : async (uniqueId:string) =>{
+  advisorUniqueIdExist: async (uniqueId: string) => {
     try {
       const response = await schema.Advisors.find({ uniqueId: uniqueId })
       return response;
@@ -441,7 +441,7 @@ export default {
     }
 
   },
-  createAdvisors : async (data:any,uniqueId:string) =>{
+  createAdvisors: async (data: any, uniqueId: string) => {
     try {
       const advisorData = {
         firstName: data.firstName,
@@ -456,43 +456,43 @@ export default {
       return { status: false, message: "An Error occur whilte creating advisor" }
     }
   },
-  checkStudentActive : async(studentId:string) =>{
-     try {
-        if(!studentId){
-          return {status:false,message:"student not found"}
-        }
-        const response = await schema.Students.find({studentId:studentId})
-        console.log(response,"student active or not check");
-        
-        if(response){
-          return {status:false,message:"student not found"}
-        }else{
-          // if(response.isStatus==="Active"){
+  checkStudentActive: async (studentId: string) => {
+    try {
+      if (!studentId) {
+        return { status: false, message: "student not found" }
+      }
+      const response = await schema.Students.find({ studentId: studentId })
+      console.log(response, "student active or not check");
 
-          // }
-        }
-     } catch (error) {
-       return {status:false,message:"Error in the check student active or not"}
-     }
+      if (response) {
+        return { status: false, message: "student not found" }
+      } else {
+        // if(response.isStatus==="Active"){
+
+        // }
+      }
+    } catch (error) {
+      return { status: false, message: "Error in the check student active or not" }
+    }
   },
-  getReviewAdvisors : async () =>{
-     try {
-       const response = await schema.Advisors.find({},"_id")
-       const cleanResponse = response.map((adv)=>{
-        return {_id:adv._id.toHexString()}
-       }
-       
-       )
-       console.log(cleanResponse,"llllllll");
-       if(cleanResponse.length > 0){
-        const response = await authenticationProducer(cleanResponse,'coordinator-data','reviewAdvisors');
-       }
-       
-     } catch (error) {
-       return {status:false,message:"Error getting from get review advisors"}
-     }
+  getReviewAdvisors: async () => {
+    try {
+      const response = await schema.Advisors.find({}, "_id")
+      const cleanResponse = response.map((adv) => {
+        return { _id: adv._id.toHexString() }
+      }
+
+      )
+      console.log(cleanResponse, "llllllll");
+      if (cleanResponse.length > 0) {
+        const response = await authenticationProducer(cleanResponse, 'coordinator-data', 'reviewAdvisors');
+      }
+
+    } catch (error) {
+      return { status: false, message: "Error getting from get review advisors" }
+    }
   },
-  
+
   advisorLogin: async (uniqueId: string) => {
     try {
 
@@ -526,24 +526,24 @@ export default {
       return { error: 'Internal server error' };
     }
   },
-  getStdDashboardDetais : async (studentId:string) =>{
-     try {
-         if(!studentId){
-          return {status:false,message:"student not found"}
-         }
-         const response = await schema.Students.find({studentId:studentId})
-         if(!response){
-          return {status:false,message:"student not found"}
-         }else{
-          return {status:true,response}
-         }
-     } catch (error) {
-       return {status:false,message:"Error getting from get student details"}
-     }
+  getStdDashboardDetais: async (studentId: string) => {
+    try {
+      if (!studentId) {
+        return { status: false, message: "student not found" }
+      }
+      const response = await schema.Students.find({ studentId: studentId })
+      if (!response) {
+        return { status: false, message: "student not found" }
+      } else {
+        return { status: true, response }
+      }
+    } catch (error) {
+      return { status: false, message: "Error getting from get student details" }
+    }
   },
   getReviewStudents: async () => {
     console.log("get review studentss repository 888*****");
-    
+
     try {
       // Aggregate to get last week's data for each student
       const reviewStudents: any = []
@@ -560,55 +560,55 @@ export default {
           }
         }
       ])
-      console.log(reviewStudent,"revewStudnetsssssssssss1111111");
-      
-      const studentData = reviewStudent.map((student:any,index:number)=>{
-         return {_id:student.studentId}
+      console.log(reviewStudent, "revewStudnetsssssssssss1111111");
+
+      const studentData = reviewStudent.map((student: any, index: number) => {
+        return { _id: student.studentId }
       })
-      if(studentData.length > 0){
-        console.log(studentData,"llllllllll999676665");
+      if (studentData.length > 0) {
+        console.log(studentData, "llllllllll999676665");
         const response = await authenticationProducer(studentData, 'student-data', 'reviewStudents');
       }
-    //  const updateReviewStatus = await schema.Students.updateMany({},{$set:{lastWeekReviewStatus:true}})
+      //  const updateReviewStatus = await schema.Students.updateMany({},{$set:{lastWeekReviewStatus:true}})
     } catch (error: any) {
       return { status: false, message: "Error getting review students: " + error.message };
     }
   },
-  getAdvisorDetails : async (advisorId:string) =>{
+  getAdvisorDetails: async (advisorId: string) => {
     try {
-       if(!advisorId){
-        return {status:false,message:"advisor not found"}
-       }
-       console.log(advisorId,"advisorid aget dorm ");
-       
-       const response = await schema.Advisors.find({_id:advisorId})
-       console.log(response,"ressposeeee in get advisor detailssss");
-       
-       if(!response){
-        return {status:false,message:"advisor not found"}
-       }else{
-        return {status:true,response}
-       }
+      if (!advisorId) {
+        return { status: false, message: "advisor not found" }
+      }
+      console.log(advisorId, "advisorid aget dorm ");
+
+      const response = await schema.Advisors.find({ _id: advisorId })
+      console.log(response, "ressposeeee in get advisor detailssss");
+
+      if (!response) {
+        return { status: false, message: "advisor not found" }
+      } else {
+        return { status: true, response }
+      }
     } catch (error) {
-      return {status:false,message:"Error getting from get advisor details"}
+      return { status: false, message: "Error getting from get advisor details" }
     }
   },
-  getAllAdvisors : async () =>{
-     try {
-         const response = await schema.Advisors.find({})
-          if(response.length > 0){
-            return {status:true,response}
-          }else{
-            return {status:false,message:"No Advisors Your Institution"}
-          }
-     } catch (error) {
-       return {status:false,message:"Error grtting from get all advisors"}
-     }
-  },
-  updateAdvisorStatus : async (advisorId:string,action:string)=>{
+  getAllAdvisors: async () => {
     try {
-      if(!advisorId || !action){
-        return {status:false,message:"advisor not found"}
+      const response = await schema.Advisors.find({})
+      if (response.length > 0) {
+        return { status: true, response }
+      } else {
+        return { status: false, message: "No Advisors Your Institution" }
+      }
+    } catch (error) {
+      return { status: false, message: "Error grtting from get all advisors" }
+    }
+  },
+  updateAdvisorStatus: async (advisorId: string, action: string) => {
+    try {
+      if (!advisorId || !action) {
+        return { status: false, message: "advisor not found" }
       }
       const advisor: any = await schema.Advisors.updateOne({ _id: advisorId }, { $set: { isStatus: action } }, { new: true });
       if (!advisor) {
@@ -617,65 +617,87 @@ export default {
       // Return success message or other appropriate response
       return { status: true, message: "advisor status updated successfully" };
     } catch (error) {
-      return {status:false,message:"Error getting from update advisor status"}
+      return { status: false, message: "Error getting from update advisor status" }
     }
   },
-  getReviewInitiators : async (advisorId:string,reviewerId:string,studentId:string)=>{
+  getReviewInitiators: async (advisorId: string, reviewerId: string, studentId: string) => {
     try {
-      if(!advisorId || !reviewerId || !studentId){
-          return {status:false,message:"get review initiators details not found"}
+      if (!advisorId || !reviewerId || !studentId) {
+        return { status: false, message: "get review initiators details not found" }
       }
-      console.log(reviewerId,"lll");
-      
-      const advisor = await schema.Advisors.findOne({_id:advisorId})
+      console.log(reviewerId, "lll");
+
+      const advisor = await schema.Advisors.findOne({ _id: advisorId })
       const reviewer = await schema.Reviewers.findOne({ _id: reviewerId });
 
-      const student = await schema.Students.findOne({studentId:studentId})
-      console.log(advisor,"advisor advisor advisor advisor");
-      console.log(reviewer,"reviewer reviewer reviewer reviewer");
-      console.log(student,"student student student student");
-      if(!advisor || !reviewer || !student){
-           return {status:false,message:"get review initiators details not found"}
-      }else{
+      const student = await schema.Students.findOne({ studentId: studentId })
+      console.log(advisor, "advisor advisor advisor advisor");
+      console.log(reviewer, "reviewer reviewer reviewer reviewer");
+      console.log(student, "student student student student");
+      if (!advisor || !reviewer || !student) {
+        return { status: false, message: "get review initiators details not found" }
+      } else {
         const data = {
-           advisorName : `${advisor.firstName} ${advisor.lastName}`,
-           reviewerName : `${reviewer.firstName} ${reviewer.lastName}`,
-           currentWeek : student.currentWeek,
-           batchId : student.batchId,
+          advisorName: `${advisor.firstName} ${advisor.lastName}`,
+          reviewerName: `${reviewer.firstName} ${reviewer.lastName}`,
+          currentWeek: student.currentWeek,
+          batchId: student.batchId,
         }
-        return {status:true,data}
+        return { status: true, data }
       }
     } catch (error) {
-      return {status:false,message:"Error getting from get review initiators detaisl"}
+      return { status: false, message: "Error getting from get review initiators detaisl" }
     }
   },
-  updateReviewStatus :async (studentId:string,currentWeek:string) =>{
-      try {
-         if(!studentId || !currentWeek){
-          return {status:false,message:"Not update review status"}
-         }
-         const response = await schema.Students.updateOne(
+  updateReviewStatus: async (studentId: string, currentWeek: string, status: boolean) => {
+    try {
+      if (!studentId || !currentWeek) {
+        return { status: false, message: "Not update review status" };
+      }
+
+      if (status===true) {
+        const response = await schema.Students.updateOne(
           { studentId: studentId }, // Filter criteria
           {
             $set: {
               currentWeek: currentWeek,
               lastWeekReviewStatus: true,
-              isRepeat : true
+              isRepeat: true
             }
-          }, // Update operation
-          { new: true } // Options object
+          } // Update operation
         );
-        if(response){
-          return {status:true,message:"review status updated successfully"}
+        if (response) {
+          return { status: true, message: "Review status updated successfully" };
+        } else {
+          return { status: false, message: "Failed to update review status" };
         }
-      } catch (error) {
-         return {status:false,message:"Error getting from update review status"}
+      }else{
+        const response = await schema.Students.updateOne(
+          { studentId: studentId }, // Filter criteria
+          {
+            $set: {
+              lastWeekReviewStatus: false,
+              isRepeat: false
+            }
+          } // Update operation
+        );
+        if (response) {
+          return { status: true, message: "Review status updated successfully" };
+        } else {
+          return { status: false, message: "Failed to update review status" };
+        }
       }
+
+
+    } catch (error) {
+      return { status: false, message: "Error updating review status" };
+    }
   },
-  updateManifestDetails : async (data:any)=>{
+
+  updateManifestDetails: async (data: any) => {
     try {
-      if(!data){
-        return {status:false,message:"manifest details not updated"}
+      if (!data) {
+        return { status: false, message: "manifest details not updated" }
       }
       const response = await schema.Students.updateOne(
         { studentId: data.studentId }, // Filter criteria
@@ -687,26 +709,26 @@ export default {
         }, // Update operation
         { new: true } // Options object
       );
-      if(response){
-        return {status:true,message:"update manifest details successfully"}
+      if (response) {
+        return { status: true, message: "update manifest details successfully" }
       }
     } catch (error) {
-       return {status:false,messsage:"Error grtting update manifest data to auth"}
+      return { status: false, messsage: "Error grtting update manifest data to auth" }
     }
   },
-  getStudentProfile : async (studentId:string) =>{
+  getStudentProfile: async (studentId: string) => {
     try {
-      if(!studentId){
-        return {status:false,message:"student not found"}
+      if (!studentId) {
+        return { status: false, message: "student not found" }
       }
-      const response = await schema.Students.findOne({studentId})
-      if(response){
-        return {status:true,response}
-      }else{
-        return {status:false,messaeg:"student not found"}
+      const response = await schema.Students.findOne({ studentId })
+      if (response) {
+        return { status: true, response }
+      } else {
+        return { status: false, messaeg: "student not found" }
       }
     } catch (error) {
-       return {status:false,message:"Error gettin from get student profile"}
+      return { status: false, message: "Error gettin from get student profile" }
     }
   }
 }

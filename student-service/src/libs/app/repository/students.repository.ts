@@ -623,81 +623,110 @@ export default {
     reviewerId: string,
     eventId: string,
     slotId: string
-  ) => {
+) => {
     try {
-      if (
-        !batchId ||
-        !studentId ||
-        !week ||
-        !totalWeeks
-      ) {
+        if (
+            !batchId ||
+            !studentId ||
+            !week ||
+            !totalWeeks
+        ) {
+            return {
+                status: false,
+                message: 'Required fields are missing. Please provide all required information.',
+            };
+        }
+        let createdResult;
+        let batch:any = await schema.WeekRecord.findOne({ batchId });
+
+        if (!batch) {
+            // Create a new batch if it doesn't exist
+            batch = await schema.WeekRecord.create({ batchId, students: [] });
+        }
+
+        let student:any =await batch.students.find((s:any) => s.studentId === studentId);
+    
+        if (!student) {
+            // Create a new student if not found in the batch
+            student = { studentId, totalWeeks, weeks: [] };
+            batch.students.push(student);
+             createdResult = await batch.save()
+            console.log(student,"student coming to weeks");
+            console.log(batch,"weekssss weeksss");
+            
+            console.log(createdResult,"createdResult createdResult");  // Find or create the week in student's weeks array
+    
+        }else{
+          createdResult = batch;
+        }
+
+        let findStudent = createdResult.students.find((s: any) => s.studentId === studentId);
+        console.log(findStudent.weeks,"lllllllllllllll");
+        console.log(findStudent,"lllllllllllllll");
+        console.log(week,"week week");
+        let weekIndex = findStudent.weeks.findIndex((w:any)=>w.week===week) 
+        console.log(weekIndex);
+        
+        if (weekIndex === -1) {
+          console.log("ullilllllllll",student.weeks);
+          
+            // If the week does not exist, create it
+            findStudent.weeks.push({
+              week,
+              repeat,
+              reviewScore,
+              communicationScore,
+              personalWorkoutsScore,
+              miscellaneousWorkouts,
+              totalScore,
+              status,
+              advisorName,
+              reviewerName,
+              date,
+              pendingTopics,
+              nextWeekUpdation,
+              personalWorkoutReview,
+              MiscellaneousWorkoutsReview,
+              CommunicationReview,
+            }) 
+             
+        } else {
+            // Update the existing week
+            findStudent.weeks[weekIndex] = {
+                week,
+                repeat,
+                reviewScore,
+                communicationScore,
+                personalWorkoutsScore,
+                miscellaneousWorkouts,
+                totalScore,
+                status,
+                advisorName,
+                reviewerName,
+                date,
+                pendingTopics,
+                nextWeekUpdation,
+                personalWorkoutReview,
+                MiscellaneousWorkoutsReview,
+                CommunicationReview,
+            };
+        }
+
+        await batch.save();
+
+        // Process week string to extract week number if needed
+        const weekString = week;
+        const weekNumber = weekString.match(/\d+/)[0];
+
         return {
-          status: false,
-          message:
-            'Required fields are missing. Please provide all required information.',
+            status: true,
+            message: 'Review result added/updated successfully.',
+            weekIndex: weekIndex, // Return the index of the week for reference
+            weekNumber: weekNumber // Return the extracted week number if needed
         };
-      }
-
-      let batch = await schema.WeekRecord.findOne({ batchId });
-      console.log(batch, "addd result in find batchwwwweeee");
-
-      if (!batch) {
-        batch = await schema.WeekRecord.create({ batchId, students: [] });
-      }
-
-      let student: any = batch.students.find((s) => s.studentId === studentId);
-
-      if (!student) {
-        student = { studentId, totalWeeks, weeks: [] };
-        batch.students.push(student);
-      }
-
-      const weekIndex = student.weeks.findIndex((w: any) => w.week === week);
-
-      const formattedWeek = totalScore / 100 * 2
-      console.log(formattedWeek, "lllllllll33333333**************))))))(((((()))");
-
-      const newWeek = {
-        week,
-        repeat,
-        reviewScore,
-        communicationScore,
-        personalWorkoutsScore,
-        miscellaneousWorkouts,
-        totalScore: formattedWeek,
-        status,
-        advisorName,
-        reviewerName,
-        date,
-        pendingTopics,
-        nextWeekUpdation,
-        personalWorkoutReview,
-        MiscellaneousWorkoutsReview,
-        CommunicationReview,
-      };
-
-      if (weekIndex === -1) {
-        console.log("keriyanuuuuuuu");
-        console.log(student.weeks, "stdenyssss");
-        student.weeks.push(newWeek);
-      } else {
-        student.weeks[weekIndex] = newWeek;
-      }
-      await batch.save();
-      const weekString = week;
-      const weekNumber = weekString.match(/\d+/)[0];
-      if (weekNumber) {
-        //  const update
-      }
-      return {
-        status: true,
-        message: 'Review result added/updated successfully.',
-      };
     } catch (error) {
-      return { status: false, message: 'Error adding review result: ' + error };
+        return { status: false, message: 'Error adding review result: ' + error };
     }
-  }
-
-
+}
 
 }
