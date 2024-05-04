@@ -9,12 +9,12 @@ export const getWeekTask_Usecase = (dependencies: any) => {
     return console.log("Error: Fumigation Repository not found");
   }
 
-  const executeFunction = async (studentId: string,weekName:string) => {
+  const executeFunction = async (studentId: string,weekName:string,domain:string) => {
     try {
       if (!studentId) {
         return { status: false, message: "student not found" };
       }
-      const response = await taskRepository.getWeekTask(studentId,weekName);
+      const response = await taskRepository.getWeekTask(studentId,weekName,domain);
       console.log(response);
       
       if (response.status && response.status === true) {
