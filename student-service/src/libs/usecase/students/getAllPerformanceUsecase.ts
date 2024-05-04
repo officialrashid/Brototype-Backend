@@ -14,11 +14,13 @@ export const getAllPerformance_Usecase = (dependencies: any) => {
             let weekCompleted = 0;
             let repeatCount = 0;
             let lastWeekToatalMark = 0;
-            let overallPerformance = 0;
+            let overallPerformance:any = 0;
             let totalPossibleScore = 0;
             let totalScore = 0;
             const response = await studentsRepository.getAllPerformance(studentId, batchId);
-            if (response) {
+            if (response.status==true) {
+                console.log("log map il ullill keriiii");
+                
                 response.allPerformance.map((data: any, index: number) => {
                     if (data.status === true) {
                         weekCompleted++;
@@ -42,18 +44,23 @@ export const getAllPerformance_Usecase = (dependencies: any) => {
                 });
 
                 overallPerformance = totalPossibleScore > 0 ? (totalScore / totalPossibleScore) * 100 : 0;
-                if(weekCompleted && repeatCount && lastWeekPerformance && overallPerformance){
+                console.log(weekCompleted , repeatCount , lastWeekToatalMark , overallPerformance,"set thatweeeeeee");
+                
+                // if(weekCompleted || !repeatCount || !lastWeekToatalMark || !overallPerformance){
+                //     return {status:false,message:"The student details not found"}
+                // }else{
+                    console.log("de bugging ethiiiiiidshgsfsfdsdufsdugsdfugsdgsddsuygsdyugfsdfydsfdsufsdygdsdsugdsu");
+                    
                     const data = {
                         weekCompleted,
                         repeatCount,
                         lastWeekToatalMark,
-                        overallPerformance
+                        overallPerformance : parseInt(overallPerformance)
 
                     }
                     return {status:true,data}
-                }else{
-                    return {status:false,message:"The student details not found"}
-                }
+
+                // }
             }
         } catch (err) {
             return { status: false, message: "The Some issue in the get Course completion graph" }

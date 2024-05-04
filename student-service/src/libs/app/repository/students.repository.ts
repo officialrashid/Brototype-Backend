@@ -279,6 +279,8 @@ export default {
       }
       const allPerformance = student.weeks
       if (allPerformance.length > 0) {
+        console.log(allPerformance,"lllllll((**&&");
+        
         return { status: true, allPerformance }
       } else {
         return { status: false, message: "student not week  found" }
@@ -637,6 +639,7 @@ export default {
             };
         }
         let createdResult;
+        const formattedScore = totalScore / 100 * 2
         let batch:any = await schema.WeekRecord.findOne({ batchId });
 
         if (!batch) {
@@ -678,7 +681,7 @@ export default {
               communicationScore,
               personalWorkoutsScore,
               miscellaneousWorkouts,
-              totalScore,
+              totalScore:formattedScore,
               status,
               advisorName,
               reviewerName,
@@ -699,7 +702,7 @@ export default {
                 communicationScore,
                 personalWorkoutsScore,
                 miscellaneousWorkouts,
-                totalScore,
+                totalScore:formattedScore,
                 status,
                 advisorName,
                 reviewerName,

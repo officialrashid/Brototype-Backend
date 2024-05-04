@@ -688,13 +688,15 @@ export default {
       return { status: false, message: "Error in getting particular Events" };
     }
   },
-  updateParticularEvents: async (reviewerId: string, eventId: string, bookedEventId: string, advisorId: string, studentId: string, bookStatus: boolean, reviewId: string) => {
+  updateParticularEvents: async (reviewerId: string, eventId: string, bookedEventId: string, advisorId: string, studentId: string, bookStatus: boolean, reviewId: string,cancel:boolean) => {
     try {
       if (!reviewerId || !eventId || !bookedEventId) {
         return { status: false, message: "Not update particular events" };
       }
-      console.log(eventId, "this is particular events iddssss", bookStatus);
-
+      console.log(cancel,"----------");
+     if(!cancel){
+      console.log("PPPPPPPP");
+      
       const response = await schema.Events.findOne({ reviewerId });
       console.log(response, "update eevents responseeeee");
 
@@ -732,7 +734,8 @@ export default {
           startTime: bookedEventDetails.startTime,
           endTime: bookedEventDetails.endTime,
           scheduledDate: bookedEventDetails.date,
-          coordinatorId: bookedEventDetails.advisorId
+          coordinatorId: bookedEventDetails.advisorId,
+          cancel:cancel
         }
         console.log(bookedEventsData, "bookedEvenst detailssss");
         if (bookedEventsData) {
@@ -743,6 +746,59 @@ export default {
       } else {
         return { status: false, message: "Reviewer not found" }
       }
+     }else{
+      console.log("yyyyyyyyyyyy");
+      const response = await schema.Events.findOne({ reviewerId });
+      console.log(response, "update eevents responseeeee");
+
+      if (response) {
+        const eventIdObj: any = new mongoose.Types.ObjectId(eventId);
+        let bookedEventDetails: any = null; // Initialize variable to store booked event details
+
+        response.events.forEach((evt: any) => {
+          console.log(evt._id, "this is eventidssss");
+          if (evt._id.equals(eventIdObj)) {
+            const bookedEventIdObj = new mongoose.Types.ObjectId(bookedEventId);
+            evt.bookedEvents.forEach((bookedEvt: any) => {
+              if (bookedEvt._id.equals(bookedEventIdObj)) {
+                bookedEvt.booked = bookStatus;
+                bookedEvt.advisorId = "";
+                bookedEvt.studentId = "";
+                // Store booked event details
+                bookedEventDetails = "";
+
+              } else {
+                return { status: false, message: "Booked event not found" }
+              }
+            });
+          } else {
+            return { status: false, message: "Event not found" }
+          }
+        });
+
+        await response.save(); // Save changes to the database
+        const bookedEventsData: any = {
+          reviewerId: "",
+          eventId: "",
+          reviewId: reviewId,
+          slotId: "",
+          startTime: "",
+          endTime: "",
+          scheduledDate: "",
+          coordinatorId: advisorId,
+          cancel:cancel
+        }
+        console.log(bookedEventsData, "bookedEvenst detailssss");
+        if (bookedEventsData) {
+          const response = await reviewerProducer(bookedEventsData, 'review-booking-updation', 'bookedEvents');
+        }
+        return { status: true, message: "Successfully updated particular events", bookedEventDetails };
+
+      } else {
+        return { status: false, message: "Reviewer not found" }
+      }
+     }
+     
     } catch (error) {
       return { status: false, message: "Error in updating particular events: " + error };
     }
