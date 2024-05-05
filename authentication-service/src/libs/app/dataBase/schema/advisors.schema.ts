@@ -13,7 +13,9 @@ const advisorSchema = new mongoose.Schema({
     createdDate: {
         type: Date,
         default: Date.now // Set default value to the current date
-    }
+    },
+    weeklyTask : {type:Number,default:0},
+    weeklyTaskList: []
 });
 const Advisors = mongoose.model("Advisors", advisorSchema);
 

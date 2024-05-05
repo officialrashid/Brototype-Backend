@@ -730,5 +730,30 @@ export default {
     } catch (error) {
       return { status: false, message: "Error gettin from get student profile" }
     }
-  }
+  },
+  advisorTasks: async (data: any) => {
+    try {
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          
+            return { status: false, message: "Advisor task not updated from student" };
+        }
+        
+        for (const task of data) {
+            const advisor = await schema.Advisors.findById(task.coordinatorId);
+            if (!advisor) {
+                return { status: false, message: "Advisor not found" };
+            }
+
+            const weeklyTaskCount = task.studentList.length + advisor.weeklyTask;
+            advisor.weeklyTask = weeklyTaskCount;
+            advisor.weeklyTaskList = advisor.weeklyTaskList.concat(task.studentList);
+            await advisor.save();
+        }
+        
+        return { status: true, message: "Advisor tasks updated successfully" };
+    } catch (error:any) {
+        return { status: false, message: "Error updating advisor tasks: " + error.message };
+    }
+}
+
 }

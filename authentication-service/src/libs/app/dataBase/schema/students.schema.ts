@@ -26,7 +26,8 @@ const studentsSchema = new mongoose.Schema({
     repeatCount : {type:Number,default:0},
     isRepeat : {type:Boolean, default:false},
     domain: {type:String , default:""},
-    profileUrl: {type:String , default:""}
+    profileUrl: {type:String , default:""},
+
 });
   
 
