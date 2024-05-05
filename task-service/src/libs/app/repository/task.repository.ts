@@ -16,6 +16,7 @@ export default {
 
   updatePersonalWorkout: async (data: any) => {
 
+console.log(data,"this is repository dataassssssssssss*******(((((((((******((((****))))))))");
 
     try {
       if (!data) {
@@ -46,7 +47,7 @@ export default {
 
                     qna.nestedQuestionNumber = item.nestedQuestionNumber
                     qna.answer = item.answer
-
+                    qna.nestedQuestion = item.nestedQuestion
                   }
                 })
 
@@ -74,9 +75,11 @@ export default {
               "personalWorkouts": {
                 week: data.weekName,
                 mainQuestionNumber: data.mainQuestionNumber,
-                questionNumbersAndAnswers: data.personalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; }) => ({
+                mainQuestion: data.mainQuestion,
+                questionNumbersAndAnswers: data.personalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; nestedQuestion: String }) => ({
                   nestedQuestionNumber: item.nestedQuestionNumber,
                   answer: item.answer,
+                  nestedQuestion: item.nestedQuestion
                 })),
               },
             },
@@ -104,9 +107,11 @@ export default {
             {
               week: data.weekName,
               mainQuestionNumber: data.mainQuestionNumber,
-              questionNumbersAndAnswers: data.personalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; }) => ({
+              mainQuestion: data.mainQuestion,
+              questionNumbersAndAnswers: data.personalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; nestedQuestion: String }) => ({
                 nestedQuestionNumber: item.nestedQuestionNumber,
                 answer: item.answer,
+                nestedQuestion: item.nestedQuestion
               })),
             },
           ],
@@ -139,7 +144,7 @@ export default {
         return { status: false, message: "Personal workout data not found" };
       }
 
-
+      console.log(data,"this is repository dataassssssssssss*******(((((((((******((((****))))))))");
 
       const existingStudent = await schema.WeeklyTaskUpdation.findOne({ studentId: data.studentId });
 
@@ -166,7 +171,7 @@ export default {
 
                     qna.nestedQuestionNumber = item.nestedQuestionNumber
                     qna.answer = item.answer
-
+                    qna.nestedQuestion = item.nestedQuestion
                   }
                 })
 
@@ -189,9 +194,11 @@ export default {
               "technicalWorkouts": {
                 week: data.weekName,
                 mainQuestionNumber: data.mainQuestionNumber,
-                questionNumbersAndAnswers: data.technicalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; }) => ({
+                mainQuestion : data.mainQuestion,
+                questionNumbersAndAnswers: data.technicalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; nestedQuestion:String }) => ({
                   nestedQuestionNumber: item.nestedQuestionNumber,
                   answer: item.answer,
+                  nestedQuestion : item.nestedQuestion
                 })),
               },
             },
@@ -220,9 +227,11 @@ export default {
             {
               week: data.weekName,
               mainQuestionNumber: data.mainQuestionNumber,
-              questionNumbersAndAnswers: data.personalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; }) => ({
+              mainQuestion : data.mainQuestion,
+              questionNumbersAndAnswers: data.personalWorkouts.map((item: { nestedQuestionNumber: any; answer: any; nestedQuestion:string}) => ({
                 nestedQuestionNumber: item.nestedQuestionNumber,
                 answer: item.answer,
+                nestedQuestion : item.nestedQuestion
               })),
             },
           ],
@@ -282,6 +291,7 @@ export default {
 
                     qna.nestedQuestionNumber = item.nestedQuestionNumber
                     qna.answer = item.answer
+                    qna.nestedQuestion = item.nestedQuestion
 
                   }
                 })
@@ -310,9 +320,11 @@ export default {
               "miscellaneousWorkouts": {
                 week: data.weekName,
                 mainQuestionNumber: data.mainQuestionNumber,
-                questionNumbersAndAnswers: data.miscellaneousWorkouts.map((item: { nestedQuestionNumber: any; answer: any; }) => ({
+                mainQuestion : data.mainQuestion,
+                questionNumbersAndAnswers: data.miscellaneousWorkouts.map((item: { nestedQuestionNumber: any; answer: any; nestedQuestion:string }) => ({
                   nestedQuestionNumber: item.nestedQuestionNumber,
                   answer: item.answer,
+                  nestedQuestion : item.nestedQuestion
                 })),
               },
             },
@@ -341,9 +353,11 @@ export default {
             {
               week: data.weekName,
               mainQuestionNumber: data.mainQuestionNumber,
-              questionNumbersAndAnswers: data.miscellaneousWorkouts.map((item: { nestedQuestionNumber: any; answer: any; }) => ({
+              mainQuestion : data.mainQuestion,
+              questionNumbersAndAnswers: data.miscellaneousWorkouts.map((item: { nestedQuestionNumber: any; answer: any; nestedQuestion:string }) => ({
                 nestedQuestionNumber: item.nestedQuestionNumber,
                 answer: item.answer,
+                nestedQuestion : item.nestedQuestion
               })),
             },
           ],
@@ -384,25 +398,25 @@ export default {
 
 
     try {
-    
+
       // // Set the dynamic field based on the taskType
       const response: any = await schema.WeeklyTaskUpdation.find({ studentId: studentId });
       console.log(response, "Response");
-      
+
       if (response && response.length > 0) {
         const tskType = response[0][`${taskType}Workouts`];
         console.log(tskType, "Workouts for Task Type");
-      
+
         if (tskType) {
           // Filter based on week and mainQuestionNumber
           const filteredWorkouts = tskType.filter((workout: { week: any; mainQuestionNumber: number; }) => workout.week === weekName && workout.mainQuestionNumber === parseInt(mainQuestionNumber, 10));
-      
+
           if (filteredWorkouts.length > 0) {
             // Extract questionNumbersAndAnswers
             const questionNumbersAndAnswers = filteredWorkouts.map((workout: { questionNumbersAndAnswers: any; }) => workout.questionNumbersAndAnswers);
-      
+
             console.log(questionNumbersAndAnswers, "Question Numbers And Answers");
-      
+
             return { status: true, message: "Data fetched successfully", data: questionNumbersAndAnswers };
           } else {
             return { status: false, message: "No matching data found for the specified week and mainQuestionNumber" };
@@ -413,8 +427,8 @@ export default {
       } else {
         return { status: false, message: "No data found for the specified student ID" };
       }
-      
-      
+
+
     } catch (error) {
       console.error("Error fetching task details:", error);
       return { status: false, message: "Some issues in fetching data" };
@@ -559,7 +573,7 @@ export default {
 
       const response = await schema.TechnicalWorkouts.find(query);
 
-console.log(response,"responseee in technical workoutsssssss");
+      console.log(response, "responseee in technical workoutsssssss");
 
       if (!response || response.length === 0) {
         return { status: false, message: 'No documents found for the specified domain and week' };
@@ -572,47 +586,47 @@ console.log(response,"responseee in technical workoutsssssss");
       return { status: false, message: 'An error occurred' };
     }
   },
-  getWeekTask: async (studentId: string, weekName: string , domain:string) => {
+  getWeekTask: async (studentId: string, weekName: string, domain: string) => {
     try {
       if (!studentId || !weekName) {
         return { status: false, message: "Student ID or week name not provided" };
       }
-  
+
       const response = await schema.WeeklyTaskUpdation.findOne({ studentId: studentId });
-  
+
       if (!response) {
         return { status: false, message: "No data found for the specified student ID" };
       }
-      const personalWorkoutQuestions = await schema.PersonalWorkouts.find({week:weekName})
-      const technicalWorkoutQuestions = await schema.TechnicalWorkouts.find({week:weekName,domain:domain})
-      const miscellaneousWorkouts = await schema.MiscellaneousWorkouts.find({week:weekName})
+      // const personalWorkoutQuestions = await schema.PersonalWorkouts.find({ week: weekName })
+      // const technicalWorkoutQuestions = await schema.TechnicalWorkouts.find({ week: weekName, domain: domain })
+      // const miscellaneousWorkouts = await schema.MiscellaneousWorkouts.find({ week: weekName })
       // Filter the arrays based on the matching week
-      if(personalWorkoutQuestions && technicalWorkoutQuestions && miscellaneousWorkouts){
+      // if (personalWorkoutQuestions && technicalWorkoutQuestions && miscellaneousWorkouts) {
         const filteredTasks = response.toJSON(); // Convert Mongoose document to plain JavaScript object
-  
+
         const weekTasks = {
           personalWorkouts: filteredTasks.personalWorkouts.filter(workout => workout.week === weekName),
           technicalWorkouts: filteredTasks.technicalWorkouts.filter(workout => workout.week === weekName),
           miscellaneousWorkouts: filteredTasks.miscellaneousWorkouts.filter(workout => workout.week === weekName)
         };
-    
+
         if (Object.values(weekTasks).some(array => array.length > 0)) {
           console.log(weekTasks, "Week tasks fetched successfully");
-          return { status: true, message: "Week tasks fetched successfully", data: weekTasks,personalWorkoutQuestions,technicalWorkoutQuestions,miscellaneousWorkouts };
+          return { status: true, message: "Week tasks fetched successfully", data: weekTasks };
         } else {
           return { status: false, message: "No tasks found for the specified student and week" };
         }
-      }else{
-        return {status:false,message:"student updated task question not found"}
-      }
-  
+      // } else {
+      //   return { status: false, message: "student updated task question not found" }
+      // }
+
     } catch (error) {
       console.error("Error fetching week tasks:", error);
       return { status: false, message: "Some error occurred while fetching week tasks" };
     }
   }
-  
-  
+
+
 
 
 

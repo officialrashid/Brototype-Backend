@@ -3,7 +3,8 @@ export class TechnicalWorkout {
     batchId: string | undefined;
     weekName: string;
     mainQuestionNumber: string;
-    technicalWorkouts: { nestedQuestionNumber: string; answer: string }[];
+    mainQuestion:String
+    technicalWorkouts: { nestedQuestionNumber: string; answer: string;nestedQuestion:string }[];
   
   
     constructor(data: TechnicalWorkout) {
@@ -14,6 +15,7 @@ export class TechnicalWorkout {
       this.weekName = data?.weekName;
       this.mainQuestionNumber = data.mainQuestionNumber;
       this.technicalWorkouts = data.technicalWorkouts;
+      this.mainQuestion = data.mainQuestion;
     }
   }
   

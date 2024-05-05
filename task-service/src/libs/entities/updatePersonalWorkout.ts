@@ -3,7 +3,8 @@ export class PersonalWorkout {
   batchId: string | undefined;
   weekName: string;
   mainQuestionNumber: string;
-  personalWorkouts: { nestedQuestionNumber: string; answer: string }[];
+  mainQuestion:String
+  personalWorkouts: { nestedQuestionNumber: string; answer: string; nestedQuestion:string }[];
 
 
   constructor(data: PersonalWorkout) {
@@ -14,5 +15,6 @@ export class PersonalWorkout {
     this.weekName = data?.weekName;
     this.mainQuestionNumber = data.mainQuestionNumber;
     this.personalWorkouts = data.personalWorkouts;
+    this.mainQuestion = data.mainQuestion;
   }
 }

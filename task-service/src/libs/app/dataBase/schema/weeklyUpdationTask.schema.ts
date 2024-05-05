@@ -8,9 +8,11 @@ const weeklyTaskUpdationSchema = new mongoose.Schema({
         {
             week: String,
             mainQuestionNumber: Number,
+            mainQuestion : String,
             questionNumbersAndAnswers: [
                 {
                     nestedQuestionNumber: String,
+                    nestedQuestion: String,
                     answer: String,
                 }
             ]
@@ -19,20 +21,24 @@ const weeklyTaskUpdationSchema = new mongoose.Schema({
     technicalWorkouts: [{
         week: String,
         mainQuestionNumber: Number,
+        mainQuestion : String,
         questionNumbersAndAnswers: [
             {
                 nestedQuestionNumber: String,
                 answer: String,
+                nestedQuestion: String,
             }
         ]
     }],
     miscellaneousWorkouts: [{
         week: String,
         mainQuestionNumber: Number,
+        mainQuestion : String,
         questionNumbersAndAnswers: [
             {
                 nestedQuestionNumber: String,
                 answer: String,
+                nestedQuestion: String,
             }
         ]
     }],
