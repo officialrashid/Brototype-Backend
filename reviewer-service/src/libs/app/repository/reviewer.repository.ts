@@ -8,38 +8,38 @@ export default {
 
   scheduleEventExist: async (reviewerId: any, startTime: moment.MomentInput, endTime: moment.MomentInput, day: any, date: string[]) => {
     try {
-      // Parse the incoming start and end times into moment objects
+  
       const start = moment(startTime, 'hh:mma');
       const end = moment(endTime, 'hh:mma');
 
-      // Query to find overlapping events
+   
       const existingEvents: any = await schema.Events.find({
         reviewerId: reviewerId,
       });
 
-      // Loop through existing events to check for overlaps
+  
       if (existingEvents?.length > 0) {
         for (const eventData of existingEvents[0].events) {
-          // Check if any of the dates in the date array are included in eventData.date
+         
           if (date.some(d => eventData.date.includes(d))) {
             console.log("matcheddd");
 
-            // Parse existing event start and end times into moment objects
+          
             const existingStart = moment(eventData.startTime, 'hh:mma');
             const existingEnd = moment(eventData.endTime, 'hh:mma');
-
-            // Check for overlap
+             console.log(existingStart,"existingStart existingStart");
+             console.log(existingEnd),"existingEnd existingEnd";
+             
             if (
               (start.isSameOrBefore(existingEnd) && end.isSameOrAfter(existingStart)) ||
               (existingStart.isSameOrBefore(end) && existingEnd.isSameOrAfter(start))
             ) {
-              // There is an overlap, return false
+              console.log("else ilaaaaa keriyeeeeeee");
+              
               return { status: false };
             }
           }
         }
-
-        // No overlaps found, return true
         return { status: true };
       } else {
         return { status: true };

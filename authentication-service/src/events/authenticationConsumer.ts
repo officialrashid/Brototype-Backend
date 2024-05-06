@@ -14,7 +14,7 @@ export const consumeAuthentication = async () => {
 
         await consumer.subscribe({ topic: 'authentication', fromBeginning: true });
         await consumer.subscribe({ topic: 'review-events', fromBeginning: true });
-        await consumer.subscribe({ topic: 'advisors-task', fromBeginning: true });
+        // await consumer.subscribe({ topic: 'advisors-task', fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ message }) => {
                 const binaryData = message?.value;
@@ -24,7 +24,7 @@ export const consumeAuthentication = async () => {
 
 
                 const messageType = jsonData?.type;
-                console.log();
+          
 
                 if (messageType === "review-scheduler-data") {
                     const response = await handleKafkaMessages("getReviewStudents", messageType);
@@ -32,7 +32,7 @@ export const consumeAuthentication = async () => {
                     console.log(jsonData.data, "updateProfile updateProfile updateProfile");
 
                     const response = await handleKafkaMessages(jsonData.data, messageType);
-                } else if (messageType === "") {
+                } else if (messageType === "advisors-task") {
                     const response = await handleKafkaMessages(jsonData.data, messageType);
                 }
                 // Call handleMessage and wait for it to complete

@@ -485,7 +485,10 @@ export default {
       )
       console.log(cleanResponse, "llllllll");
       if (cleanResponse.length > 0) {
-        const response = await authenticationProducer(cleanResponse, 'coordinator-data', 'reviewAdvisors');
+ 
+          const response = await authenticationProducer(cleanResponse, 'coordinator-data', 'reviewAdvisors');
+
+      
       }
 
     } catch (error) {
@@ -554,7 +557,7 @@ export default {
               {
                 'lastWeekReviewStatus': true
               }, {
-                'isRepeat': true
+                'isRepeat': false
               }
             ]
           }
@@ -662,7 +665,7 @@ export default {
             $set: {
               currentWeek: currentWeek,
               lastWeekReviewStatus: true,
-              isRepeat: true
+              isRepeat: false
             }
           } // Update operation
         );
@@ -677,7 +680,7 @@ export default {
           {
             $set: {
               lastWeekReviewStatus: false,
-              isRepeat: false
+              isRepeat: true
             }
           } // Update operation
         );
@@ -734,7 +737,7 @@ export default {
   advisorTasks: async (data: any) => {
     try {
         if (!data || !Array.isArray(data) || data.length === 0) {
-          
+
             return { status: false, message: "Advisor task not updated from student" };
         }
         

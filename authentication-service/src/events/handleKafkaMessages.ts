@@ -48,7 +48,7 @@ const handleKafkaMessages = async (data: string, type: string) => {
       return null; // Or handle the error according to your needs
     }
   }
-  if(type===""){
+  if(type==="advisors-task"){
     const useCaseInstance = advisorTasks_Usecase(dependencies);
     if (useCaseInstance) {
       const response = await useCaseInstance.executeFunction(data);
