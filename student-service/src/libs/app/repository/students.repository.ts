@@ -624,7 +624,9 @@ export default {
     totalWeeks: any,
     reviewerId: string,
     eventId: string,
-    slotId: string
+    slotId: string,
+    reviewId:string,
+    coordiantorId:string
 ) => {
     try {
         if (
@@ -720,13 +722,19 @@ export default {
         // Process week string to extract week number if needed
         const weekString = week;
         const weekNumber = weekString.match(/\d+/)[0];
-
+        const reviewStatusData ={
+          coordinatorId : coordiantorId,
+          reviewId : reviewId,
+          reviewStatus : status ? "completed" : "repeat"
+        }
+        const reviewStatusUpdation = await studentProducer(reviewStatusData,"review-status-updation","reviewStatus")
         return {
             status: true,
             message: 'Review result added/updated successfully.',
             weekIndex: weekIndex, // Return the index of the week for reference
             weekNumber: weekNumber // Return the extracted week number if needed
         };
+ 
     } catch (error) {
         return { status: false, message: 'Error adding review result: ' + error };
     }
