@@ -10,12 +10,12 @@ const transporter: Transporter = nodemailer.createTransport({
 });
 
 // Define a function to send an email with HTML content
-export function sendEmail(subject: string, Content: string, to: string): void {
+export function sendEmail(subject: string, Content: string, loginUrl:string, to: string): void {
   const mailOptions: SendMailOptions = {
     from: "muhammedrashi59@gmail.com",
     to: to,
     subject: subject,
-    html: Content, // Use HTML content
+    html: `<p>${subject},</p><p>Your Unique ID: ${Content}</p><p>Login URL: ${loginUrl}</p>`
   };
 
   // Send the email

@@ -36,7 +36,8 @@ export const addReviewer_Usecase = (dependencies: any) => {
         if (!emailPhoneCheckResult || (emailPhoneCheckResult && emailPhoneCheckResult.length === 0)) {
           const uniqueIdExist = await authenticationRepository.reviewerUniqueIdExist(newUniqueId);
           if (!uniqueIdExist || (uniqueIdExist && uniqueIdExist.length === 0)) {
-            sendEmail("Hello Reviewer, Your Unique Id", newUniqueId, data.email);
+             const loginUrl = "http://localhost:5173/reviewerIn"
+            sendEmail("Hello Reviewer", newUniqueId, loginUrl, data.email);
             const reviewer = new Reviewers({
               ...data,
               uniqueId: newUniqueId,

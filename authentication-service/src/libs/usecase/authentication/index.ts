@@ -25,7 +25,8 @@ import {getReviewInitiators_Usecase} from "./getReviewInitiatorsUsecase";
 import {updateReviewStatus_Usecase} from "./updateReviewStatusUsecase";
 import {updateManifestDetails_Usecase} from "./updateManfestDetailsUsecase";
 import {getStudentProfile_Usecase} from "./getStudentProfileUsecase";
-import {advisorTasks_Usecase} from "./advisorTasksUsecase"
+import {advisorTasks_Usecase} from "./advisorTasksUsecase";
+import {advisorGoogleLogin_Usecase} from "./advisorGoogleLoginUsecase"
 export{
     createInvigilator_Usecase,
     checkStudentUniqueId_Usecase,
@@ -54,5 +55,6 @@ export{
     updateReviewStatus_Usecase,
     updateManifestDetails_Usecase,
     getStudentProfile_Usecase,
-    advisorTasks_Usecase
+    advisorTasks_Usecase,
+    advisorGoogleLogin_Usecase
 }

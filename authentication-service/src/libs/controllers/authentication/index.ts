@@ -23,6 +23,7 @@ import updateAdvisorStatus_Controller from "./updateAdvisorStatusController"
 import getReviewInitiators_Controller from "./getReviewInitiatorsController"
 import updateReviewStatus_Controller from "./updateReviewStatusController"
 import getStudentProfile_Controller from "./getStudentProfileController"
+import advisorGoogleLogin_Controller from "./advisorGoogleLoginController"
 export default (dependencies:any)=>{
 
     return{
@@ -50,6 +51,7 @@ export default (dependencies:any)=>{
         getReviewInitiatorsController: getReviewInitiators_Controller(dependencies),
         updateReviewStatusController: updateReviewStatus_Controller(dependencies),
         getStudentProfileController: getStudentProfile_Controller(dependencies),
+        advisorGoogleLoginController: advisorGoogleLogin_Controller(dependencies),
     
 
     }

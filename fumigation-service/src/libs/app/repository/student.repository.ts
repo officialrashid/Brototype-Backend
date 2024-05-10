@@ -556,7 +556,10 @@ console.log(foundStudentIndex,"llllllllllll990***");
             });
         });
 
-        // Paginate the students array
+        // Sort students in descending order based on studentId or any relevant field
+        students.sort((a, b) => b.studentId - a.studentId);
+
+        // Paginate the sorted students array
         const paginatedStudents = students.slice(skip, skip + pageSize);
 
         return { status: true, students: paginatedStudents };
@@ -565,6 +568,7 @@ console.log(foundStudentIndex,"llllllllllll990***");
         return { status: false, message: "An error occurred while getting all fumigation students" };
     }
 },
+
 
 updateStudentStatus: async (studentId: string, batch: string, action: string) => {
   try {
@@ -665,7 +669,7 @@ getPendingStudents : async (uniqueId:string) =>{
      if(!uniqueId){
       return {status:false,message:"pending students not get successfully"}
      }
-     const response = await schema.Enqueries.find({})
+     const response = await schema.Enqueries.find({}).sort({_id: -1});
      if(response.length > 0){
       const pendingStudentCount = response.length
       return {status:true,pendingStudentCount}

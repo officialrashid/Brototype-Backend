@@ -188,30 +188,32 @@ export default {
     try {
       const indexM = uniqueId.indexOf('M');
       const uniqueLetters = indexM !== -1 ? uniqueId.substring(0, indexM) : uniqueId;
-
+  
       const pageSize = 5;
       const skip = (currentPage - 1) * pageSize;
-
+  
       const response = await schema.Students.aggregate([
         {
           $match: {
             batch: { $regex: `^${uniqueLetters}`, $options: 'i' }
           }
         },
+        { $sort: { _id: -1 } }, // Sort in descending order by _id or any other relevant field
         { $skip: skip },
         { $limit: pageSize }
       ]);
-
+  
       if (response && response.length > 0) {
         return { response };
       } else {
-        return { message: "students not found your hub" };
+        return { message: "Students not found in your hub" };
       }
     } catch (error) {
       console.error(error);
       return { error: 'Internal server error' };
     }
   },
+  
 
   updateStudentStatus: async (studentId: string, action: string) => {
     console.log("Incoming backend action", studentId, action);
@@ -259,16 +261,17 @@ export default {
   },
   getAllReviewers: async () => {
     try {
-      const response = await schema.Reviewers.find({})
+      const response = await schema.Reviewers.find({}).sort({_id: -1});
       if (response && response.length > 0) {
         return response;
       } else {
-        return { status: false, message: "reviewers not found" }
+        return { status: false, message: "Reviewers not found" };
       }
     } catch (error) {
-      return { status: false, message: "Internal Server Error" }
+      return { status: false, message: "Internal Server Error" };
     }
   },
+  
   createReviewersUniqueId: async () => {
     try {
       const response = await schema.Reviewers.find().sort({ _id: -1 }).limit(1).exec()
@@ -598,7 +601,7 @@ export default {
   },
   getAllAdvisors: async () => {
     try {
-      const response = await schema.Advisors.find({})
+      const response = await schema.Advisors.find({}).sort({_id: -1});
       if (response.length > 0) {
         return { status: true, response }
       } else {
@@ -757,6 +760,42 @@ export default {
     } catch (error:any) {
         return { status: false, message: "Error updating advisor tasks: " + error.message };
     }
+},
+advisorGoogleLogin : async  (email:string)=>{
+  try {
+     if(!email){
+      return {status:false,message:"advisor not found"}
+     }
+     const advisor = await schema.Advisors.findOne({email})
+     console.log(advisor,"advisor google login in repositoriessssss");
+     
+     if (advisor) {
+      console.log(advisor);
+
+      const advisors = {
+        _id: advisor._id.toString(),
+        name: advisor.firstName?.toString(),
+        email: advisor.email?.toString()
+      };
+
+      const accessToken = await jwt.sign(advisors, config.secretKey, { expiresIn: '1d' });
+      if (accessToken) {
+        const uid = advisors._id.toString();
+        const customToken = await admin.auth().createCustomToken(uid);
+        if (customToken) {
+          return { advisor, accessToken, customToken };
+        } else {
+          return { status: false, message: "advisor not found" }
+        }
+      } else {
+        return { status: false, message: "your access denied some time wait" }
+      }
+    } else {
+      return { status: false, message: "advisor not found" }
+    }
+  } catch (error) {
+     return {status:false,message:"Error Getting From Advisor Google Login"}
+  }
 }
 
 }

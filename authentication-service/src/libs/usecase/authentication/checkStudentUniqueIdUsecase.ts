@@ -48,7 +48,8 @@ export const checkStudentUniqueId_Usecase = (dependencies: any) => {
           console.log(uniqueIdExist, "UniqueId check result");
 
           if (!uniqueIdExist || (uniqueIdExist && uniqueIdExist.length === 0)) {
-            sendEmail("Hello Student, Your Unique Id", newUniqueId, studentData.email);
+            const loginUrl = "http://localhost:5173/studentIn"
+            sendEmail("Hello Student", newUniqueId,loginUrl, studentData.email);
 
             const student = new Students({
               ...studentData,

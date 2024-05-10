@@ -35,7 +35,8 @@ export const addAdvisor_Usecase = (dependencies: any) => {
         if (!emailPhoneCheckResult || (emailPhoneCheckResult && emailPhoneCheckResult.length === 0)) {
           const uniqueIdExist = await authenticationRepository.advisorUniqueIdExist(newUniqueId);
           if (!uniqueIdExist || (uniqueIdExist && uniqueIdExist.length === 0)) {
-            sendEmail("Hello Advisor, Your Unique Id", newUniqueId, data.email);
+            const loginUrl = "http://localhost:5173/advisorIn"
+            sendEmail("Hello Advisor", newUniqueId,loginUrl,data.email);
             const advisor = new Advisors({
               ...data,
               uniqueId: newUniqueId,
